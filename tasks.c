@@ -50,6 +50,8 @@ int set_task_stacks(struct task *t, size_t task_num,
 	 * with a uint16_t.
 	 */
 	void *sspace = s->stack_space;
+	// Pointer to the current task's stack poitner
+	void *c_sp = NULL;
 	size_t ssize = s->stack_size;
 
 #ifdef	DEBUG
@@ -67,7 +69,8 @@ int set_task_stacks(struct task *t, size_t task_num,
 		 * rather than the beginning.
 		 */
 		current->c.sp_start = sspace+(ssize*ndx)+ssize-1;
-		current->c.sp = sspace+(ssize*ndx)+ssize-1;
+		current->c.sp = current->c.sp_start;
+		c_sp = current->c.sp;
 #ifdef	DEBUG	
 		printf("Address of current: %p\n", current);
 		printf("Stack start for current: %p\n", current->c.sp_start);
@@ -76,10 +79,13 @@ int set_task_stacks(struct task *t, size_t task_num,
 
 		/* Write the address of do_task in the stack. It will act as
 		 * the return address when the ISR is finished.
+		 * In addition, we are going to store a preliminary status 
+		 * register
 		 */
 		addr_split.tosplit = &do_task;
-		*(uint8_t *) current--->c.sp = addr_split.split[0];
-		*(uint8_t *) current--->c.sp = addr_split.split[1];
+		*(uint8_t *) c_sp = add_split.split[0];
+		*(uint8_t *) --c_sp = add_split.split[1];
+		*(uint8_t *) --c_sp = 0;
 		current = current->next;
 	}
 

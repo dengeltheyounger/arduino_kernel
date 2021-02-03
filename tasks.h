@@ -60,15 +60,6 @@ struct context {
 	uint8_t r29;
 	uint8_t r30;
 	uint8_t r31;
-	uint8_t portd;
-	uint8_t ddrd;
-	uint8_t pind;
-	uint8_t portc;
-	uint8_t ddrc;
-	uint8_t pinc;
-	uint8_t portb;
-	uint8_t ddrb;
-	uint8_t pinb;
 };
 
 // This is a linked list for the task structs

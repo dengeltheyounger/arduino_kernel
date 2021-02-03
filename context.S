@@ -19,7 +19,7 @@ save_context:
 	# Restore r28 to be saved
 	pop	r28
 	# Skip the status register for now
-	# Begin saving the registers
+	# Begin saving the GPRs
 	std	Z+4,r0
 	std	Z+5,r1
 	std	Z+6,r2
@@ -50,25 +50,6 @@ save_context:
 	std	Z+31,r27
 	std	Z+32,r28
 	std	Z+33,r29
-	# Begin saving IO registers
-	in	r0,_SFR_IO_ADDR(PORTD)
-	std	Z+36, r0
-	in	r0,_SFR_IO_ADDR(DDRD)
-	std	Z+37,r0
-	in	r0,_SFR_IO_ADDR(PIND)
-	std	Z+38,r0
-	in	r0,_SFR_IO_ADDR(PORTC)
-	std	Z+39,r0
-	in	r0,_SFR_IO_ADDR(DDRC)
-	std	Z+40,r0
-	in	r0,_SFR_IO_ADDR(PINC)
-	std	Z+41,r0
-	in	r0,_SFR_IO_ADDR(PORTB)
-	std	Z+42,r0
-	in	r0,_SFR_IO_ADDR(DDRB)
-	std	Z+43,r0
-	in	r0,_SFR_IO_ADDR(PINB)
-	std	Z+44,r0
 	# Now we have finished storing registers.
 	# Pop SREG into r27
 	pop	r27
@@ -81,8 +62,8 @@ save_context:
 	std	Z+34,r28
 	std	Z+35,r29
 	# Load the next task to see if it is valid and runnable
-	ldd	r28,Z+47
-	ldd	r29,Z+48
+	ldd	r28,Z+38
+	ldd	r29,Z+39
 	# Now we can get the next struct
 switch_task:
 	# Check to see if r28 is 0
@@ -98,14 +79,14 @@ switch_task:
 	# Now curr points to first
 check_state:
 	# Load enum
-	ldd	r25,Y+49
+	ldd	r25,Y+40
 	# Check to see if it is in a runnable state
 	cpi	r25,0
 	# If the value is zero, then the task is runnable. Load context
 	breq	get_context
 	# Load next task and check if it is valid
-	ldd	r30,Y+47
-	ldd	r31,Y+48
+	ldd	r30,Y+38
+	ldd	r31,Y+39
 	movw	r28,r30
 	jmp	switch_task
 get_context:
@@ -118,25 +99,7 @@ get_context:
 	out	_SFR_IO_ADDR(SPL),r0
 	ldd	r0,Y+3
 	out	_SFR_IO_ADDR(SPH),r0
-	# Begin restoring IO registers
-	ldd	r0,Y+36
-	out	_SFR_IO_ADDR(PORTD),r0
-	ldd	r0,Y+37
-	out	_SFR_IO_ADDR(DDRD),r0
-	ldd	r0,Y+38
-	out	_SFR_IO_ADDR(PIND),r0
-	ldd	r0,Y+39
-	out	_SFR_IO_ADDR(PORTC),r0
-	ldd	r0,Y+40
-	out	_SFR_IO_ADDR(DDRC),r0
-	ldd	r0,Y+41
-	out	_SFR_IO_ADDR(PINC),r0
-	ldd	r0,Y+42
-	out	_SFR_IO_ADDR(PORTB),r0
-	ldd	r0,Y+43
-	out	_SFR_IO_ADDR(DDRB),r0
-	ldd	r0,Y+44
-	out	_SFR_IO_ADDR(PINB),r0
+	# Begin storing GPR
 	ldd	r0,Y+4
 	ldd	r1,Y+5
 	ldd	r2,Y+6
