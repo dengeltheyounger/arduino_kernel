@@ -25,7 +25,6 @@ typedef enum task_state {
 struct context {
 	void *sp_start;
 	void *sp;
-	uint8_t sreg;
 	uint8_t r0;
 	/* r1 should always contain zero. Must be saved during ISR prologue. Must be zeroed out during
 	 * the ISR routine. Must be restored during ISR epilogue
@@ -61,6 +60,15 @@ struct context {
 	uint8_t r29;
 	uint8_t r30;
 	uint8_t r31;
+	uint8_t portd;
+	uint8_t ddrd;
+	uint8_t pind;
+	uint8_t portc;
+	uint8_t ddrc;
+	uint8_t pinc;
+	uint8_t portb;
+	uint8_t ddrb;
+	uint8_t pinb;
 };
 
 // This is a linked list for the task structs
