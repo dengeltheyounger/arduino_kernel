@@ -3,12 +3,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "stack.h"
-#include "uart.h"
 #include <stdio.h>
 #include <avr/io.h>
-#ifndef	DEBUG
-#define	DEBUG
-#endif
 
 /* Right now there are only two
  * task states. The only possible
@@ -66,9 +62,9 @@ struct context {
 
 struct task {
 	struct context c;
-	void (*task_funct)();
 	struct task *next;
-	task_state state; 
+	task_state state;
+	void (*task_funct)(); 
 };
 
 /* First and current structs. 
@@ -77,6 +73,7 @@ struct task {
  */
 extern struct task *first;
 extern struct task *curr;
+extern struct task *k_task;
 
 /* Set up the current task struct. If prev is not null, then
  * curr will be set as next. In addition, curr's task_funct will

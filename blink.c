@@ -6,40 +6,72 @@ static inline void delay_ms(int ms_delay) {
 		_delay_ms(1);
 }
 
-static inline void set_outputs() {
+void blink1(void) {
 	DDRB |= _BV(DDB5);
-	DDRB |= _BV(DDB4);
-	DDRB |= _BV(DDB3);
-}
 
-static inline void blink_led(int port, int ms_delay) {
-	PORTB |= _BV(port);
-	delay_ms(ms_delay);
-	PORTB &= ~_BV(port);
-}
-
-void blink(void) {
-	int delay = 1000;
-	int step = 2;
-	int multiply = 0;
-	/* Change pins to output */
-	set_outputs();
-
+	// On for second, off for a second
 	while (1) {
-		blink_led(PORTB5, delay);
-		blink_led(PORTB4, delay);
-		blink_led(PORTB3, delay);
+		PORTB |= _BV(PORTB5);
+		delay_ms(1000);
+		PORTB &= ~_BV(PORTB5);
+		delay_ms(1000);
+	}
+}
 
-		if (delay <= 25)
-			multiply = 1;
+void blink2(void) {
+	DDRB |= _BV(DDB4);
 
-		else if (delay >= 1000)
-			multiply = 0;
+	// Off for a second, on for a second
+	while (1) {
+		PORTB &= ~_BV(PORTB4);
+		delay_ms(1000);
+		PORTB |= _BV(PORTB4);
+		delay_ms(1000);
+	}
+}
 
-		if (!multiply)
-			delay /= 2;
+void blink3(void) {
+	DDRB |= _BV(DDB3);
 
-		else
-			delay *= 2;
+	// Blink twice and then wait a second
+	while (1) {
+		PORTB |= _BV(PORTB3);
+		delay_ms(250);
+		PORTB &= ~_BV(PORTB3);
+		delay_ms(250);
+		PORTB |= _BV(PORTB3);
+		delay_ms(250);
+		PORTB &= ~_BV(PORTB3);
+		delay_ms(1000);
+
+	}
+}
+
+void blink4(void) {
+	DDRB |= _BV(DDB2);
+	int wait_time = 750;
+	uint8_t add = 0;
+
+	// oscillate
+	while (1) {
+		PORTB |= _BV(PORTB2);
+		delay_ms(wait_time);
+		PORTB &= ~_BV(PORTB2);
+		
+		if (!add) {
+			--wait_time;
+		}
+		
+		else {
+			++wait_time;
+		}
+		
+		if (wait_time <= 50) {
+			add = 1;
+		}
+
+		else if (wait_time >= 750) {
+			add = 0;
+		}
 	}
 }

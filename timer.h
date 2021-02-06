@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /* For now, it is assumed that the timer will be set for 4 ms.
  * The reason for this is because it allows greater resolution

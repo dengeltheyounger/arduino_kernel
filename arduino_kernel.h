@@ -7,11 +7,11 @@
 #include <stdio.h>
 #include "tasks.h"
 #include "stack.h"
-#include "uart.h"
 #include "timer.h"
-#ifndef	DEBUG
-#define	DEBUG
-#endif
+
+extern struct task *curr;
+extern struct task *first;
+extern struct task *k_task;
 
 /* Kernel main will take the number of tasks and then
  * a pointer to a task_funct pointers as arguments.

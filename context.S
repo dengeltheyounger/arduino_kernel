@@ -1,16 +1,18 @@
 #include <avr/io.h>
 
+.global	TIMER1_COMPA_vect
+
 TIMER1_COMPA_vect:
 	# Save status register
 	push	r31
 	push	r30
-	lds	r30,SREG
+	in	r30,_SFR_IO_ADDR(SREG)
 	push	r30
 	push	r28
 save_context:
 	# Load current struct into Z
-	ldi	r30,lo8(curr)
-	ldi	r31,hi8(curr)
+	lds	r30, curr
+	lds	r31, curr+1
 	# Save the stack pointer
 	in	r28,_SFR_IO_ADDR(SPL)
 	std	Z+2,r28
@@ -62,37 +64,37 @@ save_context:
 	std	Z+34,r28
 	std	Z+35,r29
 	# Load the next task to see if it is valid and runnable
-	ldd	r28,Z+38
-	ldd	r29,Z+39
+	ldd	r28,Z+36
+	ldd	r29,Z+37
 	# Now we can get the next struct
 switch_task:
 	# Check to see if r28 is 0
-	cpi	r28,0
+	tst	r28
 	# It's a good address if it is not 0. Proceed with switch
 	brne	check_state
 	# If both 28 and 29 are 0, then the address is null
-	cpi	r29,0
+	tst	r29
 	brne	check_state
 	# Load first into address. We are setting that as current
-	ldi	r28,lo8(first)
-	ldi	r29,hi8(first)
+	lds	r28,first
+	lds	r29,first+1
 	# Now curr points to first
 check_state:
 	# Load enum
-	ldd	r25,Y+40
+	ldd	r25,Y+38
 	# Check to see if it is in a runnable state
-	cpi	r25,0
+	tst	r25
 	# If the value is zero, then the task is runnable. Load context
 	breq	get_context
 	# Load next task and check if it is valid
-	ldd	r30,Y+38
-	ldd	r31,Y+39
+	ldd	r30,Y+36
+	ldd	r31,Y+37
 	movw	r28,r30
 	jmp	switch_task
 get_context:
 	# Restore SREG. Flags are not changed by these instruction
 	pop	r0
-	sts	SREG,r0
+	out	_SFR_IO_ADDR(SREG),r0
 	# Resume process of loading context
 	ldd	r0,Y+2
 	# Note that the stack pointer is an IO register
@@ -143,3 +145,22 @@ get_context:
 	pop	r30
 	# Return to the new task and reset interrupt
 	reti
+
+.section .bss
+
+.global first
+	.type	first, @object
+	.size 	first, 2
+first:
+	.zero 2
+.global curr
+	.type 	curr, @object
+	.size 	curr, 2
+curr:
+	.zero 2
+.global k_task
+	.section .bss
+	.type	k_task, @object
+	.size	k_task, 2
+k_task:
+	.zero 2
