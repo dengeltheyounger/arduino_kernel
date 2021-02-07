@@ -1,6 +1,9 @@
 #ifndef	BLINK_H
 #define	BLINK_H
 #include <avr/io.h>
+#ifndef F_CPU
+#define F_CPU	16000000UL
+#endif
 #include <util/delay.h>
 
 void blink1(void);

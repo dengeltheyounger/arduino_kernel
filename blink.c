@@ -1,5 +1,4 @@
-#include <avr/io.h>
-#include <util/delay.h>
+#include "blink.h"
 
 static inline void delay_ms(int ms_delay) {
 	while (ms_delay--)

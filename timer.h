@@ -2,6 +2,9 @@
 #define	TIMER_H
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#ifndef F_CPU
+#define F_CPU	16000000UL
+#endif
 #include <util/delay.h>
 #include <stdint.h>
 #include <stdio.h>
