@@ -97,16 +97,9 @@ int set_task_stacks(struct task *t, size_t task_num,
  * actually suppposed to exit, this tells the scheduler
  * not to choose that task, since it's dead.
  */
-static inline void end_task(struct task *t) {
-	t->state = complete;
-}
+void end_task(struct task *t);
 
 // run task
-static inline void do_task(struct task *t) {
-	t->task_funct();
-	end_task(t);
-	// Infinite loop because we're not supposed to return
-	while(1);
-}
+void do_task(struct task *t);
 
 #endif

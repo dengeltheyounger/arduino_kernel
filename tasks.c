@@ -62,3 +62,15 @@ int set_task_stacks(struct task *t, size_t task_num,
 	return 1;
 }
 
+void end_task(struct task *t) {
+	t->state = complete;
+	return;
+}
+
+void do_task(struct task *t) {
+	
+	t->task_funct();
+	end_task(t);
+	// Infinite loop because we're not supposed to return
+	while(1);
+}

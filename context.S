@@ -85,12 +85,15 @@ check_state:
 	# Check to see if it is in a runnable state
 	tst	r25
 	# If the value is zero, then the task is runnable. Load context
-	breq	get_context
+	breq	save_curr
 	# Load next task and check if it is valid
 	ldd	r30,Y+36
 	ldd	r31,Y+37
 	movw	r28,r30
 	jmp	switch_task
+save_curr:
+	sts	curr, r28
+	sts	curr+1,r29
 get_context:
 	# Restore SREG. Flags are not changed by these instruction
 	pop	r0
