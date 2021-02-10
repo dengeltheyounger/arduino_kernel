@@ -8,18 +8,10 @@ TIMER1_COMPA_vect:
 	push	r30
 	in	r30,_SFR_IO_ADDR(SREG)
 	push	r30
-	push	r28
 save_context:
 	# Load current struct into Z
 	lds	r30, curr
 	lds	r31, curr+1
-	# Save the stack pointer
-	in	r28,_SFR_IO_ADDR(SPL)
-	std	Z+2,r28
-	in	r28,_SFR_IO_ADDR(SPH)
-	std	Z+3,r28
-	# Restore r28 to be saved
-	pop	r28
 	# Skip the status register for now
 	# Begin saving the GPRs
 	std	Z+4,r0
@@ -63,6 +55,11 @@ save_context:
 	# Now save Z
 	std	Z+34,r28
 	std	Z+35,r29
+	// Save stack here
+	in	r28,_SFR_IO_ADDR(SPL)
+	std	Z+2,r28
+	in	r28,_SFR_IO_ADDR(SPH)
+	std	Z+3,r28
 	# Load the next task to see if it is valid and runnable
 	ldd	r28,Z+36
 	ldd	r29,Z+37
