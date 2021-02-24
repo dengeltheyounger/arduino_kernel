@@ -54,9 +54,9 @@ int set_task_stacks(struct task *t, size_t task_num,
 		*(uint8_t *) --(current->stack_ptr) = addr_split.split[1];
 
 		// Prepare to set current's address in argument registers
-		addr_split.tosplit = &current;
+		addr_split.tosplit = current;
 		// Set up stack for context switch
-		for (uint8_t i = 0; i < 31; ++i) {
+		for (uint8_t i = 0; i < 32; ++i) {
 			if (i != 24 && i != 25) {
 				*(uint8_t *) --(current->stack_ptr) = 0;
 			}

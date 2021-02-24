@@ -39,6 +39,7 @@ save_context:
 	push	r29
 	push	r30
 	push	r31
+	ldi		r16, 1
 	# Save SREG
 	push	r0
 	# Load current struct into Z

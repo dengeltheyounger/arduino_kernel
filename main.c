@@ -13,7 +13,7 @@ int main() {
 	void (*tasks[])() = { &blink1, &blink2, &blink3, &blink4 };
 	uint8_t tasknum = 4;
 
-	retval = kernel_main(tasknum, tasks, 128);
+	retval = kernel_main(tasknum, tasks, 256);
 
 	return retval;
 }
