@@ -1,17 +1,18 @@
 #include "blink.h"
 
-#define	DEBUG
+int timer;
 
-#ifdef	DEBUG
-#define delay_ms(ms_delay) ({		\
-	int timer = 0;			\
+#ifndef DEBUG
+#define delay_ms(ms_delay, timer) ({	\
+	timer = 0;	\
 	while (++timer < ms_delay)	\
-		_delay_ms(1);		\
-})
-#else
-#define	delay_ms(ms_delay) ({		\
-	_delay_ms(1);			\
-})					\
+		_delay_ms(1);	\
+})	\
+#endif
+#ifdef DEBUG
+#define delay_ms(ms_delay, timer) ({	\
+	_delay_ms(1);	\
+})	\
 #endif
 
 void blink1(void) {
@@ -20,9 +21,9 @@ void blink1(void) {
 	// On for second, off for a second
 	while (1) {
 		PORTB |= _BV(PORTB5);
-		delay_ms(1000);
+		delay_ms(1000, timer);
 		PORTB &= ~_BV(PORTB5);
-		delay_ms(1000);
+		delay_ms(1000, timer);
 	}
 }
 
@@ -32,9 +33,9 @@ void blink2(void) {
 	// Off for a second, on for a second
 	while (1) {
 		PORTB &= ~_BV(PORTB4);
-		delay_ms(1000);
+		delay_ms(1000, timer);
 		PORTB |= _BV(PORTB4);
-		delay_ms(1000);
+		delay_ms(1000, timer);
 	}
 }
 
@@ -44,13 +45,13 @@ void blink3(void) {
 	// Blink twice and then wait a second
 	while (1) {
 		PORTB |= _BV(PORTB3);
-		delay_ms(250);
+		delay_ms(250, timer);
 		PORTB &= ~_BV(PORTB3);
-		delay_ms(250);
+		delay_ms(250, timer);
 		PORTB |= _BV(PORTB3);
-		delay_ms(250);
+		delay_ms(250, timer);
 		PORTB &= ~_BV(PORTB3);
-		delay_ms(1000);
+		delay_ms(1000, timer);
 
 	}
 }
@@ -63,7 +64,7 @@ void blink4(void) {
 	// oscillate
 	while (1) {
 		PORTB |= _BV(PORTB2);
-		delay_ms(wait_time);
+		delay_ms(wait_time, timer);
 		PORTB &= ~_BV(PORTB2);
 		
 		if (!add) {
