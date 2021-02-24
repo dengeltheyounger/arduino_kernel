@@ -19,7 +19,7 @@ int kernel_main(uint8_t task_count,
 	// Compiler prefers when we do this
 	struct stack s;
 	// Now kernel's task struct is considered "first".
-	k.c.sp_start = (void *) RAMEND;
+	k.stack_start = (void *) RAMEND;
 	k.state = complete;
 	curr = &k;
 

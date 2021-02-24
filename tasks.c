@@ -11,12 +11,8 @@ void make_task(struct task *prev, struct task *current, void (*task_funct)()) {
 		prev->next = current;
 	}
 
-	// Set task pointer
+	// Set task pointer and task state
 	current->task_funct = task_funct;
-	// 26 and 25 contain curr as argument for do_task
-	addr_split.tosplit = current;
-	current->c.r24 = addr_split.split[0];
-	current->c.r25 = addr_split.split[1];
 	current->state = runnable;
 }
 
@@ -43,8 +39,8 @@ int set_task_stacks(struct task *t, size_t task_num,
 		 * so we're going to the end of the stack region
 		 * rather than the beginning.
 		 */
-		current->c.sp_start = sspace+(ssize*ndx)+ssize-1;
-		current->c.sp = current->c.sp_start;
+		current->stack_start = sspace+(ssize*ndx)+ssize-1;
+		current->stack_ptr = current->stack_start;
 		
 		/* Write the address of do_task in the stack. It will act as
 		 * the return address when the ISR is finished.
@@ -53,9 +49,27 @@ int set_task_stacks(struct task *t, size_t task_num,
 		 */
 		addr_split.tosplit = &do_task;
 
-		*(uint8_t *) current->c.sp = addr_split.split[0];
-		*(uint8_t *) --(current->c.sp) = addr_split.split[1];
-		*(uint8_t *) --(current->c.sp) = 0;
+		// Set the top of stack as the address of do_task
+		*(uint8_t *) current->stack_ptr = addr_split.split[0];
+		*(uint8_t *) --(current->stack_ptr) = addr_split.split[1];
+
+		// Prepare to set current's address in argument registers
+		addr_split.tosplit = &current;
+		// Set up stack for context switch
+		for (uint8_t i = 0; i < 31; ++i) {
+			if (i != 24 && i != 25) {
+				*(uint8_t *) --(current->stack_ptr) = 0;
+			}
+
+			else {
+				*(uint8_t *) --(current->stack_ptr) = 
+					addr_split.split[(i == 24) ? 0 : 1 ];
+			}
+		}
+
+		// Set SREG
+		*(uint8_t *) --(current->stack_ptr) = 0;
+				
 		current = current->next;
 	}
 

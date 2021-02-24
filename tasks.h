@@ -18,50 +18,12 @@ typedef enum task_state {
 	complete = 1
 } task_state;
 
-struct context {
-	void *sp_start;
-	void *sp;
-	uint8_t r0;
-	/* r1 should always contain zero. Must be saved during ISR prologue. Must be zeroed out during
-	 * the ISR routine. Must be restored during ISR epilogue
-	 */
-	uint8_t r1;
-	uint8_t r2;
-	uint8_t r3;
-	uint8_t r4;
-	uint8_t r5;
-	uint8_t r6;
-	uint8_t r7;
-	uint8_t r8;
-	uint8_t r9;
-	uint8_t r10;
-	uint8_t r11;
-	uint8_t r12;
-	uint8_t r13;
-	uint8_t r14;
-	uint8_t r15;
-	uint8_t r16;
-	uint8_t r17;
-	uint8_t r18;
-	uint8_t r19;
-	uint8_t r20;
-	uint8_t r21;
-	uint8_t r22;
-	uint8_t r23;
-	uint8_t r24;
-	uint8_t r25;
-	uint8_t r26;
-	uint8_t r27;
-	uint8_t r28;
-	uint8_t r29;
-	uint8_t r30;
-	uint8_t r31;
-};
 
 // This is a linked list for the task structs
 
 struct task {
-	struct context c;
+	void *stack_start;
+	void *stack_ptr;
 	struct task *next;
 	task_state state;
 	void (*task_funct)(); 
