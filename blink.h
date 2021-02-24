@@ -6,6 +6,7 @@
 #endif
 #include <util/delay.h>
 
+void delay_ms(int ms_delay);
 void blink1(void);
 void blink2(void);
 void blink3(void);
