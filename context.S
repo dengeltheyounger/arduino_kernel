@@ -82,15 +82,14 @@ save_curr:
 	sts	curr, r28
 	sts	curr+1,r29
 get_context:
+	# Load the new stack
+	ldd	r16,Y+2
+	out	_SFR_IO_ADDR(SPL),r16
+	ldd	r16,Y+3
+	out	_SFR_IO_ADDR(SPH),r16
 	# Restore SREG. Flags are not changed by these instruction
 	pop	r0
 	out	_SFR_IO_ADDR(SREG),r0
-	# Resume process of loading context
-	ldd	r0,Y+2
-	# Note that the stack pointer is an IO register
-	out	_SFR_IO_ADDR(SPL),r0
-	ldd	r0,Y+3
-	out	_SFR_IO_ADDR(SPH),r0
 	pop	r31
 	pop	r30
 	pop	r29
@@ -123,6 +122,30 @@ get_context:
 	pop	r2
 	pop	r1
 	pop	r0
+	# Save r16 because we are clobbering it
+	push r16
+	# Save these registers because we are about to clobber them
+	push r30
+	push r31
+	# Save the status register so we can update stack pointer in struct
+	in	r16,_SFR_IO_ADDR(SREG)
+	push r16
+	in	r16,_SFR_IO_ADDR(SPL)
+	# Add 4 for what we just pushed
+	subi r16,-4
+	# Load curr into Z register
+	lds r30,curr
+	lds r31,curr+1
+	# Save stack pointer
+	std Z+2,r16
+	in	r16,_SFR_IO_ADDR(SPH)
+	# Restore registers
+	std	Z+3,r16
+	pop	r16
+	out	_SFR_IO_ADDR(SREG),r16
+	pop	r31
+	pop	r30
+	pop	r16
 	# Return to the new task and reset interrupt
 	reti
 

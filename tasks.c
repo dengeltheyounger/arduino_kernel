@@ -50,7 +50,7 @@ int set_task_stacks(struct task *t, size_t task_num,
 		addr_split.tosplit = &do_task;
 
 		// Set the top of stack as the address of do_task
-		*(uint8_t *) current->stack_ptr = addr_split.split[0];
+		*(uint8_t *) --(current->stack_ptr) = addr_split.split[0];
 		*(uint8_t *) --(current->stack_ptr) = addr_split.split[1];
 
 		// Prepare to set current's address in argument registers
@@ -82,7 +82,7 @@ void end_task(struct task *t) {
 }
 
 void do_task(struct task *t) {
-	
+
 	t->task_funct();
 	end_task(t);
 	// Infinite loop because we're not supposed to return
