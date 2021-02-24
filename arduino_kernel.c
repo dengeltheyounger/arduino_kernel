@@ -35,8 +35,6 @@ int kernel_main(uint8_t task_count,
 	// Set first in linked list
 	first = &tasks[0];
 
-	printf("Address of curr: %p. Address of curr->next: %p\n", curr, curr->next);
-
 	// Allocate heap space for a new stack region
 	new_stack_space(&s, task_count, ssize);
 

@@ -1,9 +1,18 @@
 #include "blink.h"
 
-static inline void delay_ms(int ms_delay) {
-	while (ms_delay--)
-		_delay_ms(1);
-}
+#define	DEBUG
+
+#ifdef	DEBUG
+#define delay_ms(ms_delay) ({		\
+	int timer = 0;			\
+	while (++timer < ms_delay)	\
+		_delay_ms(1);		\
+})
+#else
+#define	delay_ms(ms_delay) ({		\
+	_delay_ms(1);			\
+})					\
+#endif
 
 void blink1(void) {
 	DDRB |= _BV(DDB5);
