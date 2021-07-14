@@ -1,5 +1,6 @@
 #include "arduino_kernel.h"
 #include "blink.h"
+#include "tasks.h"
 #include <stdio.h>
 
 /* The purpose of prep_kernel is to provide a location for the
@@ -10,10 +11,10 @@
 int main() {
 	int retval = 0;
 
-	void (*tasks[])() = { &blink1, &blink2, &blink3, &blink4 };
+	void (*tasks[])() = { blink1, blink2, blink3, blink4 };
 	uint8_t tasknum = 4;
 
-	retval = kernel_main(tasknum, tasks, 128);
+	retval = kernel_main(tasknum, tasks, 64);
 
 	return retval;
 }

@@ -49,29 +49,11 @@ void blink3(void) {
 
 void blink4(void) {
 	DDRB |= _BV(DDB2);
-	int wait_time = 750;
-	uint8_t add = 0;
-
-	// oscillate
+	
 	while (1) {
 		PORTB |= _BV(PORTB2);
-		delay_ms(wait_time);
+		delay_ms(500);
 		PORTB &= ~_BV(PORTB2);
-		
-		if (!add) {
-			--wait_time;
-		}
-		
-		else {
-			++wait_time;
-		}
-		
-		if (wait_time <= 50) {
-			add = 1;
-		}
-
-		else if (wait_time >= 750) {
-			add = 0;
-		}
+		delay_ms(500);
 	}
 }

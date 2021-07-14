@@ -1,10 +1,5 @@
 #include "tasks.h"
 
-union splitter {
-	void *tosplit;
-	uint8_t split[2];
-} addr_split;
-
 void make_task(struct task *prev, struct task *current, void (*task_funct)()) {
 
 	if (prev) {
@@ -14,9 +9,9 @@ void make_task(struct task *prev, struct task *current, void (*task_funct)()) {
 	// Set task pointer
 	current->task_funct = task_funct;
 	// 26 and 25 contain curr as argument for do_task
-	addr_split.tosplit = current;
-	current->c.r24 = addr_split.split[0];
-	current->c.r25 = addr_split.split[1];
+	uint16_t addr = current;
+	current->c.r24 = ADDR_LO(addr);
+	current->c.r25 = ADDR_HI(addr);
 	current->state = runnable;
 }
 
@@ -51,9 +46,9 @@ int set_task_stacks(struct task *t, size_t task_num,
 		 * In addition, we are going to store a preliminary status 
 		 * register
 		 */
-		uint16_t addr = (uint16_t) do_task << 1;
-		uint8_t lower = addr & 0xff;
-		uint8_t upper = (addr & 0xff00) >> 8;
+		uint16_t addr = (uint16_t) do_task;
+		uint8_t lower = ADDR_LO(addr);
+		uint8_t upper = ADDR_HI(addr);
 	
 		*(uint8_t *) current->c.sp-- = lower;
 		*(uint8_t *) current->c.sp-- = upper;

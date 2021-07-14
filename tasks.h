@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <avr/io.h>
 
+#define	TR_FUNC_ADDR(ADDR) (uint16_t) ADDR << 1
+#define	ADDR_LO(LABEL) LABEL & 0xff
+#define	ADDR_HI(LABEL) (LABEL & 0xff00) >> 8
+
 /* Right now there are only two
  * task states. The only possible
  * reason why this would be necessary

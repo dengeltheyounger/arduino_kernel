@@ -1,7 +1,7 @@
 CC =avr-gcc
 OCOPY =avr-objcopy
 ADUDE =avrdude
-CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -O0 -fno-stack-protector
+CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -Os -fno-stack-protector
 CFLAGS += -fshort-enums -fno-pie -ggdb
 OBJS=arduino_kernel.o blink.o main.o context.o tasks.o timer.o
 
@@ -22,4 +22,4 @@ install: kernel
 .PHONY: clean
 
 clean:
-	rm kernel *.o
+	rm kernel *.o *.hex
