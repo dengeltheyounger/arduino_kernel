@@ -57,7 +57,7 @@ int set_task_stacks(struct task *t, size_t task_num,
 	
 		*(uint8_t *) current->c.sp-- = lower;
 		*(uint8_t *) current->c.sp-- = upper;
-		*(uint8_t *) current->c.sp = 0;
+		*(uint8_t *) current->c.sp-- = 0;
 		current = current->next;
 	}
 
