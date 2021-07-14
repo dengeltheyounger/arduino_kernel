@@ -1,0 +1,575 @@
+Remote debugging using :1234
+warning: Target-supplied registers are not supported by the current architecture
+warning: No executable has been specified and target does not support
+determining executable automatically.  Try using the "file" command.
+0x00000000 in ?? ()
+Reading symbols from kernel...
+Breakpoint 1 at 0x702: file context.S, line 13.
+Single stepping until exit from function __vectors,
+which has no line number information.
+0x00000068 in __trampolines_start ()
+Continuing.
+
+Breakpoint 1, save_context () at context.S:13
+// We're in the process of saving the kernel context
+13		lds	r30, curr
+14		lds	r31, curr+1
+17		std	Z+4,r0
+18		std	Z+5,r1
+19		std	Z+6,r2
+20		std	Z+7,r3
+21		std	Z+8,r4
+22		std	Z+9,r5
+23		std	Z+10,r6
+24		std	Z+11,r7
+25		std	Z+12,r8
+26		std	Z+13,r9
+27		std	Z+14,r10
+28		std	Z+15,r11
+29		std	Z+16,r12
+30		std	Z+17,r13
+31		std	Z+18,r14
+32		std	Z+19,r15
+33		std	Z+20,r16
+34		std	Z+21,r17
+35		std	Z+22,r18
+36		std	Z+23,r19
+37		std	Z+24,r20
+38		std	Z+25,r21
+39		std	Z+26,r22
+40		std	Z+27,r23
+41		std	Z+28,r24
+42		std	Z+29,r25
+43		std	Z+30,r26
+44		std	Z+31,r27
+45		std	Z+32,r28
+46		std	Z+33,r29
+49		pop	r27
+save_context () at context.S:51
+51		pop	r28
+save_context () at context.S:52
+52		pop	r29
+save_context () at context.S:54
+54		push	r27
+save_context () at context.S:56
+56		std	Z+34,r28
+57		std	Z+35,r29
+// Now we've saved the kernel's stack pointer
+59		in	r28,_SFR_IO_ADDR(SPL)
+60		std	Z+2,r28
+61		in	r28,_SFR_IO_ADDR(SPH)
+62		std	Z+3,r28
+64		ldd	r28,Z+36
+65		ldd	r29,Z+37
+switch_task () at context.S:69
+69		tst	r28
+71		brne	check_state
+check_state () at context.S:81
+81		ldd	r25,Y+38
+83		tst	r25
+85		breq	save_curr
+save_curr () at context.S:92
+// We've reset the current task pointer to task 1
+92		sts	curr, r28
+93		sts	curr+1,r29
+get_context () at context.S:96
+96		ldd	r0,Y+2
+97		out	_SFR_IO_ADDR(SPL),r0
+get_context () at context.S:98
+98		ldd	r0,Y+3
+99		out	_SFR_IO_ADDR(SPH),r0
+get_context () at context.S:101
+101		pop	r0
+r0             0x1                 1
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x1                 1
+r18            0x2                 2
+r19            0xf9                249
+r20            0x19                25
+r21            0x3                 3
+r22            0x4                 4
+r23            0x0                 0
+r24            0x1                 1
+r25            0x0                 0
+r26            0x1c                28
+r27            0x0                 0
+r28            0x8                 8
+r29            0x8                 8
+r30            0xb3                179
+r31            0x8                 8
+SREG           0x2                 2
+SP             0x199               0x800199
+PC2            0x78e               1934
+pc             0x3c7               0x78e <get_context+8>
+0x800199:	0	9	-24
+// Contents of stack prior to pop
+0x800199:	0x00	0x09	0xe8
+get_context () at context.S:102
+// r0 has 0x09 despite the top of the stack being 0x0
+102		out	_SFR_IO_ADDR(SREG),r0
+r0             0x9                 9
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x1                 1
+r18            0x2                 2
+r19            0xf9                249
+r20            0x19                25
+r21            0x3                 3
+r22            0x4                 4
+r23            0x0                 0
+r24            0x1                 1
+r25            0x0                 0
+r26            0x1c                28
+r27            0x0                 0
+r28            0x8                 8
+r29            0x8                 8
+r30            0xb3                179
+r31            0x8                 8
+SREG           0x2                 2
+SP             0x19a               0x80019a
+PC2            0x790               1936
+pc             0x3c8               0x790 <get_context+10>
+// The top of the stack has the high part of the address of do_task
+0x80019a:	0x09	0xe8	0x00
+Hardware watchpoint 2: *0x80019a
+104		ldd	r0,Y+4
+105		ldd	r1,Y+5
+106		ldd	r2,Y+6
+107		ldd	r3,Y+7
+108		ldd	r4,Y+8
+109		ldd	r5,Y+9
+110		ldd	r6,Y+10
+111		ldd	r7,Y+11
+112		ldd	r8,Y+12
+113		ldd	r9,Y+13
+114		ldd	r10,Y+14
+115		ldd	r11,Y+15
+116		ldd	r12,Y+16
+117		ldd	r13,Y+17
+118		ldd	r14,Y+18
+119		ldd	r15,Y+19
+120		ldd	r16,Y+20
+121		ldd	r17,Y+21
+122		ldd	r18,Y+22
+123		ldd	r19,Y+23
+124		ldd	r20,Y+24
+125		ldd	r21,Y+25
+126		ldd	r22,Y+26
+127		ldd	r23,Y+27
+r0             0x0                 0
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x1                 1
+r25            0x0                 0
+r26            0x1c                28
+r27            0x0                 0
+r28            0x8                 8
+r29            0x8                 8
+r30            0xb3                179
+r31            0x8                 8
+SREG           0x9                 9
+SP             0x19a               0x80019a
+PC2            0x7c0               1984
+pc             0x3e0               0x7c0 <get_context+58>
+0x80019a:	0x09	0xe8	0x00
+// curr is a pointer, and so it only takes up two bytes.
+$1 = (task **) 0x800110 <curr>
+// the task struct seems too far away to cause a collision
+$2 = (task *) 0x800808
+$3 = {c = {sp_start = 0x80019b, sp = 0x800199, r0 = 0 '\000', r1 = 0 '\000', 
+    r2 = 0 '\000', r3 = 0 '\000', r4 = 0 '\000', r5 = 0 '\000', r6 = 0 '\000', 
+    r7 = 0 '\000', r8 = 0 '\000', r9 = 0 '\000', r10 = 0 '\000', r11 = 0 '\000', 
+    r12 = 0 '\000', r13 = 0 '\000', r14 = 0 '\000', r15 = 0 '\000', r16 = 0 '\000', 
+    r17 = 0 '\000', r18 = 0 '\000', r19 = 0 '\000', r20 = 0 '\000', r21 = 0 '\000', 
+    r22 = 0 '\000', r23 = 0 '\000', r24 = 8 '\b', r25 = 8 '\b', r26 = 0 '\000', 
+    r27 = 0 '\000', r28 = 0 '\000', r29 = 0 '\000', r30 = 0 '\000', r31 = 0 '\000'}, 
+  next = 0x800831, state = runnable, task_funct = 0x4f2 <blink1>}
+128		ldd	r24,Y+28
+129		ldd	r25,Y+29
+130		ldd	r26,Y+30
+131		ldd	r27,Y+31
+133		ldd	r30,Y+34
+134		ldd	r31,Y+35
+// First push somehow ends with 0x09 -> 0x0 at 0x8001a
+135		push	r30
+get_context () at context.S:136
+136		push	r31
+r0             0x0                 0
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x8                 8
+r25            0x8                 8
+r26            0x0                 0
+r27            0x0                 0
+r28            0x8                 8
+r29            0x8                 8
+r30            0x0                 0
+r31            0x0                 0
+SREG           0x9                 9
+SP             0x199               0x800199
+PC2            0x7d0               2000
+pc             0x3e8               0x7d0 <get_context+74>
+0x800199:	0x00	0x00	0xe8
+0x80019a:	0x00
+get_context () at context.S:138
+138		ldd	r30,Y+32
+0x800198:	0x00	0x00	0x00	0xe8
+139		ldd	r31,Y+33
+141		movw	r28,r30
+143		pop	r31
+get_context () at context.S:144
+144		pop	r30
+/* By this point, everything is correct except that
+ * the stack contents are:
+ * bottom:
+ * 0xe8
+ * 0x0
+ */
+get_context () at context.S:146
+146		reti
+r0             0x0                 0
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x8                 8
+r25            0x8                 8
+r26            0x0                 0
+r27            0x0                 0
+r28            0x0                 0
+r29            0x0                 0
+r30            0x0                 0
+r31            0x0                 0
+SREG           0x9                 9
+SP             0x19a               0x80019a
+PC2            0x7dc               2012
+pc             0x3ee               0x7dc <get_context+86>
+0x80019a:	0x00	0xe8	0x00	0x00
+
+// The interrupt caused task 1 to switch to task 2
+/* The exact same thing happens (all tasks start with a return
+ * address of do_task)
+ */
+Breakpoint 1, save_context () at context.S:13
+13		lds	r30, curr
+r0             0x0                 0
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x8                 8
+r25            0x8                 8
+r26            0x0                 0
+r27            0x0                 0
+r28            0x0                 0
+r29            0x0                 0
+r30            0x9                 9
+r31            0x0                 0
+SREG           0x9                 9
+/* There are three pushes at the beginning of ISR but
+ * before save_context
+ */
+SP             0x197               0x800197
+PC2            0x702               1794
+pc             0x381               0x702 <save_context>
+14		lds	r31, curr+1
+17		std	Z+4,r0
+18		std	Z+5,r1
+19		std	Z+6,r2
+20		std	Z+7,r3
+21		std	Z+8,r4
+22		std	Z+9,r5
+23		std	Z+10,r6
+24		std	Z+11,r7
+25		std	Z+12,r8
+26		std	Z+13,r9
+27		std	Z+14,r10
+28		std	Z+15,r11
+29		std	Z+16,r12
+30		std	Z+17,r13
+31		std	Z+18,r14
+32		std	Z+19,r15
+33		std	Z+20,r16
+34		std	Z+21,r17
+35		std	Z+22,r18
+36		std	Z+23,r19
+37		std	Z+24,r20
+38		std	Z+25,r21
+39		std	Z+26,r22
+40		std	Z+27,r23
+41		std	Z+28,r24
+42		std	Z+29,r25
+43		std	Z+30,r26
+44		std	Z+31,r27
+45		std	Z+32,r28
+46		std	Z+33,r29
+49		pop	r27
+save_context () at context.S:51
+51		pop	r28
+save_context () at context.S:52
+52		pop	r29
+save_context () at context.S:54
+54		push	r27
+save_context () at context.S:56
+56		std	Z+34,r28
+57		std	Z+35,r29
+59		in	r28,_SFR_IO_ADDR(SPL)
+60		std	Z+2,r28
+61		in	r28,_SFR_IO_ADDR(SPH)
+62		std	Z+3,r28
+64		ldd	r28,Z+36
+65		ldd	r29,Z+37
+switch_task () at context.S:69
+69		tst	r28
+71		brne	check_state
+check_state () at context.S:81
+81		ldd	r25,Y+38
+83		tst	r25
+85		breq	save_curr
+save_curr () at context.S:92
+92		sts	curr, r28
+93		sts	curr+1,r29
+get_context () at context.S:96
+96		ldd	r0,Y+2
+97		out	_SFR_IO_ADDR(SPL),r0
+get_context () at context.S:98
+98		ldd	r0,Y+3
+99		out	_SFR_IO_ADDR(SPH),r0
+get_context () at context.S:101
+101		pop	r0
+r0             0x2                 2
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x8                 8
+r25            0x0                 0
+r26            0x0                 0
+r27            0x9                 9
+r28            0x31                49
+r29            0x8                 8
+r30            0x8                 8
+r31            0x8                 8
+SREG           0x3                 3
+SP             0x219               0x800219
+PC2            0x78e               1934
+pc             0x3c7               0x78e <get_context+8>
+// Again, everything is as it should be
+0x800219:	0x00	0x09	0xe8
+get_context () at context.S:102
+102		out	_SFR_IO_ADDR(SREG),r0
+0x80021a:	0x09	0xe8	0x00
+// Now r0 is 0x09 instead of 0x0
+r0             0x9                 9
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+r13            0x0                 0
+r14            0x0                 0
+r15            0x0                 0
+r16            0x0                 0
+r17            0x0                 0
+r18            0x0                 0
+r19            0x0                 0
+r20            0x0                 0
+r21            0x0                 0
+r22            0x0                 0
+r23            0x0                 0
+r24            0x8                 8
+r25            0x0                 0
+r26            0x0                 0
+r27            0x9                 9
+r28            0x31                49
+r29            0x8                 8
+r30            0x8                 8
+r31            0x8                 8
+SREG           0x3                 3
+SP             0x21a               0x80021a
+PC2            0x790               1936
+pc             0x3c8               0x790 <get_context+10>
+104		ldd	r0,Y+4
+105		ldd	r1,Y+5
+106		ldd	r2,Y+6
+107		ldd	r3,Y+7
+108		ldd	r4,Y+8
+109		ldd	r5,Y+9
+110		ldd	r6,Y+10
+111		ldd	r7,Y+11
+112		ldd	r8,Y+12
+113		ldd	r9,Y+13
+114		ldd	r10,Y+14
+115		ldd	r11,Y+15
+116		ldd	r12,Y+16
+117		ldd	r13,Y+17
+118		ldd	r14,Y+18
+119		ldd	r15,Y+19
+120		ldd	r16,Y+20
+121		ldd	r17,Y+21
+122		ldd	r18,Y+22
+123		ldd	r19,Y+23
+124		ldd	r20,Y+24
+125		ldd	r21,Y+25
+126		ldd	r22,Y+26
+127		ldd	r23,Y+27
+128		ldd	r24,Y+28
+129		ldd	r25,Y+29
+130		ldd	r26,Y+30
+131		ldd	r27,Y+31
+133		ldd	r30,Y+34
+134		ldd	r31,Y+35
+135		push	r30
+// Here, I confirmed that the push led to 0x09 -> 0x0
+0x80021a:	0x09	0xe8	0x00
+get_context () at context.S:136
+136		push	r31
+0x800219:	0x00	0x00	0xe8
+get_context () at context.S:138
+138		ldd	r30,Y+32
+139		ldd	r31,Y+33
+141		movw	r28,r30
+143		pop	r31
+get_context () at context.S:144
+144		pop	r30
+get_context () at context.S:146
+146		reti
+// If I use n instead of s, I wind up somewhere weird
+0x0001d000 in ?? ()
+Cannot find bounds of current function
+[Inferior 1 (process 1) killed]

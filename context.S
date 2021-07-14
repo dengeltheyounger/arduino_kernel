@@ -92,15 +92,14 @@ save_curr:
 	sts	curr, r28
 	sts	curr+1,r29
 get_context:
-	# Restore SREG. Flags are not changed by these instruction
-	pop	r0
-	out	_SFR_IO_ADDR(SREG),r0
-	# Resume process of loading context
+	# Unload the stack pointer
 	ldd	r0,Y+2
-	# Note that the stack pointer is an IO register
 	out	_SFR_IO_ADDR(SPL),r0
 	ldd	r0,Y+3
 	out	_SFR_IO_ADDR(SPH),r0
+	# Restore SREG. Flags are not changed by these instruction
+	pop	r0
+	out	_SFR_IO_ADDR(SREG),r0
 	# Begin storing GPR
 	ldd	r0,Y+4
 	ldd	r1,Y+5

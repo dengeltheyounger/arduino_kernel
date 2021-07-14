@@ -51,11 +51,13 @@ int set_task_stacks(struct task *t, size_t task_num,
 		 * In addition, we are going to store a preliminary status 
 		 * register
 		 */
-		addr_split.tosplit = &do_task;
-
-		*(uint8_t *) current->c.sp = addr_split.split[0];
-		*(uint8_t *) --(current->c.sp) = addr_split.split[1];
-		*(uint8_t *) --(current->c.sp) = 0;
+		uint16_t addr = (uint16_t) do_task << 1;
+		uint8_t lower = addr & 0xff;
+		uint8_t upper = (addr & 0xff00) >> 8;
+	
+		*(uint8_t *) current->c.sp-- = lower;
+		*(uint8_t *) current->c.sp-- = upper;
+		*(uint8_t *) current->c.sp = 0;
 		current = current->next;
 	}
 
