@@ -19,7 +19,8 @@
  */
 typedef enum task_state {
 	runnable = 0,
-	complete = 1
+	complete = 1,
+	waiting = 2
 } task_state;
 
 struct context {
@@ -87,7 +88,7 @@ extern struct task *k_task;
  * It is assumed that the programmer is smart enough not to 
  * make either curr or task_funct null
  */
-void make_task(struct task *prev, struct task *curr, void (*task_funct)());
+void make_task(struct task *p, struct task *curr, void (*task_funct)());
 
 
 /* Assign a stack for each task struct. If there are more

@@ -9,6 +9,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
+struct timer {
+	// Every 62 ticks is a ms
+	uint8_t ticks;
+	// The total number of ms
+	uint32_t time;
+};
+
+extern struct timer system_time;
+
 /* For now, it is assumed that the timer will be set for 4 ms.
  * The reason for this is because it allows greater resolution
  * since a prescaler does not need to be used. However, in the

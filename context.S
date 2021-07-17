@@ -1,5 +1,7 @@
 #include <avr/io.h>
 
+.section .text
+
 .global	TIMER1_COMPA_vect
 
 TIMER1_COMPA_vect:
@@ -60,7 +62,22 @@ save_context:
 	std	Z+2,r28
 	in	r28,_SFR_IO_ADDR(SPH)
 	std	Z+3,r28
-	# Load the next task to see if it is valid and runnable
+	# Check to see if it's time to run kernel's task
+	lds	r5,run_k_task
+	tst	r5
+	// if not, move to next task
+	breq	load_next_task
+	# load kernel's task into 28 and 29
+	ldi	r28,lo8(k_task)
+	ldi	r29,hi8(k_task)
+	# set run_k_task to 0
+	clr	r5
+	sts	run_k_task,r5
+	rjmp	get_context
+load_next_task:
+	# Since run_k_task was 0, we're going to set it to 1
+	inc	r5
+	sts	run_k_task,r5
 	ldd	r28,Z+36
 	ldd	r29,Z+37
 	# Now we can get the next struct
@@ -145,6 +162,11 @@ get_context:
 	# Return to the new task and reset interrupt
 	reti
 
+.section .data
+
+run_k_task:
+	.byte 1
+
 .section .bss
 
 .global first
@@ -158,7 +180,6 @@ first:
 curr:
 	.zero 2
 .global k_task
-	.section .bss
 	.type	k_task, @object
 	.size	k_task, 2
 k_task:

@@ -1,9 +1,12 @@
 #include "tasks.h"
 
-void make_task(struct task *prev, struct task *current, void (*task_funct)()) {
+struct task *curr = NULL;
+struct task *k_task = NULL;
 
-	if (prev) {
-		prev->next = current;
+void make_task(struct task *p, struct task *current, void (*task_funct)()) {
+
+	if (p) {
+		p->next = current;
 	}
 
 	// Set task pointer
