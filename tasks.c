@@ -1,6 +1,7 @@
 #include "tasks.h"
 
 struct task *curr = NULL;
+struct task *first = NULL;
 struct task *k_task = NULL;
 
 void make_task(struct task *p, struct task *current, void (*task_funct)()) {

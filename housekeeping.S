@@ -1,3 +1,5 @@
+#include <avr/io.h>
+
 __zero_reg__ = 1
 
 .section	.bss
@@ -17,7 +19,7 @@ do_housekeeping:
 	cli
 	push	r28
 	ldi	r28,1
-	sts	in_housekeeping,r28
+	sts	in_housekeeper,r28
 	sei
 	push	r27
 	push	r26
@@ -76,7 +78,7 @@ save_context:
 	std	Y+34,r24
 	// Store r31
 	pop	r24
-	std	Y+35
+	std	Y+35,r24
 	// Put SREG back on stack
 	push	r0
 	// Save the stack pointer
@@ -137,7 +139,7 @@ check_list:
 	lds	r31,head+1
 	// Load highest bits of desired time
 	ldd	r26,Z+1+3
-	ldd	r25,system_time+1+3
+	lds	r25,system_time+1+3
 	// Check if system time is greater
 	cp	r26,r25
 	// If so, skip and find task
@@ -145,23 +147,25 @@ check_list:
 	brlt	next_task
 	// Load third 8 bits
 	ldd	r26,Z+1+2
-	ldd	r25,Z+1+3
+	lds	r25,system_time+1+2
 	cp	r26,r25
 	brge	task_runnable
 	brlt	next_task
 	ldd	r26,Z+1+1
-	ldd	r25,Z+1+1
+	lds	r25,system_time+1+1
 	cp	r26,r25
 	brge	task_runnable
 	brlt	next_task
 	ldd	r26,Z+1
-	ldd	r25,Z+1
+	lds	r25,system_time+1
+	cp	r26,r25
+	brlt	next_task
 task_runnable:
 	// Load the task associated with head
 	ldd	r28,Z+4
 	ldd	r29,Z+4+1
 	// Make task runnable
-	st	Y+38,__zero_reg__
+	std	Y+38,__zero_reg__
 	// Load next
 	ldd	r14,Z+6
 	ldd	r15,Z+6+1
@@ -184,8 +188,8 @@ task_runnable:
 	rjmp	find_task
 next_task:
 	// Reset task_unavailable flag
-	ldi	r0,1
-	sts	task_unavailable,r0
+	ldi	r16,1
+	sts	task_unavailable,r16
 	lds	r28,curr
 	lds	r29,curr+1
 	// Load stack pointer for new context

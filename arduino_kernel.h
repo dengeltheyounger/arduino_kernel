@@ -12,7 +12,6 @@
 #include "system.h"
 
 extern struct task *curr;
-extern struct task *prev;
 extern struct task *first;
 extern struct task *k_task;
 

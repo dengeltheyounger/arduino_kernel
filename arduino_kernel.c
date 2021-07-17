@@ -1,11 +1,5 @@
 #include "arduino_kernel.h"
 
-static inline void set_kernel_task(struct task *k) {
-	k->state = runnable;
-	k->task_funct = check_tasks;
-	k_task = k;
-}
-
 int kernel_main(uint8_t task_count, 
 		void (*task_funct[])(), 
 		size_t ssize) {
@@ -14,16 +8,20 @@ int kernel_main(uint8_t task_count,
 		return 0;
 
 	int result = 0;
+	struct task k;
+	k.state = complete;
+	k.task_funct = NULL;
+	k_task = &k;
+
 	// Create array of task structs
-	struct task tasks[task_count+1];
+	struct task tasks[task_count];
 	// This is the kernel's task struct
 
 	// memset the whole array
-	memset(&tasks[0], 0, (task_count+1)*sizeof(struct task));
+	memset(&tasks[0], 0, (task_count)*sizeof(struct task));
 	// Compiler prefers when we do this
 	struct stack s;
-	set_kernel_task(&tasks[task_count]);
-
+	
 	// Create linked list
 	for (uint8_t i = 0; i < task_count; ++i) {
 
@@ -36,9 +34,11 @@ int kernel_main(uint8_t task_count,
 	// Set first in linked list
 	first = &tasks[0];
 
+	curr = k_task;
+
 	// Allocate memory for stack
-	char stack_space[(task_count+1)*ssize];
-	memset(&stack_space[0],0,(task_count+1)*ssize);
+	unsigned char stack_space[(task_count)*ssize];
+	memset(&stack_space[0],0,(task_count)*ssize);
 
 	// Set up task stack region
 	s.stack_space = &stack_space[0];

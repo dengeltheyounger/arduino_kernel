@@ -3,7 +3,7 @@
 extern void do_housekeeping();
 
 void task_yield() {
-	do_housekeeping
+	asm("jmp do_housekeeping");
 }
 
 int task_sleep(uint32_t time) {
