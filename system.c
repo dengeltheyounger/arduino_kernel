@@ -1,9 +1,11 @@
 #include "system.h"
 
-extern void do_housekeeping();
+extern void call_housekeeper;
 
 void task_yield() {
-	asm("jmp do_housekeeping");
+	asm(	"cli\n\t"
+		"jmp call_housekeeper\n\t"
+	);
 }
 
 int task_sleep(uint32_t time) {

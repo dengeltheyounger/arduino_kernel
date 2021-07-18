@@ -14,26 +14,22 @@ in_housekeeper:
 	.global do_housekeeping
 
 do_housekeeping:
+	cli
 	// This is for an edge case where the sched_isr happens
 	// Immediately after r28 is pushed
-	cli
-	push	r28
 	ldi	r28,1
 	sts	in_housekeeper,r28
 	sei
-	push	r27
-	push	r26
-	push	r25
-	push	r1
-	clr	r1
 save_context:
 	lds	r28,curr
 	lds	r29,curr+1
 	std	Y+4,r0
-	// Store r1
+	// Store sreg
 	pop	r0
-	std	Y+5,r0
 	std	Y+6,r2
+	// store r1
+	pop	r2
+	std	Y+5,r0
 	std	Y+7,r3
 	std	Y+8,r4
 	std	Y+9,r5
@@ -62,8 +58,6 @@ save_context:
 	// Store r26
 	pop	r24
 	std	Y+30,r24
-	// Prep status register
-	pop	r0
 	// Store r27
 	pop	r24
 	std	Y+31,r24
@@ -136,28 +130,28 @@ load_next_task:
 check_list:
 	// Load the head of list entry
 	lds	r30,head
-	lds	r31,head+1
+	lds	r31,head+3
 	// Load highest bits of desired time
-	ldd	r26,Z+1+3
-	lds	r25,system_time+1+3
+	ld	r26,Z
+	lds	r25,system_time+3
 	// Check if system time is greater
 	cp	r26,r25
 	// If so, skip and find task
 	brge	task_runnable
 	brlt	next_task
 	// Load third 8 bits
-	ldd	r26,Z+1+2
-	lds	r25,system_time+1+2
-	cp	r26,r25
-	brge	task_runnable
-	brlt	next_task
-	ldd	r26,Z+1+1
-	lds	r25,system_time+1+1
+	ldd	r26,Z+2
+	lds	r25,system_time+2
 	cp	r26,r25
 	brge	task_runnable
 	brlt	next_task
 	ldd	r26,Z+1
 	lds	r25,system_time+1
+	cp	r26,r25
+	brge	task_runnable
+	brlt	next_task
+	ld	r26,Z
+	lds	r25,system_time
 	cp	r26,r25
 	brlt	next_task
 task_runnable:
@@ -188,8 +182,7 @@ task_runnable:
 	rjmp	find_task
 next_task:
 	// Reset task_unavailable flag
-	ldi	r16,1
-	sts	task_unavailable,r16
+	sts	task_unavailable,__zero_reg__
 	lds	r28,curr
 	lds	r29,curr+1
 	// Load stack pointer for new context

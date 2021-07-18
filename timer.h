@@ -10,18 +10,14 @@
 #include <stdio.h>
 
 struct timer {
-	// Every 62 ticks is a ms
-	uint8_t ticks;
 	// The total number of ms
 	uint32_t time;
 };
 
 extern struct timer system_time;
 
-/* For now, it is assumed that the timer will be set for 4 ms.
- * The reason for this is because it allows greater resolution
- * since a prescaler does not need to be used. However, in the
- * future, it would be a good idea to allow values greater than 4.
+/* The timer used is timer 2 on output a. It pulses once every millisecond.
+ * Every four millisecond it calls on housekeeping
  */
 
 // It is assumed that the kernel will turn on interrupts
