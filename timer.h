@@ -11,10 +11,10 @@
 
 struct timer {
 	// The total number of ms
-	uint32_t time;
+	volatile uint32_t time;
 };
 
-extern struct timer system_time;
+extern volatile struct timer system_time;
 
 /* The timer used is timer 2 on output a. It pulses once every millisecond.
  * Every four millisecond it calls on housekeeping

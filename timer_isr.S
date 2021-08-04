@@ -1,3 +1,5 @@
+#include <avr/io.h>
+
 __zero_reg__ = 1
 
 .section	.bss
@@ -7,9 +9,9 @@ reg_saver:
 	.zero 1
 
 .section 	.text
-	.global TIMER2_COMPA_vect
+	.global __vector_7
 
-TIMER2_COMPA_vect:
+__vector_7:
 	push	r31
 	push	r30
 	push	r29
@@ -64,6 +66,4 @@ reset_mod_four_count:
 	ldi	r31,hi8(gs(call_housekeeper))
 	push	r31
 	lds	r31,reg_saver
-	ret
-
-
+	reti

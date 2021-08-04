@@ -8,6 +8,8 @@ int kernel_main(uint8_t task_count,
 		return 0;
 
 	int result = 0;
+	// Set up kernel's task. It is basically there to move context switcher
+	// along
 	struct task k;
 	k.state = complete;
 	k.task_funct = NULL;
@@ -31,9 +33,11 @@ int kernel_main(uint8_t task_count,
 			make_task(&tasks[i-1], &tasks[i], task_funct[i]);
 	}
 
-	// Set first in linked list
-	first = &tasks[0];
-
+	// k_task's next will point to first task in array
+	// The last task in array will point to first task in array
+	// This will make it easier to keep k_task from running
+	k_task->next = &tasks[0];
+	tasks[task_count-1].next = &tasks[0];
 	curr = k_task;
 
 	// Allocate memory for stack
@@ -55,11 +59,11 @@ int kernel_main(uint8_t task_count,
 
 	// Set the timer and then turn on interrupts
 	set_timer();
+	sei();
 
-	/* This will turn interrupts off, but at the same time
-	 * will jump to the context switch. When the context
-	 * switch is finished, it will re-enable interrupts
-	 * and move to the next task
+	
+	/* This will jump to the house keeper. The house keeper will
+	 * find a new task and do some house keeping stuff
 	 */
 	task_yield();
 

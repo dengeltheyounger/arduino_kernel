@@ -32,15 +32,15 @@ int make_list_entry(struct task *t, uint32_t value) {
 				prev->next = e;
 			}
 
-			if (iter == head) {
-				head = e;
-			}
-
 			break;
 		}
 
 		// Set prev to the entry we're about to move on from
 		prev = iter;
+	}
+
+	if (!head) {
+		head = e;
 	}
 
 	return 1;

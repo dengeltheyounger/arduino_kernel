@@ -24,6 +24,10 @@ int make_list_entry(struct task *t, uint32_t value);
 /* This might not be necessary */
 static inline struct list_entry *remove_entry_top() {
 	struct list_entry *tmp = head;
+
+	if (tmp == NULL)
+		return NULL;
+
 	head = head->next;
 	head->t->state = runnable;
 	free(tmp);

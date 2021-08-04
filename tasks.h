@@ -72,11 +72,9 @@ struct task {
 	void (*task_funct)(); 
 };
 
-/* First and current structs. 
- * These are used by the ISR in order to
+/* These are used by the ISR in order to
  * work out which task is next.
  */
-extern struct task *first;
 extern struct task *curr;
 extern struct task *k_task;
 

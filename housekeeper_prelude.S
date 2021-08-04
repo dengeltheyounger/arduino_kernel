@@ -11,16 +11,14 @@ call_housekeeper:
 	push	r27
 	push	r26
 	push	r25
-	push	r1
 	in	r29,_SFR_IO_ADDR(SREG)
 	// Load current and check to see if it is house keeping's task
-	lds	r30,in_housekeeper
-	cpi	r30,1
-	brne	set_housekeeping
+	lds	r30,in_housekeeping
+	cpi	r30,0
+	breq	set_housekeeping
 	// If house keeping's task, then return
 	pop	r29
 	out	_SFR_IO_ADDR(SREG),r29
-	pop	r1
 	pop	r25
 	pop	r26
 	pop	r27
@@ -28,7 +26,7 @@ call_housekeeper:
 	pop	r29
 	pop	r30
 	pop	r31
-	reti
+	ret
 set_housekeeping:
 	// Push the status register onto the stack
 	push	r29
@@ -37,7 +35,7 @@ set_housekeeping:
 	ldi	r31,hi8(gs(do_housekeeping))
 	push	r30
 	push	r31
-	reti
+	ret
 
 
 
