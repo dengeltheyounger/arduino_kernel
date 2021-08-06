@@ -9,9 +9,9 @@ reg_saver:
 	.zero 1
 
 .section 	.text
-	.global __vector_7
+	.global TIMER2_COMPA_vect
 
-__vector_7:
+TIMER2_COMPA_vect:
 	push	r31
 	push	r30
 	push	r29

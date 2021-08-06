@@ -1,6 +1,7 @@
 #include <avr/io.h>
 
 __zero_reg__ = 1
+__tmp_reg__ = 0
 
 .section	.bss
 	.global in_housekeeping
@@ -85,12 +86,67 @@ save_context:
 	// Go through and check the list to see if item can be removed.
 	// Also go through and find new task. Repeat until task can be
 	// found
-run_utilities:
-	call	check_wait_list
-	call	get_new_task
-	lds	r16,task_unavailable
-	cpi	r16,0
-	brne	run_utilities
+check_wait_list:
+	// These portions come from gcc produced assembly. Obviously, there are
+	// Optimizations that can be done. I'm not going to worry about that
+	// right now.
+	lds r24,head
+	lds r25,head+1
+	lds r20,system_time
+	lds r21,system_time+1
+	lds r22,system_time+2
+	lds r23,system_time+3
+	movw r26,r24
+	ld r16,X+
+	ld r17,X+
+	ld r18,X+
+	ld r19,X
+	sbiw r26,3
+	cp r20,r16
+	cpc r21,r17
+	cpc r22,r18
+	cpc r23,r19
+	brlo get_new_task
+	sbiw r24,0
+	breq get_new_task
+	adiw r26,6
+	ld r30,X+
+	ld r31,X
+	sts head+1,r31
+	sts head,r30
+	ldd __tmp_reg__,Z+4
+	ldd r31,Z+5
+	mov r30,__tmp_reg__
+	std Z+39,__zero_reg__
+	std Z+38,__zero_reg__
+	jmp	free
+get_new_task:
+	lds r26,curr
+	lds r27,curr+1
+	adiw r26,36
+	ld r30,X+
+	ld r31,X
+	sbiw r26,36+1
+find_runnable_task:
+	ldd r24,Z+38
+	ldd r25,Z+39
+	or r24,r25
+	breq task_found
+	ldd __tmp_reg__,Z+36
+	ldd r31,Z+37
+	mov r30,__tmp_reg__
+	cp r30,r26
+	cpc r31,r27
+	brne find_runnable_task
+	sts curr+1,r31
+	sts curr,r30
+	ldi r24,lo8(1)
+	sts task_unavailable,r24
+	jmp check_wait_list
+task_found:
+	sts curr+1,r31
+	sts curr,r30
+	sts task_unavailable,__zero_reg__	
 load_next_task:
 	lds	r28,curr
 	lds	r29,curr+1
