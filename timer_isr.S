@@ -2,14 +2,7 @@
 
 __zero_reg__ = 1
 
-.section	.bss
-mod_four_count:
-	.zero 1
-reg_saver:
-	.zero 1
-
-.section 	.text
-	.global TIMER2_COMPA_vect
+.global TIMER2_COMPA_vect
 
 TIMER2_COMPA_vect:
 	push	r31
@@ -67,3 +60,9 @@ reset_mod_four_count:
 	push	r31
 	lds	r31,reg_saver
 	reti
+mod_four_count:
+	.zero 1
+reg_saver:
+	.zero 1
+
+
