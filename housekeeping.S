@@ -105,12 +105,11 @@ check_head:
 	ld 	r18,X+
 	ld 	r19,X
 	sbiw 	r26,3
-	cp 	r20,r16
-	cpc 	r21,r17
-	cpc 	r22,r18
-	cpc 	r23,r19
+	cp 	r16,r20
+	cpc 	r17,r21
+	cpc 	r18,r22
+	cpc 	r19,r23
 	brlo 	store_curr
-	sbiw 	r24,0
 	breq 	store_curr
 	adiw 	r26,6
 	ld 	r30,X+

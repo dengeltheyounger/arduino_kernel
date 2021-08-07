@@ -60,9 +60,6 @@ reset_mod_four_count:
 	push	r31
 	lds	r31,reg_saver
 	reti
-mod_four_count:
-	.zero 1
-reg_saver:
-	.zero 1
 
+.extern mod_four_count,reg_saver
 
