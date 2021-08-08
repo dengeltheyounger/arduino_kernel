@@ -37,11 +37,3 @@ set_housekeeping:
 	push	r31
 	ret
 
-.section	.bss
-	.global mod_four_count,reg_saver
-
-mod_four_count:
-	.zero 1
-
-reg_saver:
-	.zero 1

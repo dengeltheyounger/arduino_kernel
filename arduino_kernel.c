@@ -57,10 +57,8 @@ int kernel_main(uint8_t task_count,
 		goto error;
 	}
 
-	// Set the timer and then turn on interrupts
+	// Set the timer
 	set_timer();
-	sei();
-
 	
 	/* This will jump to the house keeper. The house keeper will
 	 * find a new task and do some house keeping stuff

@@ -21,6 +21,6 @@ extern volatile struct timer system_time;
  */
 
 // It is assumed that the kernel will turn on interrupts
-uint8_t set_timer();
+void set_timer();
 
 #endif

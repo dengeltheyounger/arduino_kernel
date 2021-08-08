@@ -1,14 +1,23 @@
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 __zero_reg__ = 1
 
 .global TIMER2_COMPA_vect
 
+// The reason why I don't push SREG onto the stack is that the timer isr
+// will mostly return to the running task. In that case, shelf it and then
+// bring it back. As for pushing and then popping registers, the reason why
+// I do that is because the housekeeper can be called independent of the 
+// timer ISR. For that reason, I don't make assumptions on what registers
+// have been saved in the housekeeper.
 TIMER2_COMPA_vect:
 	push	r31
 	push	r30
 	push	r29
 	push	r28
+	push	r27
+	in	r27,_SFR_IO_ADDR(SREG)
 	// Use this as the zero register
 	push	r1
 	clr	r1
@@ -37,7 +46,9 @@ TIMER2_COMPA_vect:
 	sts	mod_four_count,r28
 // Go through process of restoring registers and exiting
 cleanup:
+	out	_SFR_IO_ADDR(SREG),r27
 	pop	r1
+	pop	r27
 	pop	r28
 	pop	r29
 	pop	r30
@@ -47,7 +58,9 @@ cleanup:
 reset_mod_four_count:
 	sts	mod_four_count,__zero_reg__
 	// Restore the remaining registers
+	out	_SFR_IO_ADDR(SREG),r27
 	pop	r1
+	pop	r27
 	pop	r28
 	pop	r29
 	pop	r30
@@ -61,5 +74,8 @@ reset_mod_four_count:
 	lds	r31,reg_saver
 	reti
 
-.extern mod_four_count,reg_saver
+mod_four_count:
+	.zero 1
 
+reg_saver:
+	.zero 1
