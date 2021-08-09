@@ -67,9 +67,9 @@ reset_mod_four_count:
 	// Except use r31 to set return address
 	pop	r31
 	sts	reg_saver,r31
-	ldi	r31,lo8(gs(call_housekeeper))
+	ldi	r31,lo8(gs(housekeeper_prelude))
 	push	r31
-	ldi	r31,hi8(gs(call_housekeeper))
+	ldi	r31,hi8(gs(housekeeper_prelude))
 	push	r31
 	lds	r31,reg_saver
 	reti

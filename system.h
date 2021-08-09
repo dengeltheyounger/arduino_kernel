@@ -9,11 +9,11 @@ struct sys_clock {
 
 extern volatile struct sys_clock system_time;
 
-extern void call_housekeeper;
+extern void call_housekeeper();
 
 static inline void task_yield() {
 	asm(
-		"jmp	call_housekeeper\n\t"
+		"call	housekeeper_prelude\n\t"
 	);
 }
 

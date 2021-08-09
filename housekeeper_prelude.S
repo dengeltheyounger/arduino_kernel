@@ -1,9 +1,9 @@
 #include <avr/io.h>
 
 .section	.text
-	.global call_housekeeper
+	.global housekeeper_prelude
 
-call_housekeeper:
+housekeeper_prelude:
 	push	r31
 	push	r30
 	push	r29
