@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "tasks.h"
-#include "timer.h"
 
 #define FOR_EACH_LIST_ENTRY(ITER)	\
 	for (ITER = head; ITER != NULL; ITER = ITER->next)

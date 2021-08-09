@@ -16,6 +16,7 @@ kernel: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 	$(OCOPY) -O ihex -R .eeprom kernel kernel.hex
 
+
 install: kernel
 	$(ADUDE) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
 

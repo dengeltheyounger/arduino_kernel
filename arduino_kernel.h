@@ -7,12 +7,13 @@
 #include <stdio.h>
 #include "tasks.h"
 #include "stack.h"
-#include "timer.h"
 #include "list.h"
 #include "system.h"
 
 extern struct task *curr;
 extern struct task *k_task;
+
+extern void set_timer();
 
 /* Kernel main will take the number of tasks and then
  * a pointer to a task_funct pointers as arguments.

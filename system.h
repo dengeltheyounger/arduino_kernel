@@ -3,6 +3,12 @@
 #include <stdint.h>
 #include "list.h"
 
+struct sys_clock {
+	volatile uint32_t time;	
+};
+
+extern volatile struct sys_clock system_time;
+
 extern void call_housekeeper;
 
 static inline void task_yield() {

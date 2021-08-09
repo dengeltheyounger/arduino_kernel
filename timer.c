@@ -1,6 +1,5 @@
-#include "timer.h"
-
-volatile struct timer system_time;
+#include <avr/interrupt.h>
+#include <avr/io.h>
 
 void set_timer() {
 
@@ -8,7 +7,6 @@ void set_timer() {
 	TCCR2A = 0;
 	TCCR2B = 0;
 	TCNT2 = 0;
-	TIFR2 = (1 << OCF2A) | (1 << OCF2B) | (TOV2);
 
 	OCR2A = 249;
 
