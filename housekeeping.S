@@ -102,12 +102,14 @@ check_head:
 	ld 	r19,X
 	sbiw 	r26,3
 	// Compare head's time with the system_time
-	cp 	r16,r20
-	cpc 	r17,r21
-	cpc 	r18,r22
-	cpc 	r19,r23
-	// If head's time is less than or equal to system_time, then we're going to 
-	// find a new task to run
+	cp 	r20,r16
+	cpc 	r21,r17
+	cpc 	r22,r18
+	cpc 	r23,r19
+	// If the system time is less than the head's desired wake up time,
+	// then go ahead and get a new task to run. 
+	// If the system time is greater, then that means that a task can be
+	// woken up
 	brlo 	store_curr
 	breq 	store_curr
 	// Go ahead and move X to Z
@@ -128,30 +130,42 @@ check_head:
 	// Call free. We want to return afterwards
 	call	free
 store_curr:
+	// We're saving this to check to see if we've gone all the way around
 	lds	r24,curr
 	lds	r25,curr+1
 get_new_task:
+	// Load current into X
 	lds 	r26,curr
 	lds 	r27,curr+1
 	adiw	r26,36
+	// Get the next task
 	ld 	r30,X+
 	ld 	r31,X
 	sbiw 	r26,36+1
 find_runnable_task:
+	// Load the enum
 	ldd 	r24,Z+38
+	// Check to see if it is runnable
 	or 	r24,__zero_reg__
+	// If so, go to task found
 	breq 	task_found
+	// Otherwise, load the next task
 	ldd 	__tmp_reg__,Z+36
 	ldd 	r31,Z+37
 	mov 	r30,__tmp_reg__
+	// Check to see if the next task is the original task
 	cp 	r30,r24
 	cpc 	r31,r25
+	// If not, then check next task for runnable
 	brne 	get_new_task
+	// If it is, then save curr
 	sts 	curr+1,r31
 	sts 	curr,r30
+	// and set the task_unavailable flag
 	ldi 	r24,lo8(1)
 	sts 	task_unavailable,r24
-	jmp 	check_wait_list
+	// Check the list of sleeping tasks 
+	rjmp 	check_wait_list
 task_found:
 	sts curr+1,r31
 	sts curr,r30
