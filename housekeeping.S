@@ -55,15 +55,9 @@ save_context:
 	std	Y+26,r22
 	std	Y+27,r23
 	std	Y+28,r24
-	// store r25
-	pop	r24
-	std	Y+29,r24
-	// Store r26
-	pop	r24
-	std	Y+30,r24
-	// Store r27
-	pop	r24
-	std	Y+31,r24
+	std	Y+29,r25
+	std	Y+30,r26
+	std	Y+31,r27
 	// Store r28
 	pop	r24
 	std	Y+32,r24
@@ -99,29 +93,40 @@ check_head:
 	lds 	r21,system_time+1
 	lds 	r22,system_time+2
 	lds 	r23,system_time+3
+	// Move head to X
 	movw 	r26,r24
+	// Load desired time to wake up from head
 	ld 	r16,X+
 	ld 	r17,X+
 	ld 	r18,X+
 	ld 	r19,X
 	sbiw 	r26,3
+	// Compare head's time with the system_time
 	cp 	r16,r20
 	cpc 	r17,r21
 	cpc 	r18,r22
 	cpc 	r19,r23
+	// If head's time is less than or equal to system_time, then we're going to 
+	// find a new task to run
 	brlo 	store_curr
 	breq 	store_curr
-	adiw 	r26,6
-	ld 	r30,X+
-	ld 	r31,X
-	sts 	head+1,r31
-	sts 	head,r30
-	ldd 	__tmp_reg__,Z+4
-	ldd 	r31,Z+5
-	mov 	r30,__tmp_reg__
-	std 	Z+39,__zero_reg__
-	std 	Z+38,__zero_reg__
-	jmp	free
+	// Go ahead and move X to Z
+	movw	r30,r26
+	// Load next into Y
+	ldd	r28,Z+6
+	ldd	r29,Z+7
+	// Save next as head
+	sts	head+1,r29
+	sts	head,r28
+	// Get task struct from old head
+	ldd	r28,Z+4
+	ldd	r29,Z+5
+	// Set task state to runnable
+	std	Y+38,__zero_reg__
+	// Make old head an argument for free
+	movw	r24,r30
+	// Call free. We want to return afterwards
+	call	free
 store_curr:
 	lds	r24,curr
 	lds	r25,curr+1

@@ -8,20 +8,13 @@ housekeeper_prelude:
 	push	r30
 	push	r29
 	push	r28
-	push	r27
-	push	r26
-	push	r25
 	in	r29,_SFR_IO_ADDR(SREG)
 	// Load current and check to see if it is house keeping's task
 	lds	r30,in_housekeeping
 	cpi	r30,0
 	breq	set_housekeeping
 	// If house keeping's task, then return
-	pop	r29
 	out	_SFR_IO_ADDR(SREG),r29
-	pop	r25
-	pop	r26
-	pop	r27
 	pop	r28
 	pop	r29
 	pop	r30

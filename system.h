@@ -9,8 +9,6 @@ struct sys_clock {
 
 extern volatile struct sys_clock system_time;
 
-extern void call_housekeeper();
-
 static inline void task_yield() {
 	asm(
 		"call	housekeeper_prelude\n\t"
