@@ -1,7 +1,7 @@
 CC = avr-gcc
 OCOPY = avr-objcopy
 ADUDE = avrdude
-CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -Os -fno-stack-protector
+CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -fno-stack-protector
 CFLAGS += -fshort-enums -fno-pie -ggdb
 OBJS := arduino_kernel.o blink.o main.o tasks.o timer.o timer_isr.o \
 	system.o list.o housekeeper_prelude.o housekeeping.o \

@@ -16,6 +16,16 @@ int make_list_entry(struct task *t, uint32_t value) {
 	// Insert into the list
 	struct list_entry *iter = NULL;
 	struct list_entry *prev = NULL;
+	
+	if (!head) {
+		head = e;
+		return 1;
+	}
+	
+	else if (!head->next) {
+		head->next = e;
+		return 1;
+	}
 
 	// Iterate through each of the entries
 	FOR_EACH_LIST_ENTRY(iter) {
@@ -25,28 +35,21 @@ int make_list_entry(struct task *t, uint32_t value) {
 		 * reorient head
 		 */
 		
-		if (iter->next == NULL) {
-			iter->next = e;
-			return 1;
-		}
-		
-		else if (iter->value > e->value) {
+		if (iter->value > e->value) {
 			
 			e->next = iter;
-			
-			if (prev) {
+						
+			if (!prev) {
+				head = e;
+			} else {
 				prev->next = e;
 			}
-
+			
 			return 1;
 		}
 
 		// Set prev to the entry we're about to move on from
 		prev = iter;
-	}
-
-	if (!head) {
-		head = e;
 	}
 
 	return 1;
