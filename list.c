@@ -24,7 +24,13 @@ int make_list_entry(struct task *t, uint32_t value) {
 		 * to see if iter is head. If it is, then
 		 * reorient head
 		 */
-		if (iter->value > e->value) {
+		
+		if (iter->next == NULL) {
+			iter->next = e;
+			return 1;
+		}
+		
+		else if (iter->value > e->value) {
 			
 			e->next = iter;
 			
@@ -32,7 +38,7 @@ int make_list_entry(struct task *t, uint32_t value) {
 				prev->next = e;
 			}
 
-			break;
+			return 1;
 		}
 
 		// Set prev to the entry we're about to move on from

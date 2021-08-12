@@ -20,7 +20,6 @@ kernel: $(OBJS)
 install: kernel
 	$(ADUDE) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
 
-
 .PHONY: clean
 
 clean:
