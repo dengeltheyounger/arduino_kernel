@@ -5,6 +5,7 @@ void blink1(void) {
 
 	// On for second, off for a second
 	while (1) {
+		PORTB |= _BV(PORTB5);
 		task_sleep(1000);
 		PORTB &= ~_BV(PORTB5);
 		task_sleep(1000);
