@@ -7,11 +7,13 @@
 #include <stdio.h>
 #include "tasks.h"
 #include "stack.h"
-#include "list.h"
+#include "request.h"
 #include "system.h"
 
 extern struct task *curr;
 extern struct task *k_task;
+
+extern uint16_t request_max;
 
 extern void set_timer();
 

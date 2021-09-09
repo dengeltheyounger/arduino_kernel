@@ -81,54 +81,7 @@ save_context:
 	// Also go through and find new task. Repeat until task can be
 	// found
 check_wait_list:
-	// These portions come from gcc produced assembly. Obviously, there are
-	// Optimizations that can be done. I'm not going to worry about that
-	// right now.
-	lds		r24,head
-	lds		r25,head+1
-	cp		r24,__zero_reg__
-	cpc		r25,__zero_reg__
-	breq 	get_new_task
-check_head:
-	lds		r20,system_time
-	lds 	r21,system_time+1
-	lds 	r22,system_time+2
-	lds 	r23,system_time+3
-	// Move head to X
-	movw 	r26,r24
-	// Load desired time to wake up from head
-	ld 	r16,X+
-	ld 	r17,X+
-	ld 	r18,X+
-	ld 	r19,X
-	sbiw 	r26,3
-	// Compare head's time with the system_time
-	cp 	r20,r16
-	cpc 	r21,r17
-	cpc 	r22,r18
-	cpc 	r23,r19
-	// If the system time is less than the head's desired wake up time,
-	// then go ahead and get a new task to run. 
-	// If the system time is greater, then that means that a task can be
-	// woken up
-	brlo 	store_curr
-	// Go ahead and move X to Z
-	movw	r30,r26
-	// Load next into Y
-	ldd	r28,Z+6
-	ldd	r29,Z+7
-	// Save next as head
-	sts	head+1,r29
-	sts	head,r28
-	// Get task struct from old head
-	ldd	r28,Z+4
-	ldd	r29,Z+5
-	// Set task state to runnable
-	std	Y+38,__zero_reg__
-	// Make old head an argument for free
-	movw	r24,r30
-	// Call free. We want to return afterwards
-	call	free
+	call	check_req_top
 store_curr:
 	// We're saving this to check to see if we've gone all the way around
 	lds	r24,curr
@@ -141,14 +94,14 @@ get_new_task:
 	// Get the next task
 	ld 	r30,X+
 	ld 	r31,X
-	sts		curr,r30
-	sts		curr+1,r31
+	sts	curr,r30
+	sts	curr+1,r31
 	sbiw 	r26,36+1
 find_runnable_task:
 	// Load the enum
 	ldd 	r23,Z+38
 	// Check to see if it is runnable
-	cp 		r23,__zero_reg__
+	cp 	r23,__zero_reg__
 	// If so, go to task found
 	breq 	task_found
 	// Otherwise, load the next task
@@ -156,8 +109,8 @@ find_runnable_task:
 	ldd 	r31,Z+37
 	mov 	r30,__tmp_reg__
 	// Check to see if the next task is the original task
-	cp 		r30,r24
-	cpc		r31,r25
+	cp 	r30,r24
+	cpc	r31,r25
 	brne	get_new_task
 	// and set the task_unavailable flag
 	ldi 	r24,lo8(1)
@@ -165,7 +118,7 @@ find_runnable_task:
 	// Check the list of sleeping tasks 
 	rjmp 	check_wait_list
 task_found:
-	sts task_unavailable,__zero_reg__	
+	sts	task_unavailable,__zero_reg__	
 load_next_task:
 	lds	r28,curr
 	lds	r29,curr+1

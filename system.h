@@ -1,7 +1,7 @@
 #ifndef	SYSTEM_H
 #define	SYSTEM_H
 #include <stdint.h>
-#include "list.h"
+#include "request.h"
 
 struct sys_clock {
 	volatile uint32_t time;	
@@ -15,6 +15,6 @@ static inline void task_yield() {
 	);
 }
 
-int task_sleep(uint32_t time);
+void task_sleep(uint32_t time);
 
 #endif

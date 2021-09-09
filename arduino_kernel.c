@@ -40,6 +40,18 @@ int kernel_main(uint8_t task_count,
 	tasks[task_count-1].next = &tasks[0];
 	curr = k_task;
 
+	/* Instead of using dynamic memory allocation for an embedded system
+	 * we are going to simply define a list of entries here equal to the
+	 * number of tasks. This only works with blocking actions. If we allow
+	 * unblocking actions, then we'll have to find a new system. 
+	 * However, if we do it this way, we have a more deterministic method
+	 * of handling the queue.
+	 */
+	struct request_entry req_entries[task_count];
+	memset(&req_entries[0],0,sizeof(struct request_entry));
+	req_head = &req_entries[0];
+	request_max = (uint16_t) task_count;
+
 	// Allocate memory for stack
 	unsigned char stack_space[(task_count)*ssize];
 	memset(&stack_space[0],0,(task_count)*ssize);
@@ -56,6 +68,7 @@ int kernel_main(uint8_t task_count,
 	if (!result) {
 		goto error;
 	}
+
 
 	// Set the timer
 	set_timer();
