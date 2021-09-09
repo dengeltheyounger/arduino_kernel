@@ -26,14 +26,10 @@ void add_req_entry(struct task *t, uint32_t value) {
 			 * the back, starting from where the desired wake
 			 * up time is greater.
 			 */
-			for (uint16_t j = i; j < request_max-1; ++j) {
-				req_head[j+1].value = req_head[j].value;
-				req_head[j+1].t = req_head[j].t;
-				req_head[j+1].status = req_head[j].status;
-
-				if (req_head[j].status == inactive) {
-					break;
-				}
+			for (uint16_t j = request_max; j > i; --j) {
+				req_head[j-1].value = req_head[j-2].value;
+				req_head[j-1].t = req_head[j-2].t;
+				req_head[j-1].status = req_head[j-2].status;
 			}
 
 			/* Put the new request in where the starting position

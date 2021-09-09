@@ -4,8 +4,6 @@
 void set_timer() {
 
 	cli();
-	TCCR2A = 0;
-	TCCR2B = 0;
 	TCNT2 = 0;
 
 	OCR2A = 249;

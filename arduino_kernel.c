@@ -48,7 +48,7 @@ int kernel_main(uint8_t task_count,
 	 * of handling the queue.
 	 */
 	struct request_entry req_entries[task_count];
-	memset(&req_entries[0],0,sizeof(struct request_entry));
+	memset(&req_entries[0],0,sizeof(struct request_entry)*task_count);
 	req_head = &req_entries[0];
 	request_max = (uint16_t) task_count;
 
