@@ -1,10 +1,15 @@
-#include "timer.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
 
-uint8_t set_timer() {
+void set_timer() {
 
-	TCCR1B |= (1 << WGM12) | (1 << CS10); // no prescaler, ctc mode
-	TCNT1 = 0;	// Initialize counter
-	OCR1A = 63999;	// Every 4 ms
-	TIMSK1 |= (1 << OCIE1A); // Compare interrupt enabled
-	return 1;
+	cli();
+	TCNT2 = 0;
+
+	OCR2A = 249;
+
+	TCCR2A |= (1 << WGM21);
+	TCCR2B |= (1 << CS22);
+	TIMSK2 |= (1 << OCIE2A);
+	sei();
 }

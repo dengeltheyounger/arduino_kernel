@@ -17,9 +17,11 @@
  * that could end, and wanted to use
  * the stack space of that task later.
  */
+
 typedef enum task_state {
 	runnable = 0,
-	complete = 1
+	complete = 1,
+	waiting = 2
 } task_state;
 
 struct context {
@@ -71,11 +73,9 @@ struct task {
 	void (*task_funct)(); 
 };
 
-/* First and current structs. 
- * These are used by the ISR in order to
+/* These are used by the ISR in order to
  * work out which task is next.
  */
-extern struct task *first;
 extern struct task *curr;
 extern struct task *k_task;
 
@@ -87,7 +87,7 @@ extern struct task *k_task;
  * It is assumed that the programmer is smart enough not to 
  * make either curr or task_funct null
  */
-void make_task(struct task *prev, struct task *curr, void (*task_funct)());
+void make_task(struct task *p, struct task *curr, void (*task_funct)());
 
 
 /* Assign a stack for each task struct. If there are more

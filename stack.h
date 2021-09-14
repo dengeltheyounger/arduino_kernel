@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 
-/* A big heap allocated stack. This is portioned out as needed for the various
+/* A big allocated stack. This is portioned out as needed for the various
  * tasks.
  */
 struct stack {

@@ -8,21 +8,22 @@ int kernel_main(uint8_t task_count,
 		return 0;
 
 	int result = 0;
+	// Set up kernel's task. It is basically there to move context switcher
+	// along
+	struct task k;
+	k.state = complete;
+	k.task_funct = NULL;
+	k_task = &k;
+
 	// Create array of task structs
 	struct task tasks[task_count];
 	// This is the kernel's task struct
-	struct task k;
-	k_task = &k;
+
 	// memset the whole array
-	memset(&tasks[0], 0, task_count*sizeof(struct task));
-	memset(&k, 0, sizeof(struct task));
+	memset(&tasks[0], 0, (task_count)*sizeof(struct task));
 	// Compiler prefers when we do this
 	struct stack s;
-	// Now kernel's task struct is considered "first".
-	k.c.sp_start = (void *) RAMEND;
-	k.state = complete;
-	curr = &k;
-
+	
 	// Create linked list
 	for (uint8_t i = 0; i < task_count; ++i) {
 
@@ -32,36 +33,57 @@ int kernel_main(uint8_t task_count,
 			make_task(&tasks[i-1], &tasks[i], task_funct[i]);
 	}
 
-	// Set first in linked list
-	first = &tasks[0];
+	// k_task's next will point to first task in array
+	// The last task in array will point to first task in array
+	// This will make it easier to keep k_task from running
+	k_task->next = &tasks[0];
+	tasks[task_count-1].next = &tasks[0];
+	curr = k_task;
 
-	// Allocate heap space for a new stack region
-	new_stack_space(&s, task_count, ssize);
+	/* Instead of using dynamic memory allocation for an embedded system
+	 * we are going to simply define a list of entries here equal to the
+	 * number of tasks. This only works with blocking actions. If we allow
+	 * unblocking actions, then we'll have to find a new system. 
+	 * However, if we do it this way, we have a more deterministic method
+	 * of handling the queue.
+	 */
+	struct request_entry req_entries[task_count];
+	memset(&req_entries[0],0,sizeof(struct request_entry)*task_count);
+	req_head = &req_entries[0];
+	request_max = (uint16_t) task_count;
 
-	// If heap allocation failed, then return with error
-	if (!s.stack_space) {
-		return 0;
-	}
+	// Allocate memory for stack
+	unsigned char stack_space[(task_count)*ssize];
+	memset(&stack_space[0],0,(task_count)*ssize);
+
+	// Set up task stack region
+	s.stack_space = &stack_space[0];
+	s.stack_num = task_count;
+	s.stack_size = ssize;
 
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], task_count, &s, s.stack_num);
 
 	// If there was an issue with this, exit with error
 	if (!result) {
-		release_stacks(&s);
-		return 0;
+		goto error;
 	}
 
-	// Set the timer and then turn on interrupts
+
+	// Set the timer
 	set_timer();
-	sei();
+	
+	/* This will jump to the house keeper. The house keeper will
+	 * find a new task and do some house keeping stuff
+	 */
+	task_yield();
 
 	/* Now that the timer has been enabled, we wait 
 	 * and then switch to first task. 
 	 */
-	while (1);
+
+	while (1) ;	
 	
-	cli();
-	release_stacks(&s);
-	return 1;
+error:
+	return 0;
 }

@@ -1,0 +1,25 @@
+This is a simple kernel for the arduino uno. It is designed to be pre-emptive.
+It features a round robin scheduler, and I am in the process of implementing a
+blocking sleep that works even when accounting for time taken by other tasks
+and context switching.
+
+The only note is that the round robin scheduler does not necessarily run a task
+that has just been woken up. Instead, it will set the task as runnable and then
+go through the process of selecting task (whatever is next in the list). For
+that reason, there may be some delay between when the task is woken up and when
+the task is actually run (although, this will be a matter of milliseconds).
+
+Currently, I am in the process of debugging the system. After that, it should
+work completely. 
+
+Here are some things that I plan to add:
+
+A bootloader that is optimized for running the kernel
+
+Non blocking wait utilities
+
+Utilities that allow for easy access to program space:
+	This could be used to implement a rudimentary swap space
+	This could also be used to implement basic file system management
+
+Threading
