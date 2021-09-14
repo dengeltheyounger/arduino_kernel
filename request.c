@@ -52,14 +52,15 @@ void check_req_top() {
 	if (system_time.time >= req_head[0].value && 
 				req_head[0].status == active) {
 
+		/* Ideally, something else would be changing the status
+		 * of the task. However, this is an embedded system, 
+		 * and so I'm going to go ahead and do it here.
+		 */
+		// Set task to runnable
+		req_head[0].t->state = runnable;
+
 		for (uint16_t i = 1; i < request_max; ++i) {
 
-			/* Ideally, something else would be changing the status
-			 * of the task. However, this is an embedded system, 
-			 * and so I'm going to go ahead and do it here.
-		 	 */
-			// Set task to runnable
-			req_head[i-1].t->state = runnable;
 			req_head[i-1].value = req_head[i].value;
 			req_head[i-1].t = req_head[i].t;
 			req_head[i-1].status = req_head[i].status;
