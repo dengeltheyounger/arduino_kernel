@@ -1,5 +1,7 @@
 #include "arduino_kernel.h"
 
+extern uint16_t _etext;
+
 int kernel_main(uint8_t task_count, 
 		void (*task_funct[])(), 
 		size_t ssize) {
@@ -60,6 +62,8 @@ int kernel_main(uint8_t task_count,
 	s.stack_space = &stack_space[0];
 	s.stack_num = task_count;
 	s.stack_size = ssize;
+
+	printf("%u\n", _etext);
 
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], task_count, &s, s.stack_num);
