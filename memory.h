@@ -1,5 +1,6 @@
 #ifndef	MEMORY_H
 #define	MEMORY_H
+#include <avr/io.h>
 #include "tasks.h"
 
 #define	EEPROM_PGSIZE		4
