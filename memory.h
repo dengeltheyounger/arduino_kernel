@@ -100,57 +100,6 @@ static inline void eeprom_write(void *addr,
 	return;
 }
 	
-
-/* Determine whether or not the magic number has been written.
- * If it has not, then memory has not been written into the
- * eeprom/flash.
- *
- * Return 0 to indicate that the memory space has not been 
- * written into previously.
- *
- * Return 1 to indicate that the memory space has been written
- * into.
- */
-static inline int probe_magic_number(enum memory_space space) {
-	unsigned char buffer[2] = {0};
-	
-	/* If space is eeprom, then read first two bytes to determine
-	 * if it has been written to.
-	 */
-	if (space == eeprom)
-		eeprom_read(0, &buffer[0], 2);
-
-	/* When the ability to read/write to flash memory has been implemented,
-	 * then we will add an else statement here.
-	 */
-
-	else return 0;
-
-	/* If we find the magic number written into the first four
-	 * bytes, then return true. Otherwise, return false.
-	 */
-
-	if ((unsigned short int) buffer == 0xBABA) return 1;
-	
-	else return 0;
-}
-
-static inline void write_magic_number(enum memory_space space) {
-	/* If the space is eeprom, then write the magic number
-	 * to the first two bytes.
-	 */
-
-	unsigned char buffer[2] = {0xBA,0xBA};
-
-	if (space == eeprom)
-		eeprom_write(0, &buffer[0], 2);
-
-	/* When we add code to handle flash memory,
-	 * we will add it here.
-	 */
-	else return;
-}
-
 /* The idea is that the programmer will fill a
  * datastructure that will contain the task's id (an index
  * for the set of tasks), as well as the desired
@@ -172,7 +121,7 @@ static inline void write_magic_number(enum memory_space space) {
  */
 int memory_write(int task_id, 
 		enum memory_space zone,
-		char *buffer,
+		unsigned char *buffer,
 		int n_bytes);
 
 /* read contents of task's memory space
@@ -185,7 +134,7 @@ int memory_write(int task_id,
  */
 int memory_read(int task_id,
 		enum memory_space zone,
-		char *buffer,
+		unsigned char *buffer,
 		int n_bytes);
 
 #endif

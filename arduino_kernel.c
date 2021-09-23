@@ -66,18 +66,6 @@ int kernel_main(uint8_t task_count,
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], task_count, &s, s.stack_num);
 
-	#ifdef	MEMORY_REQUESTED
-	/* It is expected that the user defines MEMORY_REQUESTED if
-	 * they wish to allocate memory from either the eeprom or
-	 * the flash. This code will only execute if that is the
-	 * case.
-	 */
-	if (probe_magic_number(eeprom)) {
-		write_magic_number(eeprom);
-	}
-
-	#endif
-
 	// If there was an issue with this, exit with error
 	if (!result) {
 		goto error;
