@@ -7,8 +7,9 @@
 
 int memory_write(int task_id,
 		enum memory_space zone,
-		unsigned char *buffer,
-		int n_bytes) {
+		uint16_t begin,
+		uint16_t end,
+		unsigned char *buffer) {
 
 	/* If both pointers are NULL or both request counts
 	 * are 0, then we'll exit because the programmer
@@ -38,11 +39,11 @@ int memory_write(int task_id,
 			address += eeprom_ptr[i].desired_pages * 4;
 		}
 
-		if (n_bytes > size) {
+		if (end - begin > size) {
 			return 0;
 		}
 
-		eeprom_write((void *) address, buffer, n_bytes);
+		eeprom_write((void *) address, begin, end, buffer);
 	}
 
 
@@ -52,8 +53,9 @@ int memory_write(int task_id,
 
 int memory_read(int task_id,
 		enum memory_space zone,
-		unsigned char *buffer,
-		int n_bytes) {
+		uint16_t begin,
+		uint16_t end,
+		unsigned char *buffer) {
 
 	if (eeprom_ptr == NULL && flash_ptr == NULL ||
 		(eeprom_req_count == 0 && flash_req_count == 0)) {
@@ -73,11 +75,11 @@ int memory_read(int task_id,
 			address += eeprom_ptr[i].desired_pages * 4;
 		}
 
-		if (n_bytes > size) {
+		if (end - begin > size) {
 			return 0;
 		}
 
-		eeprom_read((void *) address, buffer, n_bytes);
+		eeprom_read((void *) address, begin, end, buffer);
 	}
 
 	return 1;

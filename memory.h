@@ -51,13 +51,14 @@ static inline unsigned char eeprom_read_byte(void *addr) {
 }
 
 static inline void eeprom_read(void *addr,
-			unsigned char *buffer,
-			int n_bytes) {
+				uint16_t begin,
+				uint16_t end,
+				unsigned char *buffer) {
 
 	/* Read the total number of requested bytes from eeprom
 	 * into buffer
 	 */
-	for (int i = 0; i < n_bytes; ++i) {
+	for (int i = begin; i < end; ++i) {
 		buffer[i] = eeprom_read_byte((void *) 
 						((unsigned int) addr + i));
 	}
@@ -89,11 +90,12 @@ static inline void eeprom_write_byte(void *addr,
 }
 
 static inline void eeprom_write(void *addr,
-			unsigned char *data,
-			int n_bytes) {
+				uint16_t begin,
+				uint16_t end,
+				unsigned char *data) {
 	
 	// Write each byte to eeprom
-	for (int i = 0; i < n_bytes; ++i) {
+	for (int i = begin; i < end; ++i) {
 		eeprom_write_byte((void *)((unsigned int) addr + i), data[i]);
 	}
 
@@ -116,13 +118,18 @@ static inline void eeprom_write(void *addr,
 /* Memory write will write the buffer to the task's
  * space.
  *
+ * The begin and end is used in order to determine where within the buffer
+ * to begin and end. This can be used to get a slice of data within the
+ * buffer if not all is needed.
+ *
  * 1 indicates success
  * 0 indicates error
  */
 int memory_write(int task_id, 
 		enum memory_space zone,
-		unsigned char *buffer,
-		int n_bytes);
+		uint16_t begin,
+		uint16_t end,
+		unsigned char *buffer);
 
 /* read contents of task's memory space
  * into the buffer. This will mean either
@@ -134,8 +141,9 @@ int memory_write(int task_id,
  */
 int memory_read(int task_id,
 		enum memory_space zone,
-		unsigned char *buffer,
-		int n_bytes);
+		uint16_t begin,
+		uint16_t end,
+		unsigned char *buffer);
 
 #endif
 #endif
