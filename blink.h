@@ -4,6 +4,7 @@
 #ifndef F_CPU
 #define F_CPU	16000000UL
 #endif
+#include <string.h>
 #include "system.h"
 #include "memory.h"
 

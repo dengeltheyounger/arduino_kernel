@@ -21,6 +21,8 @@ static inline int check_magic_number(uint8_t task_ndx, enum memory_space space,
 	}
 }
 
+
+// Green LED
 void blink1(void) {
 	DDRB |= _BV(DDB5);
 
@@ -34,6 +36,8 @@ void blink1(void) {
 	 */
 	unsigned char buffer[8] = {0};
 	uint16_t *magic_number = (uint16_t *) &buffer[0];
+	// Clear the magic number so that we can check changes
+	memory_write(0, eeprom, &buffer[0], 2);
 	// byte 2
 	uint8_t first_state = 0;
 	// bytes 3 and 4
@@ -66,6 +70,7 @@ void blink1(void) {
 		buffer[5] = ~_BV(PORTB5);
 		*second_length = 1000;
 		memory_write(0, eeprom, &buffer[0], 8);
+		memset(&buffer[0], 0, 8);
 		memory_read(0, eeprom, &buffer[0], 8);
 		first_state = buffer[2];
 		second_state = buffer[5];
@@ -85,6 +90,7 @@ void blink2(void) {
 	unsigned char buffer[8] = {0};
 	// bytes 0 and 1
 	uint16_t *magic_number = (uint16_t *) &buffer[0];
+	memory_write(1, eeprom, &buffer[0], 2);
 	// byte 2
 	uint8_t first_state = 0;
 	// bytes 3 and 4
@@ -113,6 +119,7 @@ void blink2(void) {
 		buffer[5] = _BV(PORTB4);
 		*second_length = 1000;
 		memory_write(0, eeprom, &buffer[0], 8);
+		memset(&buffer[0], 0, 8);
 		memory_read(0, eeprom, &buffer[0], 8);
 		first_state = buffer[2];
 		second_state = buffer[5];
@@ -129,8 +136,9 @@ void blink2(void) {
 
 void blink3(void) {
 	DDRB |= _BV(DDB3);
-	unsigned char buffer[8] = {0};
+	unsigned char buffer[11] = {0};
 	uint16_t *magic_number = (uint16_t *) &buffer[0];
+	memory_write(2, eeprom, &buffer[0], 2);
 	// byte 2
 	uint8_t first_state = _BV(PORTB3);
 	// byte 3
@@ -176,6 +184,7 @@ void blink3(void) {
 		buffer[8] = ~_BV(PORTB3);
 		*fourth_length = 1000;
 		memory_write(2, eeprom, &buffer[0], 11);
+		memset(&buffer[0], 0, 11);
 		memory_read(2, eeprom, &buffer[0], 11);
 		first_state = buffer[2];
 		first_length = buffer[3];
@@ -204,6 +213,8 @@ void blink4(void) {
 	DDRB |= _BV(DDB2);
 	unsigned char buffer[8] = {0};
 	uint16_t *magic_number = (uint16_t *) &buffer[0];
+	memory_write(3, eeprom, &buffer[0], 2);
+
 	// byte 2
 	uint8_t first_state = 0;
 	// bytes 3 and 4
@@ -232,6 +243,7 @@ void blink4(void) {
 		buffer[5] = ~_BV(PORTB2);
 		*second_length = 500;
 		memory_write(3, eeprom, &buffer[0], 8);
+		memset(&buffer[0], 0, 8);
 		memory_read(3, eeprom, &buffer[0], 8);
 		first_state = buffer[2];
 		second_state = buffer[5];
