@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "tasks.h"
 #include "system.h"
+#include "user.h"
 
 enum active_req_status {
 	inactive = 0,
