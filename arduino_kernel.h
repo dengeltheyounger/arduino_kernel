@@ -5,6 +5,7 @@
 #include <string.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include "memory.h"
 #include "tasks.h"
 #include "stack.h"
 #include "request.h"

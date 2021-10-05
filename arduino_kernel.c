@@ -1,7 +1,8 @@
 #include "arduino_kernel.h"
 
+extern uint16_t _etext;
 extern struct "stack.h"
-
+  
 int kernel_main(uint8_t task_count, 
 		void (*task_funct[])(), 
 		size_t ssize) {

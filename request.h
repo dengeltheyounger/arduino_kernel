@@ -1,5 +1,5 @@
-#ifndef	LIST_H
-#define	LIST_H
+#ifndef	REQUEST_H
+#define	REQUEST_H
 #include <stdint.h>
 #include <stdlib.h>
 #include "tasks.h"
