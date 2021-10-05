@@ -9,6 +9,7 @@
 #include "stack.h"
 #include "request.h"
 #include "system.h"
+#include "user.h"
 
 extern struct task *curr;
 extern struct task *k_task;
