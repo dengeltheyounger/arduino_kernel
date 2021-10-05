@@ -11,9 +11,16 @@
  *
  * The data structures are declared here and then defined in the data structure
  */
+// This concerns the total number of tasks
+#define	TASK_COUNT	4
+// The size of a given task's stack
+#define	STACK_SIZE	32
+// Total number of requests allowed.
+// Currently, this must be equal to the number of tasks
+#define	REQUEST_MAX	4
+
 
 // declare task structs here
-extern uint8_t task_count;
 extern struct task *curr;
 extern struct task *k_task;
 
