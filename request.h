@@ -1,9 +1,10 @@
-#ifndef	LIST_H
-#define	LIST_H
+#ifndef	REQUEST_H
+#define	REQUEST_H
 #include <stdint.h>
 #include <stdlib.h>
 #include "tasks.h"
 #include "system.h"
+#include "user.h"
 
 enum active_req_status {
 	inactive = 0,

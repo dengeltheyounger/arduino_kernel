@@ -5,10 +5,12 @@
 #include <string.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include "memory.h"
 #include "tasks.h"
 #include "stack.h"
 #include "request.h"
 #include "system.h"
+#include "user.h"
 
 extern struct task *curr;
 extern struct task *k_task;

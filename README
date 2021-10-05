@@ -9,8 +9,18 @@ go through the process of selecting task (whatever is next in the list). For
 that reason, there may be some delay between when the task is woken up and when
 the task is actually run (although, this will be a matter of milliseconds).
 
-Currently, I am in the process of debugging the system. After that, it should
-work completely. 
+I am in the process of implementing an API for reading writing to eeprom
+and flash. I will first begin by implementing and debugging the eeprom 
+read and write utilities. After that, I will move onto flash space. 
+
+For the EEPROM and flash utilities, the user will be able to use an API
+(detailed in memory_request.h) that will mainly consist of filling an 
+array of structs and setting number of members. From there, reading
+or writing to the EEPROM becomes as easy as providing a task index and
+a space for the user. If the user wishes to use the low level utilities
+and do it themselves, this can also be done. However, it is advised that
+they set the pointers to NULL and the req_count variables to 0 in the 
+memory_request.c file.
 
 Here are some things that I plan to add:
 

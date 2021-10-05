@@ -1,9 +1,5 @@
 #include "request.h"
 
-struct request_entry *req_head = NULL;
-
-uint16_t request_max = 0;
-
 void add_req_entry(struct task *t, uint32_t value) {
 	/* iterate through the list of request entries
 	 * until one is found that is either greater than the

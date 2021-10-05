@@ -1,5 +1,8 @@
 #include "arduino_kernel.h"
 
+extern uint16_t _etext;
+extern struct "stack.h"
+  
 int kernel_main(uint8_t task_count, 
 		void (*task_funct[])(), 
 		size_t ssize) {
@@ -10,17 +13,8 @@ int kernel_main(uint8_t task_count,
 	int result = 0;
 	// Set up kernel's task. It is basically there to move context switcher
 	// along
-	struct task k;
-	k.state = complete;
-	k.task_funct = NULL;
-	k_task = &k;
+	k_task->state = complete;
 
-	// Create array of task structs
-	struct task tasks[task_count];
-	// This is the kernel's task struct
-
-	// memset the whole array
-	memset(&tasks[0], 0, (task_count)*sizeof(struct task));
 	// Compiler prefers when we do this
 	struct stack s;
 	
@@ -37,29 +31,6 @@ int kernel_main(uint8_t task_count,
 	// The last task in array will point to first task in array
 	// This will make it easier to keep k_task from running
 	k_task->next = &tasks[0];
-	tasks[task_count-1].next = &tasks[0];
-	curr = k_task;
-
-	/* Instead of using dynamic memory allocation for an embedded system
-	 * we are going to simply define a list of entries here equal to the
-	 * number of tasks. This only works with blocking actions. If we allow
-	 * unblocking actions, then we'll have to find a new system. 
-	 * However, if we do it this way, we have a more deterministic method
-	 * of handling the queue.
-	 */
-	struct request_entry req_entries[task_count];
-	memset(&req_entries[0],0,sizeof(struct request_entry)*task_count);
-	req_head = &req_entries[0];
-	request_max = (uint16_t) task_count;
-
-	// Allocate memory for stack
-	unsigned char stack_space[(task_count)*ssize];
-	memset(&stack_space[0],0,(task_count)*ssize);
-
-	// Set up task stack region
-	s.stack_space = &stack_space[0];
-	s.stack_num = task_count;
-	s.stack_size = ssize;
 
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], task_count, &s, s.stack_num);
