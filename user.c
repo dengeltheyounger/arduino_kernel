@@ -1,6 +1,6 @@
 #include "user.h"
 
-// Define task funct array here
+// User must define task funct array here
 
 void (*task_funct[TASK_COUNT])() = {
 					blink1,

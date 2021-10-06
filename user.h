@@ -29,6 +29,5 @@ extern struct stack s;
 
 extern uint16_t request_max;
 extern struct request_entry *req_head;
-extern uint16_t request_max;
 
 #endif
