@@ -73,12 +73,6 @@ struct task {
 	void (*task_funct)(); 
 };
 
-/* These are used by the ISR in order to
- * work out which task is next.
- */
-extern struct task *curr;
-extern struct task *k_task;
-
 /* Set up the current task struct. If prev is not null, then
  * curr will be set as next. In addition, curr's task_funct will
  * point to the function provided. Finally, the pc member of c for

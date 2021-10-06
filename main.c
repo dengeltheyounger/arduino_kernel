@@ -1,20 +1,43 @@
-#include "arduino_kernel.h"
-#include "blink.h"
 #include "tasks.h"
-#include <stdio.h>
+#include "timer.h"
+#include "system.h"
+#include "user.h"
+#include "stack.h"
+#include "user.h"
 
-/* The purpose of prep_kernel is to provide a location for the
- * programmer to set up the array of function pointers and the
- * provide the appropriate arguments to kernel main.
- */
+// This is mainly declared in case we wish to use flash
+extern uint16_t _etext;
+extern struct stack s;
+extern struct task tasks[TASK_COUNT];
+
+/* Main kernel code. It sets up tasks, stack, sets timer and then goes */
 
 int main() {
-	int retval = 0;
+	int result = 0;
+	// Create linked list
+	for (uint8_t i = 1; i < TASK_COUNT; ++i) {
 
-	void (*tasks[])() = { blink1, blink2, blink3, blink4 };
-	uint8_t tasknum = 4;
+		make_task(&tasks[i-1], &tasks[i], task_funct[i]);
+	}
 
-	retval = kernel_main(tasknum, tasks, 64);
+	// Set stack pointers for each task
+	result = set_task_stacks(&tasks[0], TASK_COUNT, &s, s.stack_num);
 
-	return retval;
+	// If there was an issue with this, exit with error
+	if (!result) {
+		goto error;
+	}
+
+
+	// Set the timer
+	set_timer();
+	
+	/* This will jump to the house keeper. The house keeper will
+	 * find a new task and do some house keeping stuff
+	 */
+	task_yield();
+	
+	/* This should never be reached */
+error:
+	return 0;
 }
