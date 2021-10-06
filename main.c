@@ -3,7 +3,6 @@
 #include "system.h"
 #include "user.h"
 #include "stack.h"
-#include "user.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;

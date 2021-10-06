@@ -17,7 +17,6 @@ struct task k = {
 			.task_funct = NULL
 		};
 
-struct task *k_task = &k;
 struct task *curr = &k;
 
 uint8_t stack_space[TASK_COUNT*STACK_SIZE] = {0};

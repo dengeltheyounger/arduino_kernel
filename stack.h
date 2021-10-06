@@ -14,33 +14,4 @@ struct stack {
 	size_t stack_size;
 };
 
-/* Allocate memory for a new set of stacks. If calloc fails, return NULL */
-
-static inline void new_stack_space(struct stack *s, 
-					size_t stacknum, 
-					size_t stacksize) {
-	s->stack_space = NULL;
-	s->stack_num = 0;
-	s->stack_size = 0;
-
-	/* Create an array of stack structs. 
-	 * Return empty stack if calloc fails 
-	 * Callocing this way allows for indexing
-	 */
-	s->stack_space = calloc(stacknum, stacksize);
-
-	if (!s->stack_space) {
-		return;
-	}
-
-	s->stack_num = stacknum;
-	s->stack_size = stacksize;
-}
-
-/* Release all of the memory associated with the stack array. */
-
-static inline void release_stacks(struct stack *s) {
-	free(s->stack_space);
-}
-
 #endif

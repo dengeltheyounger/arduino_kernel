@@ -24,7 +24,6 @@
 extern void (*task_funct[TASK_COUNT])();
 
 extern struct task *curr;
-extern struct task *k_task;
 
 extern struct stack s;
 
