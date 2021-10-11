@@ -12,7 +12,6 @@ void (*task_funct[TASK_COUNT])() = {
 struct task tasks[TASK_COUNT] = {0};
 struct task k = { 
 			.c = {0},
-			.next = &tasks[0],
 			.state = complete,
 			.task_funct = NULL
 		};

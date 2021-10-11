@@ -7,14 +7,19 @@
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
 extern struct stack s;
-extern struct task tasks[TASK_COUNT];
+extern struct task tasks[TASK_COUNT];\
+extern struct task k;
 
 /* Main kernel code. It sets up tasks, stack, sets timer and then goes */
 
 int main() {
 	int result = 0;
 	// Create linked list
-	for (uint8_t i = 1; i < TASK_COUNT; ++i) {
+	for (uint8_t i = 0; i < TASK_COUNT; ++i) {
+		if (!i) {
+			make_task(&k, &tasks[i], task_funct[i]);
+			continue;
+		}
 
 		make_task(&tasks[i-1], &tasks[i], task_funct[i]);
 	}
