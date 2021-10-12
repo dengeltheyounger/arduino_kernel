@@ -17,9 +17,6 @@ struct request_entry {
 	enum active_req_status status;
 };
 
-extern struct request_entry *req_head;
-extern uint16_t request_max;
-
 /* Add the task to the next spot in the array */
 void add_req_entry(struct task *t, uint32_t value);
 

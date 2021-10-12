@@ -5,7 +5,7 @@ void add_req_entry(struct task *t, uint32_t value) {
 	 * until one is found that is either greater than the
 	 * desired wakeup time of t, or inactive.
 	 */
-	for (uint16_t i = 0; i < request_max; ++i) {
+	for (uint16_t i = 0; i < REQUEST_MAX; ++i) {
 		/* If we find a task with inactive status,
 		 * then we're going to simply store the
 		 * time information there
@@ -22,7 +22,7 @@ void add_req_entry(struct task *t, uint32_t value) {
 			 * the back, starting from where the desired wake
 			 * up time is greater.
 			 */
-			for (uint16_t j = request_max; j > i; --j) {
+			for (uint16_t j = REQUEST_MAX; j > i; --j) {
 				req_head[j-1].value = req_head[j-2].value;
 				req_head[j-1].t = req_head[j-2].t;
 				req_head[j-1].status = req_head[j-2].status;
@@ -55,7 +55,7 @@ void check_req_top() {
 		// Set task to runnable
 		req_head[0].t->state = runnable;
 
-		for (uint16_t i = 1; i < request_max; ++i) {
+		for (uint16_t i = 1; i < REQUEST_MAX; ++i) {
 
 			req_head[i-1].value = req_head[i].value;
 			req_head[i-1].t = req_head[i].t;
@@ -74,7 +74,7 @@ void check_req_top() {
 			 * The next time we remove an entry, the last index will be
 			 * copied into the one before it.
 			 */
-			if (i == request_max - 1) {
+			if (i == REQUEST_MAX - 1) {
 				req_head[i].status = inactive;
 			}
 		}

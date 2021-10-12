@@ -5,13 +5,15 @@ and context switching.
 
 The only note is that the round robin scheduler does not necessarily run a task
 that has just been woken up. Instead, it will set the task as runnable and then
-go through the process of selecting task (whatever is next in the list). For
-that reason, there may be some delay between when the task is woken up and when
-the task is actually run (although, this will be a matter of milliseconds).
+go through the process of selecting the next task (whatever is next in the list). 
+For that reason, there may be some delay between when the task is woken up and 
+when the task is actually run (although, this will be a matter of milliseconds).
 
-I am in the process of implementing an API for reading writing to eeprom
-and flash. I will first begin by implementing and debugging the eeprom 
-read and write utilities. After that, I will move onto flash space. 
+I have successfully implemented an API that can be used in order to easily access
+the eeprom. Both the low level utilities (eeprom_write) as well as the high level
+utility (memory_write) can be used. Reading and writing are both supported. It
+will be easy to add support for writing to flash with memory_read/write,
+however, I intend to put that away for now.
 
 For the EEPROM and flash utilities, the user will be able to use an API
 (detailed in memory_request.h) that will mainly consist of filling an 
@@ -21,6 +23,13 @@ a space for the user. If the user wishes to use the low level utilities
 and do it themselves, this can also be done. However, it is advised that
 they set the pointers to NULL and the req_count variables to 0 in the 
 memory_request.c file.
+
+One other thing that should be mentioned is that a number of the data
+structures that are used throughout the kernel have been moved into 
+the data section (they are declared and defined in user.h/c). The
+user will mainly be required to set #defines in user.h. However,
+they will also be required to set up the function pointers in
+user.c
 
 Here are some things that I plan to add:
 
