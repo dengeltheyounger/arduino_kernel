@@ -24,6 +24,8 @@ int main() {
 		make_task(&tasks[i-1], &tasks[i], task_funct[i]);
 	}
 
+	tasks[TASK_COUNT-1].next = &tasks[0];
+
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], TASK_COUNT, &s, s.stack_num);
 
