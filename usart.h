@@ -2,7 +2,7 @@
 #define	USART_H
 #include <avr/io.h>
 #include <stdint.h>
-
+#include "user.h"
 
 /* I want the usart initialization to be flexible enough that
  * one can use either the system clock (16 MHz) or to use
@@ -11,8 +11,7 @@
  * unusable. Eventually, this will be moved to user.h
  */
 
-#define	BAUDRATE	115200
-#define	SERIAL_FREQ	16000000
+#define	UBR	((F_CPU / (16 * BAUD)) - 1)
 
 /* Currently, uart_init will set up the USART in
  * asynchronous normal mode

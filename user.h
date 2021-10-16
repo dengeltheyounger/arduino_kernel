@@ -20,6 +20,28 @@
 // Currently, this must be equal to the number of tasks
 #define	REQUEST_MAX	4
 
+// These are macros that relate to serial communicate, if desired
+// Remove this macro in order to remove the code associated with usart
+#define	USART_IMPLEMENTED
+// Define CPU frequency for UBR calculation
+#ifndef	F_CPU
+#define	F_CPU	16UL
+#endif
+
+// Define Baud rate
+#define	BAUD	9600
+
+#define	ASYNC_NORM	~(1 << 1)
+
+#define	ASYNC_DOUBLE	(1 << 1)
+
+#define	MODE		UCSR0A &= ASYNC_NORM;	
+
+#define	TRANSMIT	(1 << TXEN0)
+#define	RECEIVE		(1 << RXEN0)
+
+#define	TRANSMISSION	UCSR0B |= (TRANSMIT | RECEIVE);
+
 /* This will need to be defined by the user in user.c */
 extern void (*task_funct[TASK_COUNT])();
 
