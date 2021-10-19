@@ -1,5 +1,6 @@
 #ifndef	USER_H
 #define	USER_H
+#define	<avr/io.h>
 #include "tasks.h"
 #include "request.h"
 #include "stack.h"
@@ -24,23 +25,45 @@
 // Remove this macro in order to remove the code associated with usart
 #define	USART_IMPLEMENTED
 // Define CPU frequency for UBR calculation
-#ifndef	F_CPU
-#define	F_CPU	16UL
+#ifndef	F_OSC
+#define	F_OSC	16UL
 #endif
 
 // Define Baud rate
-#define	BAUD	9600
+#define	BAUD			9600
 
-#define	ASYNC_NORM	~(1 << 1)
+#define	UBRR0			UBBR0 = ((F_OSC / (16 * BAUD)) -1);
 
-#define	ASYNC_DOUBLE	(1 << 1)
+#define	USART_ASYNC_NORM	UCSR0A &= ~(1 << U2X0);	\
+				UCSR0C &= ~((1 << UMSEL01) | (1 << UMSEL00));
 
-#define	MODE		UCSR0A &= ASYNC_NORM;	
+#define	USART_ASYNC_DOUBLE	UCSR0A |= (1 << U2X0);
 
-#define	TRANSMIT	(1 << TXEN0)
-#define	RECEIVE		(1 << RXEN0)
+#define	USART_TRANSMIT		(1 << TXEN0)
+#define	USART_RECEIVE		(1 << RXEN0)
 
-#define	TRANSMISSION	UCSR0B |= (TRANSMIT | RECEIVE);
+#define	USART_TRANSMISSION	UCSR0B |= (TRANSMIT | RECEIVE);
+
+#define	USART_PARITY_DISABLED	UCSR0C &= ~((1 << UPM01) | (1 << UPM00));
+#define	USART_PARITY_EVEN	UCSR0C |= (1 << UPM01); UCSR0C &= ~(1 << UPM00);
+#define	USART_PARITY_ODD	UCSR0C |= ((1 <<  UPM01) | (1 << UPM00));
+
+#define	USART_STOP_ONE		UCSR0C &= ~(1 << USBS0);
+#define	USART_STOP_TWO		UCSR0C |= (1 << USB0);
+
+#define	USART_DATA_FIVE		UCRS0C &= ~((1 << UCSZ02) | (1 << UCSZ01) | (1 << UCSZ00));
+#define	USART_DATA_SIX		UCSR0C |= (1 << UCSZ00); UCSR0C &= ~((1 << UCSZ02) | (1 << UCSZ01));
+#define	USART_DATA_SEVEN	UCSR0C |= ((1 << UCSZ01); UCSR0C &= ~((1 << UCSZ02) | (1 << UCSZ00));
+#define	USART_DATA_EIGHT	UCSR0C |= ((1 << UCSZ01) | (1 << UCSZ00)); UCSR0C &= ~(1 << UCSZ02);
+#define	USART_DATA_NINE		UCSR0C |= ((1 << UCSZ02) | (1 << UCSZ01) | (1 << UCSZ00));
+
+#define	USART_INIT		USART_STOP_ONE \
+				USART_PARITY_DISABLED \
+				USART_ASYNC_NORM \
+				USART_TRANSMISSION \
+				USART_DATA_EIGHT \
+				UBBR0 \
+
 
 /* This will need to be defined by the user in user.c */
 extern void (*task_funct[TASK_COUNT])();
