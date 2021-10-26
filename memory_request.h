@@ -34,9 +34,7 @@
  * and reads. 
  */
 
-#ifndef	MEMORY_REQUESTED
 #define MEMORY_REQUESTED
-#endif
 
 struct memory_request {
 	uint8_t task_ndx;

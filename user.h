@@ -1,6 +1,6 @@
 #ifndef	USER_H
 #define	USER_H
-#define	<avr/io.h>
+#include <avr/io.h>
 #include "tasks.h"
 #include "request.h"
 #include "stack.h"
@@ -23,7 +23,7 @@
 
 // These are macros that relate to serial communicate, if desired
 // Remove this macro in order to remove the code associated with usart
-#define	USART_IMPLEMENTED
+#define	USART_ENABLED
 // Define CPU frequency for UBR calculation
 #ifndef	F_OSC
 #define	F_OSC	16UL
@@ -32,7 +32,7 @@
 // Define Baud rate
 #define	BAUD			9600
 
-#define	UBRR0			UBBR0 = ((F_OSC / (16 * BAUD)) -1);
+#define	UBRR			UBBR0 = ((F_OSC / (16 * BAUD)) -1);
 
 #define	USART_ASYNC_NORM	UCSR0A &= ~(1 << U2X0);	\
 				UCSR0C &= ~((1 << UMSEL01) | (1 << UMSEL00));
