@@ -7,9 +7,9 @@
 
 void usart_init();
 
-void usart_putchar(int c);
+void usart_putchar(unsigned int c);
 
-char usart_getchar();
+unsigned int usart_getchar();
 #endif
 
 #endif
