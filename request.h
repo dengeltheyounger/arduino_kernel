@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "tasks.h"
-#include "system.h"
-#include "user.h"
+
 
 enum active_req_status {
 	inactive = 0,
@@ -13,12 +12,16 @@ enum active_req_status {
 
 struct request_entry {
 	uint32_t value;
-	struct task *t;
-	enum active_req_status status;
 };
 
+extern struct task tasks[];
+extern struct request_entry requests [];
+extern int request_array[];
+
+#include "system.h"
+
 /* Add the task to the next spot in the array */
-void add_req_entry(struct task *t, uint32_t value);
+void add_req_entry(uint8_t task_ndx, uint32_t value);
 
 
 /* Shift struct values through the first inactive index.

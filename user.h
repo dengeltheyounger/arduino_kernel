@@ -2,9 +2,9 @@
 #define	USER_H
 #include <avr/io.h>
 #include "tasks.h"
-#include "request.h"
 #include "stack.h"
 #include "blink.h"
+#include "request.h"
 
 /* The purpose of this is to define in the data and bss section a series
  * of variables that have currently been stored in stack. This will allow
@@ -68,11 +68,14 @@
 /* This will need to be defined by the user in user.c */
 extern void (*task_funct[TASK_COUNT])();
 
+extern struct task tasks[TASK_COUNT];
+
 extern struct task *curr;
 
 extern struct stack s;
 
-extern uint16_t request_max;
-extern struct request_entry *req_head;
+extern struct request_entry requests[REQUEST_MAX];
+
+extern int request_array[REQUEST_MAX];
 
 #endif

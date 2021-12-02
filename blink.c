@@ -7,9 +7,9 @@ void blink1(void) {
 	// On for second, off for a second
 	while (1) {
 		PORTB |= _BV(PORTB5);
-		task_sleep(1000);
+		task_sleep(0, 1000);
 		PORTB &= ~_BV(PORTB5);
-		task_sleep(1000);
+		task_sleep(0, 1000);
 	}
 }
 
@@ -20,9 +20,9 @@ void blink2(void) {
 	// Off for a second, on for a second
 	while (1) {
 		PORTB &= ~_BV(PORTB4);
-		task_sleep(1000);
+		task_sleep(1, 1000);
 		PORTB |= _BV(PORTB4);
-		task_sleep(1000);
+		task_sleep(1, 1000);
 	}
 }
 
@@ -33,13 +33,13 @@ void blink3(void) {
 	// Blink twice and then wait a second
 	while (1) {
 		PORTB |= _BV(PORTB3);
-		task_sleep(250);
+		task_sleep(2, 250);
 		PORTB &= ~_BV(PORTB3);
-		task_sleep(250);
+		task_sleep(2, 250);
 		PORTB |= _BV(PORTB3);
-		task_sleep(250);
+		task_sleep(2, 250);
 		PORTB &= ~_BV(PORTB3);
-		task_sleep(1000);
+		task_sleep(2, 1000);
 
 	}
 }
@@ -50,8 +50,8 @@ void blink4(void) {
 
 	while (1) {
 		PORTB |= _BV(PORTB2);
-		task_sleep(500);
+		task_sleep(3, 500);
 		PORTB &= ~_BV(PORTB2);
-		task_sleep(500);
+		task_sleep(3, 500);
 	}
 }
