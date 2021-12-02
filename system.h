@@ -2,6 +2,7 @@
 #define	SYSTEM_H
 #include <stdint.h>
 #include "request.h"
+#include "user.h"
 
 struct sys_clock {
 	volatile uint32_t time;	
@@ -15,6 +16,6 @@ static inline void task_yield() {
 	);
 }
 
-void task_sleep(uint32_t time);
+void task_sleep(uint8_t task_ndx, uint32_t time);
 
 #endif

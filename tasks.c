@@ -9,7 +9,7 @@ void make_task(struct task *p, struct task *current, void (*task_funct)()) {
 	// Set task pointer
 	current->task_funct = task_funct;
 	// 26 and 25 contain curr as argument for do_task
-	uint16_t addr = current;
+	uint16_t addr = (uint16_t) current;
 	current->c.r24 = ADDR_LO(addr);
 	current->c.r25 = ADDR_HI(addr);
 	current->state = runnable;

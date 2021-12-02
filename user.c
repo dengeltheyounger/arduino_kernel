@@ -26,7 +26,6 @@ struct stack s = {
 		.stack_size = STACK_SIZE
 		};
 
-struct request_entry req_entries[REQUEST_MAX] = {0};
-struct request_entry *req_head = &req_entries[0];
+struct request_entry requests[REQUEST_MAX] = {0};
 
-
+int request_array[REQUEST_MAX] = { [0 ... REQUEST_MAX-1] = -1};
