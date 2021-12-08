@@ -6,9 +6,8 @@
 #include <stdio.h>
 #include <avr/io.h>
 
-#define	TR_FUNC_ADDR(ADDR) (uint16_t) ADDR << 1
-#define	ADDR_LO(LABEL) LABEL & 0xff
-#define	ADDR_HI(LABEL) (LABEL & 0xff00) >> 8
+#define	ADDR_LO(LABEL)	LABEL & 0xff
+#define	ADDR_HI(LABEL)	(LABEL & 0xff00) >> 8
 
 /* Right now there are only two
  * task states. The only possible
@@ -99,5 +98,15 @@ void end_task(struct task *t);
 
 // run task
 void do_task(struct task *t);
+
+extern struct task *curr;
+
+/* Iterate through the set of tasks to find one that is
+ * runnable. If there is no runnable task found, then
+ * return false. If a runnable task is found, then save it
+ * in curr, and then return true.
+ */
+unsigned int get_next_task();
+	
 
 #endif

@@ -71,3 +71,21 @@ void do_task(struct task *t) {
 	// Infinite loop because we're not supposed to return
 	while(1);
 }
+
+
+unsigned int get_next_task() {
+	struct task *tmp = curr;
+	struct task *t = curr->next;
+	
+	while (tmp != t) {
+		if (t->state == runnable) {
+			curr = t;
+			return 1;
+		}
+
+		t = t->next;
+	}
+
+	return 0;
+}
+
