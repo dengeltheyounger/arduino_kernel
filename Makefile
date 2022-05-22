@@ -1,19 +1,16 @@
-CC = avr-gcc
-OCOPY = avr-objcopy
-ADUDE = avrdude
-CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -fno-stack-protector
-CFLAGS += -fshort-enums -fno-pie -Os -ggdb
-OBJS := user.o blink.o main.o tasks.o timer.o timer_isr.o \
-	system.o request.o housekeeper_prelude.o housekeeping.o \
-	memory.o memory_request.o
+TARGET = avr
+CC = $(TARGET)-gcc
+PROJDIRS := mem usr sys tmr
 
+CFLAGS = -mmcu=atmega328p
 
+OBJS = $(wildcard *.c) $(foreach DIR,$(PROJDIRS),$(wildcard $(PROJDIRS)/*.c))
 
 %.o: %.c 
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 %.o: %.S
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 kernel: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)

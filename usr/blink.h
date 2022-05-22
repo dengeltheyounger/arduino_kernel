@@ -5,8 +5,8 @@
 #define F_CPU	16000000UL
 #endif
 #include <string.h>
-#include "system.h"
-#include "memory.h"
+#include "../sys/system.h"
+#include "../mem/memory.h"
 
 void blink1(void);
 void blink2(void);

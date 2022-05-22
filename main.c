@@ -1,8 +1,8 @@
-#include "tasks.h"
-#include "timer.h"
-#include "system.h"
-#include "user.h"
-#include "stack.h"
+#include "sys/tasks.h"
+#include "tmr/timer.h"
+#include "sys/system.h"
+#include "usr/user.h"
+#include "sys/stack.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
