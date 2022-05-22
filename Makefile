@@ -1,13 +1,11 @@
-CC = avr-gcc
-OCOPY = avr-objcopy
-ADUDE = avrdude
-CFLAGS := -mmcu=atmega328p -DF_CPU=16000000UL -fno-stack-protector
-CFLAGS += -fshort-enums -fno-pie -Os -ggdb
-OBJS := user.o blink.o main.o tasks.o timer.o timer_isr.o \
-	system.o request.o housekeeper_prelude.o housekeeping.o \
-	memory.o memory_request.o
+CC = $(TARGET)-gcc
+PROJDIRS := mem usr kernel arch/$(TARGET)/
 
+SRCFILES := $(shell find $(PROJDIRS) -type f -name "\*.c")
+SRCFILES += $(shell find $(PROJDIRS) -type f -name "\*.S")
+HDRFILES := $(shell find $(PROJDIRS) -type f -name "\*.h")
 
+OBJS := $(patsubst (%.c,%.S),%.o $(SRCFILES))
 
 %.o: %.c 
 	$(CC) -c -o $@ $< $(CFLAGS)
