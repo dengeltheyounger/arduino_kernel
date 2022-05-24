@@ -1,4 +1,4 @@
-#include "system.h"
+#include "sys/system.h"
 
 volatile struct sys_clock system_time = { .time = 0 };
 

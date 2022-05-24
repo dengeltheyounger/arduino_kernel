@@ -82,43 +82,12 @@ save_context:
 	// found
 check_wait_list:
 	call	check_req_top
-store_curr:
-	// We're saving this to check to see if we've gone all the way around
-	lds	r24,curr
-	lds	r25,curr+1
-get_new_task:
-	// Load current into X
-	lds 	r26,curr
-	lds 	r27,curr+1
-	adiw	r26,36
-	// Get the next task
-	ld 	r30,X+
-	ld 	r31,X
-	sts	curr,r30
-	sts	curr+1,r31
-	sbiw 	r26,36+1
-find_runnable_task:
-	// Load the enum
-	ldd 	r23,Z+38
-	// Check to see if it is runnable
-	cp 	r23,__zero_reg__
-	// If so, go to task found
-	breq 	task_found
-	// Otherwise, load the next task
-	ldd 	__tmp_reg__,Z+36
-	ldd 	r31,Z+37
-	mov 	r30,__tmp_reg__
-	// Check to see if the next task is the original task
-	cp 	r30,r24
-	cpc	r31,r25
-	brne	get_new_task
-	// and set the task_unavailable flag
-	ldi 	r24,lo8(1)
-	sts 	task_unavailable,r24
-	// Check the list of sleeping tasks 
-	rjmp 	check_wait_list
-task_found:
-	sts	task_unavailable,__zero_reg__	
+find_task:
+	// If get_next_task return 0, then check the request top again.
+	// Otherwise, load task
+	call	get_next_task
+	or	r24,r25
+	breq	check_wait_list
 load_next_task:
 	lds	r28,curr
 	lds	r29,curr+1

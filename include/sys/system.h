@@ -2,7 +2,7 @@
 #define	SYSTEM_H
 #include <stdint.h>
 #include "request.h"
-#include "user.h"
+#include "usr/user.h"
 
 struct sys_clock {
 	volatile uint32_t time;	

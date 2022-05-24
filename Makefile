@@ -1,27 +1,31 @@
-CC = $(TARGET)-gcc
-PROJDIRS := mem usr kernel arch/$(TARGET)/
+TARGET := avr
+CC := $(TARGET)-gcc
+INCLUDE := include/
+PROJDIRS := mem usr sys tmr
+OCOPY := avr-objcopy
+INSTALLER := avrdue
 
-SRCFILES := $(shell find $(PROJDIRS) -type f -name "\*.c")
-SRCFILES += $(shell find $(PROJDIRS) -type f -name "\*.S")
-HDRFILES := $(shell find $(PROJDIRS) -type f -name "\*.h")
+CFLAGS = -mmcu=atmega328p -I$(INCLUDE)
 
-OBJS := $(patsubst (%.c,%.S),%.o $(SRCFILES))
+SOURCEFILES := $(shell find src/ -name "*.c" -o -name "*.S")
+
+OBJS := $(SOURCEFILES)
 
 %.o: %.c 
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 %.o: %.S
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 kernel: $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) -I $(INCLUDE)
 	$(OCOPY) -O ihex -R .eeprom kernel kernel.hex
 
 
 install: kernel
-	$(ADUDE) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
+	$(INSTALLER) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
 
 .PHONY: clean
 
 clean:
-	rm kernel *.o *.hex
+	rm kernel kernel.hex
