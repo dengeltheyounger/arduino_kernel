@@ -1,10 +1,14 @@
-TARGET = avr
-CC = $(TARGET)-gcc
+TARGET := avr
+CC := $(TARGET)-gcc
 PROJDIRS := mem usr sys tmr
+OCOPY := avr-objcopy
+INSTALLER := avrdue
 
 CFLAGS = -mmcu=atmega328p
 
-OBJS = $(wildcard *.c) $(foreach DIR,$(PROJDIRS),$(wildcard $(PROJDIRS)/*.c))
+SOURCEFILES := $(wildcard *.c) $(wildcard .S) $(wildcard */*.c) $(wildcard */*.S)
+
+OBJS := $(SOURCEFILES)
 
 %.o: %.c 
 	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
@@ -18,7 +22,7 @@ kernel: $(OBJS)
 
 
 install: kernel
-	$(ADUDE) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
+	$(INSTALLER) -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -U flash:w:kernel.hex
 
 .PHONY: clean
 
