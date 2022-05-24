@@ -1,10 +1,10 @@
 #ifndef	USER_H
 #define	USER_H
 #include <avr/io.h>
-#include "../sys/tasks.h"
-#include "../sys/stack.h"
+#include "sys/tasks.h"
+#include "sys/stack.h"
 #include "blink.h"
-#include "../sys/request.h"
+#include "sys/request.h"
 
 /* The purpose of this is to define in the data and bss section a series
  * of variables that have currently been stored in stack. This will allow

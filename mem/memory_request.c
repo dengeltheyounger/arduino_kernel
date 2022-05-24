@@ -1,4 +1,4 @@
-#include "memory_request.h"
+#include "mem/memory_request.h"
 
 #ifdef	MEMORY_REQUESTED
 
