@@ -5,17 +5,17 @@ PROJDIRS := mem usr sys tmr
 OCOPY := avr-objcopy
 INSTALLER := avrdue
 
-CFLAGS = -mmcu=atmega328p
+CFLAGS = -mmcu=atmega328p -I$(INCLUDE)
 
-SOURCEFILES := $(wildcard *.c) $(wildcard .S) $(wildcard */*.c) $(wildcard */*.S)
+SOURCEFILES := $(shell find src/ -name "*.c" -o -name "*.S")
 
 OBJS := $(SOURCEFILES)
 
 %.o: %.c 
-	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS) -I $(INCLUDE)
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 %.o: %.S
-	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS) -I $(INCLUDE
+	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 kernel: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS) -I $(INCLUDE)
