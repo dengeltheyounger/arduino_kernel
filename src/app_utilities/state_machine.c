@@ -11,25 +11,22 @@ struct state *Do_State(struct state *s)
 	return next;
 }
 
-enum sm_ret Run_State_Machine(struct state_machine sm)
+void Run_State_Machine(struct state_machine *sm)
 {
-	struct state *next;
 
-	if (sm->current == NULL)
-	{
-		return init_state_empty;
-	}
+	sm->init_state_machine(sm);
 
-	while (1)
-	{
-		next = Do_State(sm->current);
-		
-		if (next == NULL)
-		{
-			return next_state_empty;
-		}
+	sm->do_state_machine(sm);
 
-		sm->prev = sm->current;
-		sm->current = sm->next;
-	}
+	sm->deinit_state_machine(sm);
+}
+
+void empty_state_machine_handler(struct state_machine *sm)
+{
+	return;
+}
+
+void empty_state_handler(struct state *s)
+{
+	return;
 }
