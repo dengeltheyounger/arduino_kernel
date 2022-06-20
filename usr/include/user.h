@@ -3,7 +3,6 @@
 #include <avr/io.h>
 #include "sys/tasks.h"
 #include "sys/stack.h"
-#include "blink.h"
 #include "sys/request.h"
 
 /* The purpose of this is to define in the data and bss section a series
@@ -24,11 +23,13 @@
 // These are macros that relate to serial communicate, if desired
 // Remove this macro in order to remove the code associated with usart
 #define	USART_ENABLED
+#undef	USART_ENABLED
 // Define CPU frequency for UBR calculation
 #ifndef	F_OSC
 #define	F_OSC	16UL
 #endif
 
+#ifdef	USART_ENABLED
 // Define Baud rate
 #define	BAUD			9600
 
@@ -64,6 +65,7 @@
 				USART_DATA_EIGHT \
 				UBBR0 \
 
+#endif
 
 /* This will need to be defined by the user in user.c */
 extern void (*task_funct[TASK_COUNT])();
