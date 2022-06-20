@@ -1,4 +1,4 @@
-#include "usr/blink.h"
+#include "blink.h"
 
 // Red LED
 void blink1(void) {

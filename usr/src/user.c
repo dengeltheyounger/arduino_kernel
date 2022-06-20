@@ -1,4 +1,4 @@
-#include "usr/user.h"
+#include "user.h"
 
 // User must define task funct array here
 

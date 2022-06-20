@@ -1,7 +1,7 @@
 #include "sys/tasks.h"
 #include "tmr/timer.h"
 #include "sys/system.h"
-#include "usr/user.h"
+#include "user.h"
 #include "sys/stack.h"
 
 // This is mainly declared in case we wish to use flash
