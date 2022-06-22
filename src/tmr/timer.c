@@ -21,11 +21,13 @@ void set_usr_timer() {
 
 	TCNT = 0;
 
-	OCR0A = 4;
+	OCR0A = 50;
 
 	TCCR0A = 0;
 	TCCR0A |= (1 << WGM01);
-	TCCR0B |= (1 << CS01);
+	TCCR0B |= ((1 << CS11) | (1 << CS10));
 	TIMSK0 |= (1 << OCIE0A);
 	sei();
 }
+
+	

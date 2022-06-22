@@ -4,6 +4,7 @@
 #include "sys/tasks.h"
 #include "sys/stack.h"
 #include "sys/request.h"
+#include "tmr/software_timer.h"
 
 /* The purpose of this is to define in the data and bss section a series
  * of variables that have currently been stored in stack. This will allow
@@ -73,6 +74,10 @@ extern void (*task_funct[TASK_COUNT])();
 extern struct task tasks[TASK_COUNT];
 
 extern struct task *curr;
+
+extern volatile struct software_timer tmr_arr[];
+
+extern volatile uint8_t tmr_arr_size;
 
 extern struct stack s;
 

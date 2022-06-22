@@ -18,6 +18,12 @@ struct task k = {
 
 struct task *curr = &k;
 
+volatile struct software_timer tmr_arr[] = {
+
+};
+
+volatile uint8_t tmr_arr_size = 0;
+
 uint8_t stack_space[TASK_COUNT*STACK_SIZE] = {0};
 
 struct stack s = { 

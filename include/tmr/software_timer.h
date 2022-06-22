@@ -5,19 +5,20 @@
 
 enum timer_state
 {
-	timer_started,
-	timer_stopped
+	timer_stopped = 0,
+	timer_started = 1
 };
 
 struct software_timer
 {
 	uint8_t id;
 	uint32_t period;
+	uint32_t counter;
 	enum timer_state state;
 	void (*callback)();
-};
+}__attribute__((packed));
 
-void init_software_timers(struct software_timer *tmr_arr, uint8_t size);
+void init_software_timers();
 
 void timer_start(struct software_timer *tmr);
 
