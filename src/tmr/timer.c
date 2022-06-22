@@ -19,7 +19,7 @@ void set_usr_timer() {
 	
 	cli();
 
-	TCNT = 0;
+	TCNT0 = 0;
 
 	OCR0A = 50;
 

@@ -6,7 +6,7 @@ PROJDIRS := mem usr sys tmr
 OCOPY := avr-objcopy
 INSTALLER := avrdue
 
-CFLAGS = -mmcu=atmega328p -I$(INCLUDE)
+CFLAGS = -mmcu=atmega328p -I$(INCLUDE) -I$(USER_INCLUDE)
 
 SOURCEFILES := $(shell find . -name "*.c")
 SOURCEFILES += $(shell find . -name "*.S")
@@ -20,7 +20,7 @@ OBJS := $(SOURCEFILES)
 	$(CC) $(CFLAGS) -c -o $@ $< $(CFLAGS)
 
 kernel: $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS) -I $(INCLUDE) -I $(USER_INCLUDE)
+	$(CC) -o $@ $^ $(CFLAGS) 
 	$(OCOPY) -O ihex -R .eeprom kernel kernel.hex
 
 

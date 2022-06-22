@@ -3,6 +3,7 @@
 #include "sys/system.h"
 #include "user.h"
 #include "sys/stack.h"
+#include "tmr/software_timer.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
@@ -36,7 +37,9 @@ int main() {
 
 
 	// Set the timer
-	set_timer();
+	init_software_timers();
+	set_sys_timer();
+	set_usr_timer();
 	
 	/* This will jump to the house keeper. The house keeper will
 	 * find a new task and do some house keeping stuff

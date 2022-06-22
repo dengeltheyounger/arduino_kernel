@@ -1,6 +1,8 @@
 #ifndef	USER_H
 #define	USER_H
 #include <avr/io.h>
+#include <stdint.h>
+#include <stddef.h>
 #include "sys/tasks.h"
 #include "sys/stack.h"
 #include "sys/request.h"
@@ -15,6 +17,8 @@
  */
 // This concerns the total number of tasks
 #define	TASK_COUNT	4
+// This concerns the total number of software timers
+#define	SOFTWARE_TIMER_COUNT	1
 // The size of a given task's stack
 #define	STACK_SIZE	32
 // Total number of requests allowed.
@@ -76,8 +80,6 @@ extern struct task tasks[TASK_COUNT];
 extern struct task *curr;
 
 extern volatile struct software_timer tmr_arr[];
-
-extern volatile uint8_t tmr_arr_size;
 
 extern struct stack s;
 
