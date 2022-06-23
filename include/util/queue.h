@@ -5,9 +5,10 @@
 
 struct queue
 {
-	uint8_t queue_size;
-	uint8_t head;
-	uint8_t tail;
+	uint16_t queue_size;
+	uint16_t capacity;
+	uint16_t head;
+	uint16_t tail;
 	void *items[];
 }__attribute__((packed));
 

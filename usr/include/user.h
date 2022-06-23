@@ -18,7 +18,7 @@
 // This concerns the total number of tasks
 #define	TASK_COUNT	4
 // This concerns the total number of software timers
-#define	SOFTWARE_TIMER_COUNT	1
+#define	SOFTWARE_TIMER_COUNT	5
 // The size of a given task's stack
 #define	STACK_SIZE	32
 // Total number of requests allowed.

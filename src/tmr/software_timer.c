@@ -1,10 +1,15 @@
 #include <avr/interrupt.h>
+#include <string.h>
 #include "user.h"
 #include "tmr/software_timer.h"
+
+#define	SOFTWARE_TIMER_ITERATIONS	5
 
 extern volatile struct sys_clock system_time;
 
 extern volatile struct software_timer tmr_arr[];
+
+typedef void (*software_timer_callback)();
 
 volatile struct software_timer *tmr_arr_ptr[ SOFTWARE_TIMER_COUNT ];
 
@@ -17,12 +22,18 @@ volatile struct queue tmr_callback_queue = {
 	.items = { [0 ... SOFTWARE_TIMER_COUNT - 1] = 0 }
 };
 
+/*
+ * Initialize the timers by putting the stopped timers in the back and the
+ * started timers in the front. For each started timer, set the counter to the
+ * period.
+ */
 void init_software_timers() {
 	uint8_t back = SOFTWARE_TIMER_COUNT - 1;
 	uint8_t front = 0;
 
 	for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 		if (tmr_arr[i].state == timer_started) {
+			tmr_arr[i].counter = tmr_arr[i].period;
 			tmr_arr_ptr[front++] = &tmr_arr[i];
 		}
 
@@ -30,9 +41,19 @@ void init_software_timers() {
 			tmr_arr_ptr[back--] = &tmr_arr[i];
 		}
 
+		else {
+			continue;
+		}
+
 	}
 }
 
+/*
+ * When starting a timer, figure out where the first stopped timer is at.
+ * After that, continue searching for the timer to be started. Swap them
+ * if the timer to be started is found in the list of stopped timers.
+ * Initialize the started timer with the counter being equal to the period.
+ */
 void timer_start(struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
@@ -50,29 +71,34 @@ void timer_start(struct software_timer *tmr) {
 			tmr_arr_ptr[i] = tmr_arr_ptr[j];
 			tmr_arr_ptr[j] = tmr_tmp;
 			tmr->state = timer_started;
-			tmr->counter = 0;
+			tmr->counter = tmr->period;
 		}
 	}
 }
 
+/*
+ * Find the position of the timer to stop. After that, determine whether or not
+ * we reached the end of the software timers. If we found a timer, then i 
+ * should be less than the total number of software timers. If so, then we
+ * memmove the remaining timers, and then throw the software timer being
+ * stopped in the back.
+ */
 void timer_stop(struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
 	uint8_t j = 0;
+	uint8_t timers_remaining = 0;
 
 	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 		if (tmr_arr_ptr[i]->id == tmr->id) {
 			break;
 		}
 	}
-
-	for (j = i+1; j < SOFTWARE_TIMER_COUNT; ++j) {
-		if (tmr_arr_ptr[j]->state == timer_stopped) {
-			tmr_tmp = tmr_arr_ptr[i];
-			tmr_arr_ptr[i] = tmr_arr_ptr[j-1];
-			tmr_arr_ptr[j] = tmr_tmp;
-			tmr->state = timer_stopped;
-		}
+		
+	if (i != SOFTWARE_TIMER_COUNT) {
+		timers_remaining = SOFTWARE_TIMER_COUNT - i + 1;
+		memmove(&tmr_arr_ptr[i], &tmr_arr_ptr[i+1], timers_remaining);
+		tmr_arr_ptr[SOFTWARE_TIMER_COUNT - 1] = tmr;
 	}
 }
 
@@ -90,7 +116,10 @@ ISR(TIMER0_COMPA_vect) {
 
 	void (*callback)();
 
-	if (++software_timer_iteration % SOFTWARE_TIMER_COUNT == 0) {
+	software_timer_iteration = ++software_timer_iteration % 
+		SOFTWARE_TIMER_ITERATIONS;
+
+	if (software_timer_iteration == 0) {
 			
 		for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 			if (tmr_arr_ptr[i]->state == timer_stopped) {
@@ -100,15 +129,32 @@ ISR(TIMER0_COMPA_vect) {
 			tmr_arr_ptr[i]->counter--;
 
 			if (tmr_arr_ptr[i]->counter == 0) {
-				enqueue(&tmr_callback_queue, 
-					(void *) tmr_arr_ptr[i]->callback);
+
+				if (tmr_callback_queue.capacity + 1 > 
+					tmr_callback_queue.queue_size) {
+
+					break;
+				}
+
+				tmr_callback_queue.items[tmr_callback_queue.tail] 
+					= tmr_arr_ptr[i]->callback;
+
+				tmr_callback_queue.capacity++;
+				tmr_callback_queue.tail = 
+					++(tmr_callback_queue.tail) % 
+					tmr_callback_queue.queue_size;
 			}
 		}
 	}
 
-	callback = dequeue(&tmr_callback_queue);
+	if (tmr_callback_queue.capacity != 0) {
+		tmr_callback_queue.capacity--;
 
-	if (callback != NULL) {
-		callback();
+		if (tmr_callback_queue.items[tmr_callback_queue.head] 
+			!= NULL) {
+
+			((software_timer_callback)
+			tmr_callback_queue.items[tmr_callback_queue.head++])();
+		}
 	}
 }
