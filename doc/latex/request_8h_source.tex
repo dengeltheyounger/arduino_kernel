@@ -1,0 +1,38 @@
+\hypertarget{request_8h_source}{}\doxysection{request.\+h}
+\label{request_8h_source}\index{include/sys/request.h@{include/sys/request.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef REQUEST\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define REQUEST\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stdlib.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include "{}tasks.h"{}}}
+\DoxyCodeLine{6 }
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{keyword}{enum} active\_req\_status \{}
+\DoxyCodeLine{9     inactive = 0,}
+\DoxyCodeLine{10     active = 1}
+\DoxyCodeLine{11 \};}
+\DoxyCodeLine{12 }
+\DoxyCodeLine{13 \textcolor{keyword}{struct }\mbox{\hyperlink{structrequest__entry}{request\_entry}} \{}
+\DoxyCodeLine{14     uint32\_t value;}
+\DoxyCodeLine{15 \};}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structtask}{task}} tasks[];}
+\DoxyCodeLine{18 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structrequest__entry}{request\_entry}} requests [];}
+\DoxyCodeLine{19 \textcolor{keyword}{extern} \textcolor{keywordtype}{int} request\_array[];}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#include "{}system.h"{}}}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{comment}{/* Add the task to the next spot in the array */}}
+\DoxyCodeLine{24 \textcolor{keywordtype}{void} add\_req\_entry(uint8\_t task\_ndx, uint32\_t value);}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 }
+\DoxyCodeLine{27 \textcolor{comment}{/* Shift struct values through the first inactive index.}}
+\DoxyCodeLine{28 \textcolor{comment}{ * This way, index 0 has the values of index 1 and so on.}}
+\DoxyCodeLine{29 \textcolor{comment}{ */}}
+\DoxyCodeLine{30 \textcolor{keywordtype}{void} check\_req\_top();}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,37 @@
+\hypertarget{software__timer_8h_source}{}\doxysection{software\+\_\+timer.\+h}
+\label{software__timer_8h_source}\index{include/tmr/software\_timer.h@{include/tmr/software\_timer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef SOFTWARE\_TIMER\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define SOFTWARE\_TIMER\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}util/queue.h"{}}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#if USE\_SOFTWARE\_TIMER == 1}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{keyword}{enum} timer\_state}
+\DoxyCodeLine{9 \{}
+\DoxyCodeLine{10     timer\_stopped = 0,}
+\DoxyCodeLine{11     timer\_started = 1}
+\DoxyCodeLine{12 \};}
+\DoxyCodeLine{13 }
+\DoxyCodeLine{14 \textcolor{keyword}{struct }software\_timer}
+\DoxyCodeLine{15 \{}
+\DoxyCodeLine{16     uint8\_t id;}
+\DoxyCodeLine{17     uint32\_t period;}
+\DoxyCodeLine{18     uint32\_t counter;}
+\DoxyCodeLine{19     \textcolor{keyword}{enum} timer\_state state;}
+\DoxyCodeLine{20     void (*callback)();}
+\DoxyCodeLine{21 \}\_\_attribute\_\_((packed));}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{keywordtype}{void} init\_software\_timers();}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25 \textcolor{keywordtype}{void} software\_timer\_start(\textcolor{keyword}{volatile} \textcolor{keyword}{struct} software\_timer *tmr);}
+\DoxyCodeLine{26 }
+\DoxyCodeLine{27 \textcolor{keywordtype}{void} software\_timer\_stop(\textcolor{keyword}{volatile} \textcolor{keyword}{struct} software\_timer *tmr);}
+\DoxyCodeLine{28 }
+\DoxyCodeLine{29 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{30 }
+\DoxyCodeLine{31 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

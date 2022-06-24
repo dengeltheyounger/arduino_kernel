@@ -1,0 +1,65 @@
+\hypertarget{user_8h_source}{}\doxysection{user.\+h}
+\label{user_8h_source}\index{usr/include/user.h@{usr/include/user.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef USER\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define USER\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <avr/io.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <stddef.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}sys/tasks.h"{}}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include "{}sys/stack.h"{}}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include "{}sys/request.h"{}}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include "{}tmr/software\_timer.h"{}}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 \textcolor{comment}{// These are macros that relate to serial communicate, if desired}}
+\DoxyCodeLine{12 \textcolor{comment}{// Remove this macro in order to remove the code associated with usart}}
+\DoxyCodeLine{13 \textcolor{comment}{// Define CPU frequency for UBR calculation}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#ifndef F\_OSC}}
+\DoxyCodeLine{15 \textcolor{preprocessor}{\#define F\_OSC   16UL}}
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18 \textcolor{comment}{/* The purpose of this is to define in the data and bss section a series}}
+\DoxyCodeLine{19 \textcolor{comment}{ * of variables that have currently been stored in stack. This will allow}}
+\DoxyCodeLine{20 \textcolor{comment}{ * the user more flexibility (although will require better understanding of}}
+\DoxyCodeLine{21 \textcolor{comment}{ * the kernel}}
+\DoxyCodeLine{22 \textcolor{comment}{ *}}
+\DoxyCodeLine{23 \textcolor{comment}{ * The data structures are declared here and then defined in the data structure}}
+\DoxyCodeLine{24 \textcolor{comment}{ */}}
+\DoxyCodeLine{25 \textcolor{comment}{// This concerns the total number of tasks}}
+\DoxyCodeLine{26 \textcolor{preprocessor}{\#define TASK\_COUNT  1}}
+\DoxyCodeLine{27 \textcolor{comment}{// This concerns the total number of software timers}}
+\DoxyCodeLine{28 }
+\DoxyCodeLine{29 \textcolor{comment}{// The size of a given task's stack}}
+\DoxyCodeLine{30 \textcolor{preprocessor}{\#define STACK\_SIZE  32}}
+\DoxyCodeLine{31 \textcolor{comment}{// Total number of requests allowed.}}
+\DoxyCodeLine{32 \textcolor{comment}{// Currently, this must be equal to the number of tasks}}
+\DoxyCodeLine{33 \textcolor{preprocessor}{\#define REQUEST\_MAX TASK\_COUNT}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#define USE\_EEPROM\_MEMORY   0}}
+\DoxyCodeLine{36 }
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#define USE\_SOFTWARE\_TIMER  0}}
+\DoxyCodeLine{38 \textcolor{preprocessor}{\#if USE\_SOFTWARE\_TIMER == 1}}
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#define SOFTWARE\_TIMER\_COUNT    5}}
+\DoxyCodeLine{40 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42 \textcolor{comment}{/* This will need to be defined by the user in user.c */}}
+\DoxyCodeLine{43 \textcolor{keyword}{extern} void (*task\_funct[TASK\_COUNT])();}
+\DoxyCodeLine{44 }
+\DoxyCodeLine{45 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structtask}{task}} tasks[TASK\_COUNT];}
+\DoxyCodeLine{46 }
+\DoxyCodeLine{47 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structtask}{task}} *curr;}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49 \textcolor{preprocessor}{\#if USE\_SOFTWARE\_TIMER == 1}}
+\DoxyCodeLine{50 \textcolor{keyword}{extern} \textcolor{keyword}{volatile} \textcolor{keyword}{struct }software\_timer tmr\_arr[];}
+\DoxyCodeLine{51 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{53 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structstack}{stack}} s;}
+\DoxyCodeLine{54 }
+\DoxyCodeLine{55 \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structrequest__entry}{request\_entry}} requests[REQUEST\_MAX];}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{57 \textcolor{keyword}{extern} \textcolor{keywordtype}{int} request\_array[REQUEST\_MAX];}
+\DoxyCodeLine{58 }
+\DoxyCodeLine{59 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

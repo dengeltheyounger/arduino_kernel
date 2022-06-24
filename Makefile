@@ -6,7 +6,7 @@ PROJDIRS := mem usr sys tmr
 OCOPY := avr-objcopy
 INSTALLER := avrdue
 
-CFLAGS = -mmcu=atmega328p -I$(INCLUDE) -I$(USER_INCLUDE)
+CFLAGS = -mmcu=atmega328p -I$(INCLUDE) -I$(USER_INCLUDE) -ggdb
 
 SOURCEFILES := $(shell find . -name "*.c")
 SOURCEFILES += $(shell find . -name "*.S")

@@ -1,10 +1,16 @@
 #include "util/queue.h"
 
 /*
- * Determine whether or not there is enough capacity. If not, then return
- * false.
- * After that, add the next item, and then increment the tail.
- * Set the new capacity.
+ *	\brief Add an item into a queue.
+ *
+ *	\param q
+ *	The queue into which the item will be added.
+ *
+ * 	\param item
+ * 	The item to be added into the queue.
+ *
+ * 	\ret
+ * 	0 for error and 1 for success.
  */
 int enqueue(struct queue *q, void *item) {
 	uint16_t tail = q->tail;
@@ -24,9 +30,13 @@ int enqueue(struct queue *q, void *item) {
 }
 
 /*
- * Check to see if the capacity is greater than 0. If not, return NULL.
- * Get the next item from the queue. Increment the head, and decrement the
- * capacity. After that, return the item.
+ *	\brief Remove an item from a queue.
+ *
+ *	\param q
+ *	The queue from which the item will be removed.
+ *
+ *	\ret
+ *	NULL if the queue is empty, or the item (which is a pointer).
  */
 void *dequeue(struct queue *q) {
 	uint16_t head = q->head;

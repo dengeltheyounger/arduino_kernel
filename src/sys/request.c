@@ -1,5 +1,16 @@
 #include "sys/request.h"
 
+/*!
+ *	\brief Add a task to the list of sleeping tasks.
+ *
+ *	The request data structure is effectively an ordered queue.
+ *
+ *	\param task_ndx
+ *	The index of the task that will be sleeping.
+ *
+ *	\param value
+ *	The length of time that the task will sleep.
+ */
 void add_req_entry(uint8_t task_ndx, uint32_t value) {
 	uint8_t task_tmp = 0;
 
@@ -41,6 +52,12 @@ void add_req_entry(uint8_t task_ndx, uint32_t value) {
 	}
 }
 
+/*!
+ *	\brief Determine if there are tasks to be woken.
+ *
+ *	This function checks to first element to see if there's something to be
+ *	awoken. If a task can be awoken, then any others will also be awoken.
+ */
 void check_req_top() {
 	int wakers_found = 1;
 	uint8_t task_ndx = 0;

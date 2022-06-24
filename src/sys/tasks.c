@@ -1,5 +1,20 @@
 #include "sys/tasks.h"
 
+/*!
+ *	\brief Initialize a task.
+ *
+ *	This consists of setting up the argument registers for "do_task" and
+ *	then setting the task as runnable.
+ *
+ *	\param p
+ *	The previous task struct (since a linked list is used).
+ *
+ *	\param current
+ *	The task struct currently being initialized.
+ *
+ *	\param task_funct
+ *	The task function that associated with current. This should be removed.
+ */
 void make_task(struct task *p, struct task *current, void (*task_funct)()) {
 
 	if (p) {
@@ -15,6 +30,29 @@ void make_task(struct task *p, struct task *current, void (*task_funct)()) {
 	current->state = runnable;
 }
 
+/*!
+ *	\brief Set up the stack for a given task.
+ *
+ *	The complexity is that the address of do_task needs to be added to the
+ *	stack. The reason is that the housekeeper will then pop the address of
+ *	do_task from the task's stack when the task is selected.
+ *
+ *	\param t
+ *	The task for which the stack needs to be set up.
+ *
+ *	\param task_num
+ *	The total number of tasks.
+ *
+ *	\param s
+ *	The stack that the tasks will use.
+ *
+ *	\param stack_num
+ *	The total number of stacks to be parceled.
+ *
+ *	\ret
+ *	0 if there are more stacks than tasks, 1 if otherwise.
+ *
+ */
 int set_task_stacks(struct task *t, size_t task_num,
 			struct stack *s, size_t stack_num) {
 	// Exit error if there are more tasks than stacks
@@ -59,11 +97,26 @@ int set_task_stacks(struct task *t, size_t task_num,
 	return 1;
 }
 
+/*!
+ *	\brief End a task.
+ *
+ *	This consists of setting a task state to complete. This will cause the
+ *	task to be ignored in the linked list.
+ *
+ *	\param t
+ *	The task to be ended.
+ */
 void end_task(struct task *t) {
 	t->state = complete;
 	return;
 }
 
+/*!
+ *	\brief Run the task's callback.
+ *
+ *	\param t
+ *	The task
+ */
 void do_task(struct task *t) {
 	
 	t->task_funct();
@@ -73,6 +126,12 @@ void do_task(struct task *t) {
 }
 
 
+/*!
+ *	\brief Find the next task to run.
+ *
+ *	\ret
+ *	This always returns 1 if a runnable task was found, 0 otherwise.
+ */
 unsigned int get_next_task() {
 	struct task *tmp = curr;
 	struct task *t = curr->next;

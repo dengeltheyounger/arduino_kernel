@@ -11,8 +11,13 @@ extern struct stack s;
 extern struct task tasks[TASK_COUNT];
 extern struct task *curr;
 
-/* Main kernel code. It sets up tasks, stack, sets timer and then goes */
 
+/*!
+ *	\brief Initialize the kernel and start the schedule.
+ *	Main begins by initializing tasks. After that, it sets their stacks.
+ *	Following that, the timers are initialized. After that, control is
+ *	given to the scheduler.
+ */
 int main() {
 	int result = 0;
 	// Create linked list
@@ -37,10 +42,9 @@ int main() {
 
 
 	// Set the timer
-	init_software_timers();
-	set_sys_timer();
-	set_usr_timer();
 	
+	init_timers();
+
 	/* This will jump to the house keeper. The house keeper will
 	 * find a new task and do some house keeping stuff
 	 */
@@ -48,5 +52,5 @@ int main() {
 	
 	/* This should never be reached */
 error:
-	return 0;
+	while (1);
 }

@@ -1,10 +1,31 @@
 #include "mem/memory.h"
 
-#ifdef	MEMORY_REQUESTED
+#if USE_EEPROM_MEMORY == 1
 
 #define ITERATE_ZONE_STRUCT(ZONE)	\
 	for (int i = 0; i < ZONE ## _req_count; ++i)	\
 
+/*!
+ *	\brief Write a buffer to the memory zone.
+ *
+ *	The idea of the memory zone is to make it convenient to write to 
+ *	different memory devices easily. I may end up changing this, however.
+ *
+ *	\param task_id
+ *	The id of the task that "owns" that part of memory.
+ *
+ *	\param begin
+ *	Offset into the memory space owned by the task.
+ *
+ *	\param end
+ *	End of the offset into the memory space owned by the task.
+ *
+ *	\param buffer
+ *	The buffer to write into memory.
+ *
+ *	\ret
+ *	1 for success or 0 for error.
+ */
 int memory_write(int task_id,
 		enum memory_space zone,
 		uint16_t begin,
@@ -51,6 +72,24 @@ int memory_write(int task_id,
 	return 1;
 }
 
+/*!
+ *	\brief Read from memory into a buffer.
+ *
+ *	\param task_id
+ *	The id of the task that "owns" the memory space to be accessed.
+ *
+ *	\param begin
+ *	The offset into the memory space owned by the task.
+ *
+ *	\param end
+ *	The end index of the memory owned by the task to be accessed.
+ *
+ *	\param buffer
+ *	The buffer into which read memory should be stored.
+ *
+ *	\ret
+ *	0 for error and 1 for success.
+ */
 int memory_read(int task_id,
 		enum memory_space zone,
 		uint16_t begin,

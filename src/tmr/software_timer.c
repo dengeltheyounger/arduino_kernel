@@ -3,6 +3,8 @@
 #include "user.h"
 #include "tmr/software_timer.h"
 
+#if USE_SOFTWARE_TIMER == 1
+
 #define	SOFTWARE_TIMER_ITERATIONS	5
 
 extern volatile struct sys_clock system_time;
@@ -54,7 +56,7 @@ void init_software_timers() {
  * if the timer to be started is found in the list of stopped timers.
  * Initialize the started timer with the counter being equal to the period.
  */
-void timer_start(struct software_timer *tmr) {
+void software_timer_start(volatile struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
 	uint8_t j = 0;
@@ -83,7 +85,7 @@ void timer_start(struct software_timer *tmr) {
  * memmove the remaining timers, and then throw the software timer being
  * stopped in the back.
  */
-void timer_stop(struct software_timer *tmr) {
+void software_timer_stop(volatile struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
 	uint8_t j = 0;
@@ -158,3 +160,5 @@ ISR(TIMER0_COMPA_vect) {
 		}
 	}
 }
+
+#endif

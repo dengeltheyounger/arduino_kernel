@@ -1,0 +1,27 @@
+\hypertarget{memory__request_8h_source}{}\doxysection{memory\+\_\+request.\+h}
+\label{memory__request_8h_source}\index{usr/include/memory\_request.h@{usr/include/memory\_request.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef MEMORY\_REQUEST\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define MEMORY\_REQUEST\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stddef.h>}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#if USE\_EEPROM\_MEMORY == 1}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{keyword}{struct }memory\_request \{}
+\DoxyCodeLine{9     uint8\_t task\_ndx;}
+\DoxyCodeLine{10     uint8\_t memory\_space;}
+\DoxyCodeLine{11     uint16\_t desired\_pages;}
+\DoxyCodeLine{12 \};}
+\DoxyCodeLine{13 }
+\DoxyCodeLine{14 \textcolor{keyword}{extern} \textcolor{keyword}{struct }memory\_request *eeprom\_ptr;}
+\DoxyCodeLine{15 \textcolor{keyword}{extern} \textcolor{keyword}{struct }memory\_request *flash\_ptr;}
+\DoxyCodeLine{16 \textcolor{keyword}{extern} uint8\_t eeprom\_req\_count;}
+\DoxyCodeLine{17 \textcolor{keyword}{extern} uint8\_t flash\_req\_count;}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

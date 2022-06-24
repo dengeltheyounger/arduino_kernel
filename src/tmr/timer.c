@@ -15,6 +15,16 @@ void set_sys_timer() {
 	sei();
 }
 
+void init_timers() {
+#if USE_SOFTWARE_TIMER == 1
+	init_software_timers();
+	set_usr_timer();
+#endif
+	set_sys_timer();
+}
+
+#if USE_SOFTWARE_TIMER == 1
+
 void set_usr_timer() {
 	
 	cli();
@@ -30,4 +40,4 @@ void set_usr_timer() {
 	sei();
 }
 
-	
+#endif	

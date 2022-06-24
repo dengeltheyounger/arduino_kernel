@@ -1,0 +1,23 @@
+\hypertarget{stack_8h_source}{}\doxysection{stack.\+h}
+\label{stack_8h_source}\index{include/sys/stack.h@{include/sys/stack.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef STACK\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define STACK\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stddef.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <avr/io.h>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{comment}{/* A big allocated stack. This is portioned out as needed for the various}}
+\DoxyCodeLine{9 \textcolor{comment}{ * tasks.}}
+\DoxyCodeLine{10 \textcolor{comment}{ */}}
+\DoxyCodeLine{11 \textcolor{keyword}{struct }\mbox{\hyperlink{structstack}{stack}} \{}
+\DoxyCodeLine{12     \textcolor{keywordtype}{void} *stack\_space;}
+\DoxyCodeLine{13     \textcolor{keywordtype}{size\_t} stack\_num;}
+\DoxyCodeLine{14     \textcolor{keywordtype}{size\_t} stack\_size;}
+\DoxyCodeLine{15 \};}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

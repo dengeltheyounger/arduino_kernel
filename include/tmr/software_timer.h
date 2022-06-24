@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "util/queue.h"
 
+#if USE_SOFTWARE_TIMER == 1
+
 enum timer_state
 {
 	timer_stopped = 0,
@@ -20,8 +22,10 @@ struct software_timer
 
 void init_software_timers();
 
-void timer_start(struct software_timer *tmr);
+void software_timer_start(volatile struct software_timer *tmr);
 
-void timer_stop(struct software_timer *tmr);
+void software_timer_stop(volatile struct software_timer *tmr);
+
+#endif
 
 #endif
