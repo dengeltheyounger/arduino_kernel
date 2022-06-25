@@ -1,6 +1,7 @@
 #ifndef	SPI_H
 #define	SPI_H
 #include <avr/io.h>
+#include <stdint.h>
 
 #if USE_ETHERNET == 1
 
@@ -14,9 +15,7 @@
 
 void spi_init();
 
-void spi_send( uint8_t *buffer, uint16_t bytes );
-
-void spi_receive( uint8_t *buffer, uint16_t bytes );
+uint8_t do_spi(uint8_t byte);
 
 #endif
 

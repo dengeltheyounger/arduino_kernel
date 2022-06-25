@@ -36,6 +36,10 @@
 
 #define	USE_ETHERNET		1
 
+#if USE_ETHERNET == 1
+void (*construct_ethernet_handler)(struct ethernet_handle **handle);
+#endif
+
 #define	USE_SOFTWARE_TIMER	0
 #if USE_SOFTWARE_TIMER == 1
 #define	SOFTWARE_TIMER_COUNT	5

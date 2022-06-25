@@ -1,4 +1,5 @@
 #include "user.h"
+#include "net/wiznet.h"
 
 // User must define task funct array here
 
@@ -110,6 +111,23 @@ volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
 		.callback = timer4_callback
 	}
 };
+
+#if USE_ETHERNET == 1
+/*!
+ *	\{
+ *	There isn't really any good way I can think of doing this. Basically, 
+ *	I want to make it so that you can easily construct a handler for a
+ *	given ethernet type (wiznet, for example), while also keeping things
+ *	generic as they can be. For that reason, the user defines the ethernet
+ *	handle constructor here, which will then handle setting all of the
+ *	function pointers for the ethernet_handle.
+ */
+void (*construct_ethernet_handler)(struct ethernet_handle **handle) = 
+	construct_w5500_eth_handle;
+
+/*!
+ *	\}
+#endif
 
 #endif
 

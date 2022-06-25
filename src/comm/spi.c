@@ -25,6 +25,9 @@ void spi_init() {
 /*!
  *	\brief Send one byte over SPI.
  *
+ *	do_spi is the only available function because often the exact procedure
+ *	for reading or writing multiple bytes can vary between devices.
+ *
  *	\param byte
  *	The byte to send.
  */
@@ -34,38 +37,6 @@ uint8_t do_spi(uint8_t byte) {
 	while (!(SPSR & (1 << SPIF));
 
 	return SPDR;
-}
-
-/*!
- *	\brief Send a string over SPI.
- *
- *	\param buffer
- *	The buffer to write over SPI.
- *
- *	\param bytes
- *	The number of bytes to write.
- *
- */
-void spi_send(uint8_t *buffer, uint16_t bytes) {
-	
-	SPI_SS_LOW();
-	for (uint16_t i = 0; i < bytes; ++i) {
-		do_spi(&buffer[i]);
-	}
-
-	SPI_SS_HIGH();
-}
-
-void spi_receive(uint8_t *buffer, uint16_t bytes) {
-	uint8_t byte;
-
-	SPI_SS_LOW();
-
-	for (uint16_t i = 0; i < bytes; ++i) {
-		byte = do_spi(0xff);
-	}
-
-	SPI_SS_HIGH();
 }
 
 #endif
