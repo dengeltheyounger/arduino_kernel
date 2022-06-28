@@ -6,15 +6,15 @@
 
 #define	W5500_SOCKET_COUNT	8
 
+struct w5500_socket {
+	uint8_t socket_num;
+};
+
+
 struct w5500_control_struct {
 	uint8_t bsb : 5;
 	uint8_t rwb : 1;
 	uint8_t om : 2;
-};
-
-struct w5500_ethernet_handle {
-	struct ethernet_handle eth_handle;
-	uint8_t socket_num;
 };
 
 #define	W5500_COMMON_REG_BSB	0b00000
@@ -53,6 +53,19 @@ struct w5500_ethernet_handle {
 #define	W5500_OM_4_BYTE		0b11
 
 /*!
+ *	\{
+ *	According to the datasheet, the TX buffer is one greater than the
+
+#define	W5500_SOCKET_ID_0	W5500_SOCKET_0_REG
+#define	W5500_SOCKET_ID_1	W5500_SOCKET_1_REG
+#define	W5500_SOCKET_ID_2	W5500_SOCKET_2_REG
+#define	W5500_SOCKET_ID_3	W5500_SOCKET_3_REG
+#define	W5500_SOCKET_ID_4	W5500_SOCKET_4_REG
+#define	W5500_SOCKET_ID_5	W5500_SOCKET_5_REG
+#define	W5500_SOCKET_ID_6	W5500_SOCKET_6_REG
+#define	w5500_SOCKET_ID_7	W5500_SOCKET_7_REG
+
+/*!
  *	\brief Convert the W5500 control struct into a single uint8_t.
  *
  *	The reason for this is that we don't know what kind of endianness the 
@@ -71,16 +84,16 @@ static inline uint8_t w5500_control_select(struct W5500_control_struct *w) {
 	
 
 int w5500_send_packet(struct ethernet_handle *eth_handle, uint8_t *packet, 
-	uint16_t p_size);
+	uint32_t p_size);
 
 int w5500_receive_packet(struct ethernet_handle *eth_handle, uint8_t *packet,
-	uint16_t p_size);
+	uint32_t p_size);
 
 int w5500_open_socket(struct ethernet_handle *eth_handle);
 
 int w5500_close_socket(struct ethernet_handle *eth_handle);
 
-void construct_w5500_eth_handle(struct ethernet_handle **handle); 
+void construct_w5500_eth_handle(struct ethernet_handle *handle); 
 
 #endif
 

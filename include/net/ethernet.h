@@ -4,6 +4,10 @@
 
 #if USE_ETHERNET == 1
 
+struct socket {
+	uint8_t socket_num;
+};
+
 struct ethernet_handle {
 	int (*open_socket)(struct ethernet_handle *handle);
 	int (*send_packet)(struct ethernet_handle *handle, uint8_t *buffer, 
@@ -11,6 +15,7 @@ struct ethernet_handle {
 	int (*receive_packet)(struct ethernet_handle * handle, uint8_t *buffer, 
 		uint16_t n_bytes);
 	int (*close_socket)(struct ethernet_handle *handle);
+	struct socket *s;
 };
 
 #endif
