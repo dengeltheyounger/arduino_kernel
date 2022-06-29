@@ -78,7 +78,7 @@ struct w5500_control_struct {
  *	\ret
  *	The control structure as a single unsigned char.
  */
-static inline uint8_t w5500_control_select(struct W5500_control_struct *w) {
+static inline uint8_t w5500_control_select(struct w5500_control_struct *w) {
 	return (w->bsb << 3) | (w->rwb << 2) | w->om;
 }
 	
@@ -93,7 +93,9 @@ int w5500_open_socket(struct ethernet_handle *eth_handle);
 
 int w5500_close_socket(struct ethernet_handle *eth_handle);
 
-void construct_w5500_eth_handle(struct ethernet_handle *handle); 
+void construct_w5500_eth_handle(struct ethernet_handle *handle);
+
+void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl);
 
 #endif
 

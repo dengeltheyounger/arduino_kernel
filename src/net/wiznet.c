@@ -71,6 +71,9 @@ void construct_w5500_eth_handle(struct ethernet_handle *handle) {
 	handle->s = w5500_set_socket(socket_num);
 }
 	
+void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl) {
+
+}
 
 void w5500_open_socket(struct ethernet_handle *eth_handle);
 

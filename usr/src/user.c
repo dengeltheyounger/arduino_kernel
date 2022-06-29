@@ -1,5 +1,4 @@
 #include "user.h"
-#include "net/wiznet.h"
 
 // User must define task funct array here
 
@@ -112,6 +111,8 @@ volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
 	}
 };
 
+#endif
+
 #if USE_ETHERNET == 1
 /*!
  *	\{
@@ -122,13 +123,15 @@ volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
  *	handle constructor here, which will then handle setting all of the
  *	function pointers for the ethernet_handle.
  */
-void (*construct_ethernet_handler)(struct ethernet_handle **handle) = 
+void (*construct_ethernet_handler)(struct ethernet_handle *handle) = 
 	construct_w5500_eth_handle;
+
+void (*construct_ethernet_controller)(struct ethernet_controller *eth_ctrl) =
+	construct_w5500_eth_ctrl;
 
 /*!
  *	\}
-#endif
-
+ */
 #endif
 
 
