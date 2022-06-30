@@ -40,7 +40,17 @@ void construct_w5500_eth_handle(struct ethernet_handle *handle) {
 }
 	
 void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl) {
+	struct w5500_control w_ctrl = { 0 };
+	uint8_t ctrl_byte = 0;
+	uint16_t addr;
+	w_ctrl.bsb = W5500_COMMON_REG;
+	w_ctrl.rwb = W5500_RWB_READ;
+	w_ctrl.om = OM_VARIABLE;
 
+	ctrl_byte = w5500_control_select( &w_ctrl );
+
+	
+	
 }
 
 int w5500_open_socket(struct ethernet_handle *eth_handle) {

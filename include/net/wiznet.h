@@ -18,7 +18,7 @@ struct w5500_control {
 	uint8_t om : 2;
 };
 
-#define	W5500_COMMON_REG_BSB	0b00000
+#define	W5500_COMMON_REG	0b00000
 #define	W5500_SOCKET_0_REG	0b00001
 #define	W5500_SOCKET_0_TX	0b00010
 #define	W5500_SOCKET_0_RX	0b00011
@@ -53,6 +53,54 @@ struct w5500_control {
 #define	W5500_OM_2_BYTE		0b10
 #define	W5500_OM_4_BYTE		0b11
 
+#define	W5500_COMMON_MR			0x0000
+
+#define	W5500_COMMON_GAR0		0x0001
+#define	W5500_COMMON_GAR1		0x0002
+#define	W5500_COMMON_GAR2		0x0003
+#define	W5500_COMMON_GAR3		0x0004
+
+#define	W5500_COMMON_SUBR0		0x0005
+#define	W5500_COMMON_SUBR1		0x0006
+#define	W5500_COMMON_SUBR2		0x0007
+#define	W5500_COMMON_SUBR3		0x0008
+
+#define	W5500_COMMON_SHAR0		0x0009
+#define	W5500_COMMON_SHAR1		0x000A
+#define W5500_COMMON_SHAR2		0x000B
+#define	W5500_COMMON_SHAR3		0x000C
+#define	W5500_COMMON_SHAR4		0x000D
+#define	W5500_COMMON_SHAR5		0x000E
+
+#define	W5500_COMMON_SIPR0		0x000F
+#define	W5500_COMMON_SIPR1		0x0010
+#define	W5500_COMMON_SIPR2		0x0011
+#define	W5500_COMMON_SIPR3		0x0012
+
+#define	W5500_COMMON_INTLEVEL0		0x0013
+#define	W5500_COMMON_INTLEVEL1		0x0014
+
+#define	W5500_COMMON_IR			0x0015
+#define	W5500_COMMON_IMR		0x0016
+
+#define	W5500_COMMON_SIR		0x0017
+#define	W5500_COMMON_SIMR		0x0018
+#define	W5500_COMMON_RTR0		0x0019
+#define	W5500_COMMON_RTR1		0x001A
+
+#define	W5500_COMMON_RCR		0x001B
+
+#define	W5500_COMMON_PTIMER		0x001C
+
+#define	W5500_COMMON_PMAGIC		0x001D
+
+#define	W5500_COMMON_PHAR0		0x001E
+#define	W5500_COMMON_PHAR1		0x001F
+#define	W5500_COMMON_PHAR2		0x0020
+#define	W5500_COMMON_PHAR3		0x0021
+#define	W5500_COMMON_PHAR4		0x0022
+#define	W5500_COMMON_PHAR5		0x0023
+
 /*!
  *	\{
  *	Given that the socket register is one less than the tx buffer and two
@@ -69,29 +117,55 @@ struct w5500_control {
 #define	W5500_SOCKET_ID_6	W5500_SOCKET_6_REG
 #define	W5500_SOCKET_ID_7	W5500_SOCKET_7_REG
 
-#define	ENABLE_UDP_MULTICAST		(1 << 7)
-#define	DISABLE_UDP_MULTICAST		(0 << 7)
-#define	ENABLE_MAC_FILTER		(1 << 7)
-#define	DISABLE_MAC_FILTER		(0 << 7)
+#define	W5500_RESET				(1 << 7)
+#define	W5500_WOL_ENABLE			(1 << 5)
+#define	W5500_WOL_DISABLE			(0 << 5)
+#define	W5500_PING_BLOCK_MODE_ENABLE		(1 << 4)
+#define	W5500_PING_BLOCK_MODE_DISABLE		(0 << 4)
+#define	W5500_PPOE_MODE_ENABLE			(1 << 3)
+#define	W5500_PPOE_MODE_DISABLE			(0 << 3)
+#define	W5500_FARP_ENABLE			(1 << 1)
+#define	W5500_FARP_DISABLE			(0 << 1)
 
-#define	ENABLE_BROADCAST_BLOCK		(1 << 6)
-#define	DISABLE_BROADCAST_BLOCK		(0 << 6)
+#define	W5500_ENABLE_UDP_MULTICAST		(1 << 7)
+#define	W5500_DISABLE_UDP_MULTICAST		(0 << 7)
+#define	W5500_ENABLE_MAC_FILTER			(1 << 7)
+#define	W5500_DISABLE_MAC_FILTER		(0 << 7)
 
-#define	ENABLE_N_DELAY_ACK		(1 << 5)
-#define	DISABLE_N_DELAY_ACK		(0 << 5)
+#define	W5500_ENABLE_BROADCAST_BLOCK		(1 << 6)
+#define	W5500_DISABLE_BROADCAST_BLOCK		(0 << 6)
 
-#define	MULTICAST_IGMP_V2		(0 << 5)
-#define	MULTICAST_IGMP_V1		(1 << 5)
+#define	W5500_ENABLE_N_DELAY_ACK		(1 << 5)
+#define	W5500_DISABLE_N_DELAY_ACK		(0 << 5)
 
-#define ENABLE_MULTICAST_BLOCK_MCGRAW	(1 << 5)
-#define	DISABLE_MULTICAST_BLOCK_MCGRAW	(0 << 5)
+#define	W5500_MULTICAST_IGMP_V2			(0 << 5)
+#define	W5500_MULTICAST_IGMP_V1			(1 << 5)
 
-#define	ENABLE_UNICAST_BLOCK_UDP	(1 << 4)
-#define	DISABLE_UNICAST_BLOCK_UDP	(0 << 4)
+#define W5500_ENABLE_MULTICAST_BLOCK_MCGRAW	(1 << 5)
+#define	W5500_DISABLE_MULTICAST_BLOCK_MCGRAW	(0 << 5)
 
-#define	ENABLE_IPV6_BLOCK_MCGRAW	(1 << 4)
-#define	DISABLE_IPV6_BLOCK_MCGRAW	(0 << 4)
+#define	W5500_ENABLE_UNICAST_BLOCK_UDP		(1 << 4)
+#define	W5500_DISABLE_UNICAST_BLOCK_UDP		(0 << 4)
 
+#define	W5500_ENABLE_IPV6_BLOCK_MCGRAW		(1 << 4)
+#define	W5500_DISABLE_IPV6_BLOCK_MCGRAW		(0 << 4)
+
+#define	W5500_SR7_IMR_ENABLE			(1 << 7)
+#define	W5500_SR7_IMR_DISABLE			(0 << 7)
+#define	W5500_SR6_IMR_ENABLE			(1 << 6)
+#define	W5500_SR6_IMR_DISABLE			(0 << 6)
+#define	W5500_SR5_IMR_ENABLE			(1 << 5)
+#define	W5500_SR5_IMR_DISABLE			(0 << 5)
+#define	W5500_SR4_IMR_ENABLE			(1 << 4)
+#define	W5500_SR4_IMR_DISABLE			(0 << 4)
+#define	W5500_SR3_IMR_ENABLE			(1 << 3)
+#define	W5500_SR3_IMR_DISABLE			(1 << 3)
+#define	W5500_SR2_IMR_ENABLE			(1 << 2)
+#define	W5500_SR2_IMR_DISABLE			(0 << 2)
+#define	W5500_SR1_IMR_ENABLE			(1 << 1)
+#define	W5500_SR1_IMR_DISABLE			(0 << 1)
+#define	W5500_SR0_IMR_ENABLE			(1 << 0)
+#define	W5500_SR0_IMR_DISABLE			(0 << 0)
 #define	PROTOCOL_CLOSED ((0 << 3) | (0 << 2) | (0 << 1) | (0 << 0))
 
 #define	PROTOCOL_TCP	((0 << 3) | (0 << 2) | (0 << 1) | (1 << 0))
@@ -100,6 +174,15 @@ struct w5500_control {
 
 #define	PROTOCOL_MCGRAW	((0 << 3) | (1 << 2) | (0 << 1) |(0 << 0))
 
+#define	SN_CR_OPEN				0x01
+#define	SN_CR_LISTEN				0x02
+#define	SN_CR_CONNECT				0x04
+#define	SN_CR_DISCON				0x08
+#define	SN_CR_CLOSE				0x10
+#define	SN_CR_SEND				0x20
+#define	SN_CR_SEND_MAC				0x21
+#define	SN_CR_SEND_KEEP				0x22
+#define	SN_CR_RECV				0x40
 
 /*!
  *	\brief Convert the W5500 control struct into a single uint8_t.
