@@ -6,16 +6,30 @@
 
 #define	MAC_ADDRESS_SIZE	6
 
+enum socket_protocol {
+	UDP,
+	TCP,
+	MCGRAW
+}
+
+enum socket_state {
+	SOCKET_OPEN,
+	SOCKET_CLOSED
+}
+	
+
 struct socket {
 	uint8_t socket_num;
+	enum socket_protocol protocol;
+	enum socket_state state;
 };
 
 struct ethernet_handle {
 	int (*open_socket)(struct ethernet_handle *handle);
 	int (*send_packet)(struct ethernet_handle *handle, uint8_t *buffer, 
-		uint16_t n_bytes);
+		uint32_t n_bytes);
 	int (*receive_packet)(struct ethernet_handle * handle, uint8_t *buffer, 
-		uint16_t n_bytes);
+		uint32_t n_bytes);
 	int (*close_socket)(struct ethernet_handle *handle);
 	struct socket *s;
 };

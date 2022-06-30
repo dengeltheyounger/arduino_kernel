@@ -7,11 +7,12 @@
 #define	W5500_SOCKET_COUNT	8
 
 struct w5500_socket {
-	uint8_t socket_num;
+	struct socket s;
+	uint8_t unused[0];
 };
 
 
-struct w5500_control_struct {
+struct w5500_control {
 	uint8_t bsb : 5;
 	uint8_t rwb : 1;
 	uint8_t om : 2;
@@ -54,7 +55,10 @@ struct w5500_control_struct {
 
 /*!
  *	\{
- *	According to the datasheet, the TX buffer is one greater than the
+ *	Given that the socket register is one less than the tx buffer and two
+ *	less than the rx buffer in the BSB, it is convenient to use it as a 
+ *	socket id.
+ */
 
 #define	W5500_SOCKET_ID_0	W5500_SOCKET_0_REG
 #define	W5500_SOCKET_ID_1	W5500_SOCKET_1_REG
@@ -63,7 +67,39 @@ struct w5500_control_struct {
 #define	W5500_SOCKET_ID_4	W5500_SOCKET_4_REG
 #define	W5500_SOCKET_ID_5	W5500_SOCKET_5_REG
 #define	W5500_SOCKET_ID_6	W5500_SOCKET_6_REG
-#define	w5500_SOCKET_ID_7	W5500_SOCKET_7_REG
+#define	W5500_SOCKET_ID_7	W5500_SOCKET_7_REG
+
+#define	ENABLE_UDP_MULTICAST		(1 << 7)
+#define	DISABLE_UDP_MULTICAST		(0 << 7)
+#define	ENABLE_MAC_FILTER		(1 << 7)
+#define	DISABLE_MAC_FILTER		(0 << 7)
+
+#define	ENABLE_BROADCAST_BLOCK		(1 << 6)
+#define	DISABLE_BROADCAST_BLOCK		(0 << 6)
+
+#define	ENABLE_N_DELAY_ACK		(1 << 5)
+#define	DISABLE_N_DELAY_ACK		(0 << 5)
+
+#define	MULTICAST_IGMP_V2		(0 << 5)
+#define	MULTICAST_IGMP_V1		(1 << 5)
+
+#define ENABLE_MULTICAST_BLOCK_MCGRAW	(1 << 5)
+#define	DISABLE_MULTICAST_BLOCK_MCGRAW	(0 << 5)
+
+#define	ENABLE_UNICAST_BLOCK_UDP	(1 << 4)
+#define	DISABLE_UNICAST_BLOCK_UDP	(0 << 4)
+
+#define	ENABLE_IPV6_BLOCK_MCGRAW	(1 << 4)
+#define	DISABLE_IPV6_BLOCK_MCGRAW	(0 << 4)
+
+#define	PROTOCOL_CLOSED ((0 << 3) | (0 << 2) | (0 << 1) | (0 << 0))
+
+#define	PROTOCOL_TCP	((0 << 3) | (0 << 2) | (0 << 1) | (1 << 0))
+
+#define	PROTOCOL_UDP	((0 << 3) | (0 << 2) | (1 << 1) |(0 << 0))
+
+#define	PROTOCOL_MCGRAW	((0 << 3) | (1 << 2) | (0 << 1) |(0 << 0))
+
 
 /*!
  *	\brief Convert the W5500 control struct into a single uint8_t.
@@ -78,7 +114,7 @@ struct w5500_control_struct {
  *	\ret
  *	The control structure as a single unsigned char.
  */
-static inline uint8_t w5500_control_select(struct w5500_control_struct *w) {
+static inline uint8_t w5500_control_select(struct w5500_control *w) {
 	return (w->bsb << 3) | (w->rwb << 2) | w->om;
 }
 	

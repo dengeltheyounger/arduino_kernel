@@ -1,3 +1,4 @@
+#include "comm/spi.h"
 #include "net/wiznet.h"
 
 #if USE_ETHERNET == 1
@@ -12,19 +13,19 @@
 #define	W5500_SOCKET_8		0b10000000
 
 struct w5500_socket w5500_socket_set[W5500_SOCKET_COUNT] = {
-	{ .socket_num = W5500_SOCKET_ID0 },
-	{ .socket_num = W5500_SOCKET_ID1 },
-	{ .socket_num = W5500_SOCKET_ID2 },
-	{ .socket_num = W5500_SOCKET_ID3 },
-	{ .socket_num = W5500_SOCKET_ID4 },
-	{ .socket_num = W5500_SOCKET_ID5 },
-	{ .socket_num = W5500_SOCKET_ID6 },
-	{ .socket_num = W5500_SOCKET_ID7 }
+	{ .socket_num = W5500_SOCKET_ID_0 },
+	{ .socket_num = W5500_SOCKET_ID_1 },
+	{ .socket_num = W5500_SOCKET_ID_2 },
+	{ .socket_num = W5500_SOCKET_ID_3 },
+	{ .socket_num = W5500_SOCKET_ID_4 },
+	{ .socket_num = W5500_SOCKET_ID_5 },
+	{ .socket_num = W5500_SOCKET_ID_6 },
+	{ .socket_num = W5500_SOCKET_ID_7 }
 };
 
 uint8_t w5500_socket_in_use = 0;
 
-inline struct w5500_socket *w5500_set_socket(uint8_t value) {
+static inline struct w5500_socket *w5500_set_socket(uint8_t value) {
 	w5500_socket_in_use |= value;
 	return &w5500_socket_set[value];
 }
@@ -35,12 +36,16 @@ void construct_w5500_eth_handle(struct ethernet_handle *handle) {
 	handle->close_socket = w5500_close_socket;
 	handle->send_packet = w5500_send_packet;
 	handle->receive_packet = w5500_receive_packet;
+	handle->socket = NULL;
+}
+	
+void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl) {
 
-	if (w5500_socket_in_use & W5500_SOCKET_1) {
-		socket_num = W5500_SOCKET_1;
-	}
+}
 
-	else if (w5500_socket_in_use & W5500_SOCKET_2) {
+int w5500_open_socket(struct ethernet_handle *eth_handle) {
+	
+	if (w5500_socket_in_use & W5500_SOCKET_2) {
 		socket_num = W5500_SOCKET_2;
 	}
 
@@ -68,19 +73,22 @@ void construct_w5500_eth_handle(struct ethernet_handle *handle) {
 		socket_num = W5500_SOCKET_8;
 	}
 
-	handle->s = w5500_set_socket(socket_num);
-}
-	
-void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl) {
+	else if (w5500_socket_in_use & W5500_SOCKET_1) {
+		socket_num = W5500_SOCKET_1;
+	}
+
+	handle->s = (struct socket *) w5500_set_socket(socket_num);
 
 }
 
-void w5500_open_socket(struct ethernet_handle *eth_handle);
+int w5500_close_socket(struct ethernet_handle *eth_handle) {
+
+}
 
 int w5500_send_packet(struct ethernet_handle *eth_handle, uint8_t *buffer, 
 	uint32_t p_size) {
 
-	struct w5500_control_struct w_ctrl = { 0 };
+	struct w5500_control w_ctrl = { 0 };
 	uint8_t byte;
 
 	w_ctrl.bsb = eth_handle->s->socket_num+1;
@@ -124,10 +132,10 @@ int w5500_send_packet(struct ethernet_handle *eth_handle, uint8_t *buffer,
  *	\ret
  *	The total number of bytes read
  */
-int w5500_receive_packet(struct ethernet_handle *eth_handle uint8_t *packet,
+int w5500_receive_packet(struct ethernet_handle *eth_handle, uint8_t *packet,
 	uint32_t p_size) {
 
-	struct w5500_socket_struct w_ctrl = { 0 };
+	struct w5500_control w_ctrl = { 0 };
 	uint8_t byte;
 	uint8_t check_byte[2] = { 0 };
 	uint8_t eot_byte = 0x04;
