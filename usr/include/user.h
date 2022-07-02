@@ -34,9 +34,9 @@
 #define	REQUEST_MAX	TASK_COUNT
 
 #if USE_ETHERNET == 1
-extern void 
-	(*construct_ethernet_controller)(struct ethernet_controller *eth_ctrl);
-extern void (*construct_ethernet_handler)(struct ethernet_handle *handle);
+extern struct ethernet_controller usr_eth_ctrl;
+extern struct ethernet_handle usr_eth_handle;
+
 #endif
 
 #if USE_SOFTWARE_TIMER == 1

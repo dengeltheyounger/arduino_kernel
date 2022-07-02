@@ -101,6 +101,59 @@ struct w5500_control {
 #define	W5500_COMMON_PHAR4		0x0022
 #define	W5500_COMMON_PHAR5		0x0023
 
+#define	W5500_COMMON_PSID0		0x0024
+#define	W5500_COMMON_PSID1		0x0025
+
+#define	W5500_COMMON_UIPR0		0x0028
+#define	W5500_COMMON_UIPR1		0x0029
+#define	W5500_COMMON_UIPR2		0x002A
+#define	W5500_COMMON_UIPR3		0x002B
+
+#define	W5500_COMMON_UPORTR0		0x002C
+#define	W5500_COMMON_UPORTR1		0x002D
+
+#define	W5500_COMMON_CHIP_VERSION	0x0039
+
+#define	W5500_SOCKET_SN_MR		0x0000
+#define	W5500_SOCKET_SN_CR		0x0001
+#define	W5500_SOCKET_SN_IR		0x0002
+#define	W5500_SOCKET_SN_SR		0x0003
+#define	W5500_SOCKET_SN_PORT0		0x0004
+#define	W5500_SOCKET_SN_PORT1		0x0005
+#define	W5500_SOCKET_SN_DHAR0		0x0006
+#define	W5000_SOCKET_SN_DHAR1		0x0007
+#define	W5500_SOCKET_SN_DHAR2		0x0008
+#define	W5500_SOCKET_SN_DHAR3		0x0009
+#define	W5500_SOCKET_SN_DHAR4		0x000A
+#define	W5500_SOCKET_SN_DHAR5		0x000B
+#define	W5500_SOCKET_SN_DIPR0		0x000C
+#define	W5500_SOCKET_SN_DIPR1		0x000D
+#define	W5500_SOCKET_SN_DIPR2		0x000E
+#define	W5500_SOCKET_SN_DIPR3		0x000F
+#define	W5500_SOCKET_SN_DPORT0		0x0010
+#define	W5500_SOCKET_SN_DPORT1		0x0011
+#define	W5500_SOCKET_SN_MSSR0		0x0012
+#define	W5500_SOCKET_SN_MSSR1		0x0013
+#define	W5500_SOCKET_SN_TOS		0x0015
+#define	W5500_SOCKET_SN_RXBUF_SIZE	0x001E
+#define	W5500_SOCKET_SN_TXBUF_SIZE	0x001F
+#define	W5500_SOCKET_SN_TX_FSR0		0x0020
+#define	W5500_SOCKET_SN_TX_FSR1		0x0021
+#define	W5500_SOCKET_SN_TX_RD0		0x0022
+#define	W5500_SOCKET_SN_TX_RD1		0x0023
+#define	W5500_SOCKET_SN_TX_WR0		0x0024
+#define	W5500_SOCKET_SN_TX_WR1		0x0025
+#define	W5500_SOCKET_SN_RX_RSR0		0x0026
+#define	W5500_SOCKET_SN_RX_RSR1		0x0027
+#define	W5500_SOCKET_SN_RX_RD0		0x0028
+#define	W5500_SOCKET_SN_RX_RD1		0x0029
+#define	W5500_SOCKET_SN_RX_WR0		0x002A
+#define	W5500_SOCKET_SN_RX_WR1		0x002B
+#define	W5500_SOCKET_SN_IMR		0x002C
+#define	W5500_SOCKET_SN_FRAG0		0x002D
+#define	W5500_SOCKET_SN_FRAG1		0x002E
+#define	W5500_SOCKET_SN_KPALVTR		0x002F
+
 /*!
  *	\{
  *	Given that the socket register is one less than the tx buffer and two
@@ -212,9 +265,9 @@ int w5500_open_socket(struct ethernet_handle *eth_handle);
 
 int w5500_close_socket(struct ethernet_handle *eth_handle);
 
-void construct_w5500_eth_handle(struct ethernet_handle *handle);
+void init_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl);
 
-void construct_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl);
+void deinit_w5500_eth_ctrl(struct ethernet_controller *eth_ctrl);
 
 #endif
 

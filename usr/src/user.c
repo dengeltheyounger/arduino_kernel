@@ -114,24 +114,29 @@ volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
 #endif
 
 #if USE_ETHERNET == 1
-/*!
- *	\{
- *	There isn't really any good way I can think of doing this. Basically, 
- *	I want to make it so that you can easily construct a handler for a
- *	given ethernet type (wiznet, for example), while also keeping things
- *	generic as they can be. For that reason, the user defines the ethernet
- *	handle constructor here, which will then handle setting all of the
- *	function pointers for the ethernet_handle.
- */
-void (*construct_ethernet_handler)(struct ethernet_handle *handle) = 
-	construct_w5500_eth_handle;
+struct ethernet_controller usr_eth_ctrl = {
+	.mac_address = {
+		0xA8, 0x61, 0x0A, 0xAE, 0xAA, 0x2C 
+	},
+	.ip_address = {
+		192, 168, 10, 250
+	},
 
-void (*construct_ethernet_controller)(struct ethernet_controller *eth_ctrl) =
-	construct_w5500_eth_ctrl;
+	.init_ethernet = init_w5500_eth_ctrl,
+	.deinit_ethernet = deinit_w5500_eth_ctrl
+};
 
-/*!
- *	\}
- */
+struct ethernet_handle usr_eth_handle = {
+	.open_socket = w5500_open_socket,
+	.send_packet = w5500_send_packet,
+	.receive_packet = w5500_receive_packet,
+	.close_socket = w5500_close_socket,
+	.s = {
+		.socket_num = SOCKET_UNALLOCATED,
+		.protocol = UDP,
+		.state = SOCKET_CLOSED
+	}
+};
 #endif
 
 
