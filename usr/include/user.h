@@ -7,7 +7,6 @@
 #include "sys/stack.h"
 #include "sys/request.h"
 #include "tmr/software_timer.h"
-#include "net/wiznet.h"
 
 // These are macros that relate to serial communicate, if desired
 // Remove this macro in order to remove the code associated with usart
@@ -32,12 +31,6 @@
 // Total number of requests allowed.
 // Currently, this must be equal to the number of tasks
 #define	REQUEST_MAX	TASK_COUNT
-
-#if USE_ETHERNET == 1
-extern struct ethernet_controller usr_eth_ctrl;
-extern struct ethernet_handle usr_eth_handle;
-
-#endif
 
 #if USE_SOFTWARE_TIMER == 1
 #define	SOFTWARE_TIMER_COUNT	5

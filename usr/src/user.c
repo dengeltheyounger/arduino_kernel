@@ -113,30 +113,4 @@ volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
 
 #endif
 
-#if USE_ETHERNET == 1
-struct ethernet_controller usr_eth_ctrl = {
-	.mac_address = {
-		0xA8, 0x61, 0x0A, 0xAE, 0xAA, 0x2C 
-	},
-	.ip_address = {
-		192, 168, 10, 250
-	},
-
-	.init_ethernet = init_w5500_eth_ctrl,
-	.deinit_ethernet = deinit_w5500_eth_ctrl
-};
-
-struct ethernet_handle usr_eth_handle = {
-	.open_socket = w5500_open_socket,
-	.send_packet = w5500_send_packet,
-	.receive_packet = w5500_receive_packet,
-	.close_socket = w5500_close_socket,
-	.s = {
-		.socket_num = SOCKET_UNALLOCATED,
-		.protocol = UDP,
-		.state = SOCKET_CLOSED
-	}
-};
-#endif
-
 
