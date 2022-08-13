@@ -72,42 +72,11 @@ void timer4_callback() {
 volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
 	[0] = {
 		.id = 0,
-		.period = 100,
+		.period = 1000,
 		.counter = 0,
 		.state = timer_stopped,
-		.callback = timer0_callback
-	},
-
-	[1] = {
-		.id = 1,
-		.period = 1,
-		.counter = 0,
-		.state = timer_started,
-		.callback = timer1_callback
-	},
-
-	[2] = {
-		.id = 2,
-		.period = 500,
-		.counter = 0,
-		.state = timer_started,
-		.callback = timer2_callback,
-	},
-
-	[3] = {
-		.id = 3,
-		.period = 1,
-		.counter = 0,
-		.state = timer_stopped,
-		.callback = timer3_callback
-	},
-
-	[4] = {
-		.id = 4,
-		.period = 2,
-		.counter = 0,
-		.state = timer_started,
-		.callback = timer4_callback
+		.timer_type = sw_timer_periodic,
+		.callback = DHCP_time_handler
 	}
 };
 

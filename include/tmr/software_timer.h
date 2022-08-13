@@ -11,11 +11,18 @@ enum timer_state
 	timer_started = 1
 };
 
+enum timer_type
+{
+	sw_timer_one_shot,
+	sw_timer_periodic
+};
+
 struct software_timer
 {
 	uint8_t id;
 	uint32_t period;
 	uint32_t counter;
+	enum timer_type;	
 	enum timer_state state;
 	void (*callback)();
 }__attribute__((packed));

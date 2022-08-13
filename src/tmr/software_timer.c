@@ -107,7 +107,8 @@ void software_timer_stop(volatile struct software_timer *tmr) {
 /* If we've reached the millisecond mark, then run through the timers. If a 
  * timer is stoppped, then exit the loop, because all of the rest are stopped.
  * For each timer that is not stopped, decrement its counter. If the counter is
- * at zero, then add it to the queue of callbacks.
+ * at zero, then add it to the queue of callbacks. If it is a periodic timer,
+ * then reload the timer.
  *
  * Attempt to get a callback from the queue, and then run a callback. The ISR
  * can do this at most five times within a millisecond, which means that you
@@ -132,13 +133,19 @@ ISR(TIMER0_COMPA_vect) {
 
 			if (tmr_arr_ptr[i]->counter == 0) {
 
+				if (tmr_arr_ptr[i]->timer_type == 
+					sw_timer_periodic) {
+
+					tmr_arr_ptr[i]->counter = period;
+				}
+
 				if (tmr_callback_queue.capacity + 1 > 
 					tmr_callback_queue.queue_size) {
 
 					break;
 				}
 
-				tmr_callback_queue.items[tmr_callback_queue.tail] 
+				tmr_callback_queue.items[tmr_callback_queue.tail]
 					= tmr_arr_ptr[i]->callback;
 
 				tmr_callback_queue.capacity++;
