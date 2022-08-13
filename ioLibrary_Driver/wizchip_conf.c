@@ -53,6 +53,7 @@
 //
 
 #include "wizchip_conf.h"
+#include "comm/spi.h"
 
 /////////////
 //M20150401 : Remove ; in the default callback function such as wizchip_cris_enter(), wizchip_cs_select() and etc.
@@ -114,7 +115,14 @@ void 	wizchip_bus_writedata(uint32_t AddrSel, iodata_t wb)  { *((volatile iodata
  * null function is called.
  */
 //uint8_t wizchip_spi_readbyte(void)        {return 0;};
-uint8_t wizchip_spi_readbyte(void)        {return 0;}
+uint8_t wizchip_spi_readbyte(void) {
+	uint8_t retVal;
+
+	SPI_SS_LOW();
+	retVal = do_spi(0xff);
+	SPI_SS_HIGH();
+	return retVal;
+}
 
 /**
  * @brief Default function to write in SPI interface.
@@ -122,7 +130,11 @@ uint8_t wizchip_spi_readbyte(void)        {return 0;}
  * null function is called.
  */
 //void 	wizchip_spi_writebyte(uint8_t wb) {};
-void 	wizchip_spi_writebyte(uint8_t wb) {}
+void 	wizchip_spi_writebyte(uint8_t wb) {
+	SPI_SS_LOW();
+	do_spi(wb);
+	SPI_SS_HIGH();
+}
 
 /**
  * @brief Default function to burst read in SPI interface.
@@ -130,7 +142,16 @@ void 	wizchip_spi_writebyte(uint8_t wb) {}
  * null function is called.
  */
 //void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}; 
-void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}
+void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) {
+	uin16_t i;
+	SPI_SS_LOW();
+	
+	for (i = 0; i < len; ++i) {
+		pBuf[i] = do_spi(0xff);
+	}
+	
+	SPI_SS_HIGH();
+}
 
 /**
  * @brief Default function to burst write in SPI interface.
@@ -138,7 +159,16 @@ void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}
  * null function is called.
  */
 //void 	wizchip_spi_writeburst(uint8_t* pBuf, uint16_t len) {};
-void 	wizchip_spi_writeburst(uint8_t* pBuf, uint16_t len) {}
+void 	wizchip_spi_writeburst(uint8_t* pBuf, uint16_t len) {
+	uint16_t i;
+	SPI_SS_LOW();
+
+	for (i = 0; i < len; ++i) {
+		do_spi(pBuf[i]);
+	}
+
+	SPI_SS_HIGH();
+}
 
 /**
  * @\ref _WIZCHIP instance

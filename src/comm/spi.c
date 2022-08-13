@@ -36,7 +36,7 @@ uint8_t do_spi(uint8_t byte) {
 
 	while (!(SPSR & (1 << SPIF)));
 
-	return SPDR;
+	return SPDR
 }
 
 #endif
