@@ -12,6 +12,7 @@ void usart_init() {
 	UBRR0L = (baudrate);
 	UCSR0B |= TRANSMITTER_ENABLE;
 	UCSR0C |= TRANSMIT_8_BITS;
+}
 
 void usart_transmit(uint8_t data) {
 	while (!(UCSR0A & USART_DATA_EMPTY));

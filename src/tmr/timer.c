@@ -20,7 +20,18 @@ void init_timers() {
 	init_software_timers();
 	set_usr_timer();
 #endif
+
+#if	DEBUG == 1
+	println("Setting system timer.",
+		STRLEN("Setting system timer."));
+#endif
+
 	set_sys_timer();
+
+#if	DEBUG == 1
+	println("System timer set.",
+		STRLEN("System timer set."));
+#endif
 }
 
 #if USE_SOFTWARE_TIMER == 1

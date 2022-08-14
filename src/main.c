@@ -24,7 +24,7 @@ int main() {
 	usart_init();
 
 #if	DEBUG == 1
-	println("USART Initialized", SIZEOF("USART Initialized"));
+	println("USART Initialized", STRLEN("USART Initialized"));
 #endif
 	// Create linked list
 	for (uint8_t i = 0; i < TASK_COUNT; ++i) {
@@ -48,15 +48,35 @@ int main() {
 
 
 	// Set the timer
-	
+
+#if	DEBUG == 1
+	println("Timer initialization started", 
+		STRLEN("Timer initialization started"));
+#endif
+
 	init_timers();
+
+#if	DEBUG == 1
+	println("Timer initialization stopped",
+		STRLEN("Timer initialization stopped"));
+#endif
 
 	/* This will jump to the house keeper. The house keeper will
 	 * find a new task and do some house keeping stuff
 	 */
+
+#if	DEBUG == 1
+	println("Scheduler starting. Best of luck!", 
+		STRLEN("Scheduler starting. Best of luck!"));
+#endif
 	task_yield();
 	
 	/* This should never be reached */
 error:
+
+#if	DEBUG == 1
+	println("Entered the error state. Something went wrong.",
+		STRLEN("Entered the error state. Something went wrong."));
+#endif
 	while (1);
 }

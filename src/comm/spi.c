@@ -1,7 +1,5 @@
 #include "comm/spi.h"
 
-#if USE_ETHERNET == 1
-
 /*!
  *	\brief Initialize the SPI peripheral.
  *
@@ -39,4 +37,3 @@ uint8_t do_spi(uint8_t byte) {
 	return SPDR;
 }
 
-#endif
