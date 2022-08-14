@@ -7,7 +7,9 @@
 #include "sys/stack.h"
 #include "sys/request.h"
 #include "tmr/software_timer.h"
+#include "comm/usart.h"
 #include "net/ethernet.h"
+#include "sys/watchdog.h"
 
 // These are macros that relate to serial communicate, if desired
 // Remove this macro in order to remove the code associated with usart
@@ -34,15 +36,10 @@
 #define	REQUEST_MAX	TASK_COUNT
 
 #if USE_SOFTWARE_TIMER == 1
-#define	SOFTWARE_TIMER_COUNT	5
+#define	SOFTWARE_TIMER_COUNT	1
 #endif
 
-/* This will need to be defined by the user in user.c */
-extern void (*task_funct[TASK_COUNT])();
-
 extern struct task tasks[TASK_COUNT];
-
-extern struct task *curr;
 
 #if	USE_SOFTWARE_TIMER == 1
 extern volatile struct software_timer tmr_arr[];

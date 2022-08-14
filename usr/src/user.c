@@ -5,18 +5,25 @@
 #define	NOP()	asm("nop\n\t")
 
 void main_task() {
-	//software_timer_start(&tmr_arr[0]);
-	task_sleep(0,5);
-	//software_timer_stop(&tmr_arr[0]);
-	task_sleep(0,10);
-	//software_timer_start(&tmr_arr[0]);
-	task_sleep(0,5);
-	//software_timer_stop(&tmr_arr[1]);
-	//software_timer_start(&tmr_arr[3]);
-};
+	while (1) {
+#if	DEBUG == 1
+		println("Entered main task", 
+			STRLEN("Entered main task"));
+#endif
 
-void (*task_funct[TASK_COUNT])() = {
-	main_task
+#if	DEBUG == 1
+		println("Entering task sleep - main task", 
+			STRLEN("Entering task sleep - main task"));
+#endif
+
+		task_sleep(0,10);
+
+#if 	DEBUG == 1
+		println("Exiting task sleep - main task",
+			STRLEN("Exiting task sleep - main task"));
+#endif
+		watchdog_reset();
+	}
 };
 
 struct task tasks[TASK_COUNT] = {
@@ -24,16 +31,16 @@ struct task tasks[TASK_COUNT] = {
 		.c = {0},
 		.next = &tasks[0],
 		.state = runnable,
-		.task_funct = ethernet_task
-	}
-};
-struct task k = { 
-			.c = {0},
-			.state = complete,
-			.task_funct = NULL
-		};
+		.task_funct = main_task
+	},
 
-struct task *curr = &k;
+	/*[1] = {
+		.c = {0},
+		.next = &tasks[0],
+		.state = runnable,
+		.task_funct = ethernet_task
+	}*/
+};
 
 uint8_t stack_space[TASK_COUNT*STACK_SIZE] = {0};
 

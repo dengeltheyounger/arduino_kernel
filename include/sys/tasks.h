@@ -72,16 +72,7 @@ struct task {
 	void (*task_funct)(); 
 };
 
-/* Set up the current task struct. If prev is not null, then
- * curr will be set as next. In addition, curr's task_funct will
- * point to the function provided. Finally, the pc member of c for
- * curr will point to the address of task_launch.
- *
- * It is assumed that the programmer is smart enough not to 
- * make either curr or task_funct null
- */
-void make_task(struct task *p, struct task *curr, void (*task_funct)());
-
+void make_task(struct task *curr);
 
 /* Assign a stack for each task struct. If there are more
  * tasks than stacks, then it will exit with error.

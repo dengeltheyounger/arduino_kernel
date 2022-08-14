@@ -3,8 +3,6 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-#if USE_ETHERNET == 1
-
 #define	SPI_SCK		PB5
 #define	SPI_MISO	PB4
 #define	SPI_MOSI	PB3
@@ -16,7 +14,5 @@
 void spi_init();
 
 uint8_t do_spi(uint8_t byte);
-
-#endif
 
 #endif

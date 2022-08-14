@@ -2,6 +2,7 @@
 #define	USART_H
 #include <stdint.h>
 #include <avr/io.h>
+#include "sys/mutex.h"
 
 #define	USART_DATA_EMPTY	(1 << 5)
 #define	TRANSMITTER_ENABLE	(1 << 3)

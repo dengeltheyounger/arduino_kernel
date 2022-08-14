@@ -6,23 +6,11 @@
  *	This consists of setting up the argument registers for "do_task" and
  *	then setting the task as runnable.
  *
- *	\param p
- *	The previous task struct (since a linked list is used).
- *
  *	\param current
  *	The task struct currently being initialized.
- *
- *	\param task_funct
- *	The task function that associated with current. This should be removed.
  */
-void make_task(struct task *p, struct task *current, void (*task_funct)()) {
+void make_task(struct task *current) {
 
-	if (p) {
-		p->next = current;
-	}
-
-	// Set task pointer
-	current->task_funct = task_funct;
 	// 26 and 25 contain curr as argument for do_task
 	uint16_t addr = (uint16_t) current;
 	current->c.r24 = ADDR_LO(addr);

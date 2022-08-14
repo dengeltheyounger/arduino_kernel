@@ -5,13 +5,29 @@
 #include "sys/stack.h"
 #include "tmr/software_timer.h"
 #include "comm/usart.h"
+#include "sys/watchdog.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
 extern struct stack s;
 extern struct task tasks[TASK_COUNT];
-extern struct task *curr;
 
+/*
+ * This is the kernel task. Right now, it doesn't do anything, but eventually,
+ * it can make sure that the tasks are playing nicely with the stacks.
+ */
+struct task k = {
+	.c = {0},
+	.state = complete,
+	.task_funct = NULL,
+	.next = &tasks[0]
+};
+
+/*
+ * This is a pointer to the current task. Initially, it is set to the kernel
+ * task (k).
+ */
+struct task *curr = &k;
 
 /*!
  *	\brief Initialize the kernel and start the schedule.
@@ -28,15 +44,8 @@ int main() {
 #endif
 	// Create linked list
 	for (uint8_t i = 0; i < TASK_COUNT; ++i) {
-		if (!i) {
-			make_task(curr, &tasks[i], task_funct[i]);
-			continue;
-		}
-
-		make_task(&tasks[i-1], &tasks[i], task_funct[i]);
+		make_task(&tasks[i]);
 	}
-
-	tasks[TASK_COUNT-1].next = &tasks[0];
 
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], TASK_COUNT, &s, s.stack_num);
