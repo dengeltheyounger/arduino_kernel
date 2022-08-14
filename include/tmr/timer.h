@@ -1,5 +1,6 @@
 #ifndef	TIMER_H
 #define	TIMER_H
+#include "tmr/software_timer.h"
 
 void init_timers();
 

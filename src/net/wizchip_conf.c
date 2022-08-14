@@ -52,7 +52,7 @@
 #include <stddef.h>
 //
 
-#include "wizchip_conf.h"
+#include "net/wizchip_conf.h"
 #include "comm/spi.h"
 
 /////////////
@@ -143,7 +143,7 @@ void 	wizchip_spi_writebyte(uint8_t wb) {
  */
 //void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}; 
 void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) {
-	uin16_t i;
+	uint16_t i;
 	SPI_SS_LOW();
 	
 	for (i = 0; i < len; ++i) {

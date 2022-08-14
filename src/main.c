@@ -4,6 +4,7 @@
 #include "user.h"
 #include "sys/stack.h"
 #include "tmr/software_timer.h"
+#include "comm/usart.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
@@ -20,6 +21,11 @@ extern struct task *curr;
  */
 int main() {
 	int result = 0;
+	usart_init();
+
+#if	DEBUG == 1
+	println("USART Initialized", SIZEOF("USART Initialized"));
+#endif
 	// Create linked list
 	for (uint8_t i = 0; i < TASK_COUNT; ++i) {
 		if (!i) {

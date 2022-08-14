@@ -133,10 +133,11 @@ ISR(TIMER0_COMPA_vect) {
 
 			if (tmr_arr_ptr[i]->counter == 0) {
 
-				if (tmr_arr_ptr[i]->timer_type == 
+				if (tmr_arr_ptr[i]->t == 
 					sw_timer_periodic) {
 
-					tmr_arr_ptr[i]->counter = period;
+					tmr_arr_ptr[i]->counter = 
+						tmr_arr_ptr[i]->period;
 				}
 
 				if (tmr_callback_queue.capacity + 1 > 

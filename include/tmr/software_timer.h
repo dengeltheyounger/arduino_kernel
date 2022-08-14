@@ -22,7 +22,7 @@ struct software_timer
 	uint8_t id;
 	uint32_t period;
 	uint32_t counter;
-	enum timer_type;	
+	enum timer_type t;	
 	enum timer_state state;
 	void (*callback)();
 }__attribute__((packed));

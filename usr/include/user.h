@@ -7,6 +7,7 @@
 #include "sys/stack.h"
 #include "sys/request.h"
 #include "tmr/software_timer.h"
+#include "net/ethernet.h"
 
 // These are macros that relate to serial communicate, if desired
 // Remove this macro in order to remove the code associated with usart

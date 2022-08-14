@@ -2,9 +2,10 @@
 #define	ETHERNET_H
 #include <stdint.h>
 #include <stddef.h>
-#include "ioLibrary_Driver/socket.h"
-#include "ioLibrary_Driver/wizchip_conf.h"
-#include "ioLibrary_Driver/w5500/w5500.h"
+#include "net/socket.h"
+#include "tmr/software_timer.h"
+#include "net/wizchip_conf.h"
+#include "net/w5500.h"
 
 #if	USE_ETHERNET == 1
 
@@ -17,6 +18,10 @@ struct net_socket
 	int in_use;
 };
 
+void ethernet_task();
+
+void do_ethernet_send();
+
 struct net_socket *udp_open(uint16_t port);
 
 void ethernet_controller_init();
@@ -27,7 +32,7 @@ int udp_send(uint8_t *buffer, uint16_t len, struct net_socket *s,
 	uint8_t *addr);
 
 int udp_receive(uint8_t *buffer, uint16_t len, struct net_socket *s,
-	uint8_t addr);
+	uint8_t *addr);
 
 #endif
 #endif

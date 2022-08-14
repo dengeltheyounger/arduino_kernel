@@ -24,7 +24,7 @@ struct task tasks[TASK_COUNT] = {
 		.c = {0},
 		.next = &tasks[0],
 		.state = runnable,
-		.task_funct = main_task
+		.task_funct = ethernet_task
 	}
 };
 struct task k = { 
@@ -49,34 +49,23 @@ int request_array[REQUEST_MAX] = { [0 ... REQUEST_MAX-1] = -1};
 
 #if USE_SOFTWARE_TIMER == 1
 
-void timer0_callback() {
-	NOP();
-}
-
-void timer1_callback() {
-	NOP();
-}
-
-void timer2_callback() {
-	NOP();
-}
-
-void timer3_callback() {
-	NOP();
-}
-
-void timer4_callback() {
-	NOP();
-}
-
-volatile struct software_timer tmr_arr[ SOFTWARE_TIMER_COUNT ] = {
-	[0] = {
+volatile struct software_timer tmr_arr[SOFTWARE_TIMER_COUNT] = {
+	/*[0] = {
 		.id = 0,
 		.period = 1000,
 		.counter = 0,
 		.state = timer_stopped,
-		.timer_type = sw_timer_periodic,
+		.t = sw_timer_periodic,
 		.callback = DHCP_time_handler
+	},*/
+
+	[0] = {
+		.id = 0,
+		.period = 5000,
+		.counter = 0,
+		.state = timer_stopped,
+		.t = sw_timer_periodic,
+		.callback = do_ethernet_send
 	}
 };
 
