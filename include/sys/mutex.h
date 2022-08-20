@@ -1,8 +1,9 @@
 #ifndef	MUTEX_H
 #define	MUTEX_H
+#include <stdint.h>
 
 struct mutex {
-	int held;
+	uint8_t held;
 };
 
 void hold_mutex(struct mutex *m);

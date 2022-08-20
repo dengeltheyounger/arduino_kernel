@@ -2,7 +2,7 @@
 #include <string.h>
 #include "user.h"
 #include "tmr/software_timer.h"
-
+#include "comm/usart.h"
 #if USE_SOFTWARE_TIMER == 1
 
 #define	SOFTWARE_TIMER_ITERATIONS	5

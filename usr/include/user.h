@@ -26,11 +26,11 @@
  * The data structures are declared here and then defined in the data structure
  */
 // This concerns the total number of tasks
-#define	TASK_COUNT	1
+#define	TASK_COUNT	3
 // This concerns the total number of software timers
 
 // The size of a given task's stack
-#define	STACK_SIZE	32
+#define	STACK_SIZE	256
 // Total number of requests allowed.
 // Currently, this must be equal to the number of tasks
 #define	REQUEST_MAX	TASK_COUNT

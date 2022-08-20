@@ -1,3 +1,4 @@
+#include <avr/interrupt.h>
 #include "sys/tasks.h"
 #include "tmr/timer.h"
 #include "sys/system.h"
@@ -35,6 +36,12 @@ struct task *curr = &k;
  *	Following that, the timers are initialized. After that, control is
  *	given to the scheduler.
  */
+
+ISR(BADISR_vect) {
+	println("Default ISR called!", STRLEN("Default ISR called!"));
+	while (1);
+}
+
 int main() {
 	int result = 0;
 	usart_init();

@@ -4,6 +4,7 @@ __zero_reg__ = 1
 
 .global TIMER2_COMPA_vect
 
+
 // The reason why I don't push SREG onto the stack is that the timer isr
 // will mostly return to the running task. In that case, shelf it and then
 // bring it back. As for pushing and then popping registers, the reason why
