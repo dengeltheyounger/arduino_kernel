@@ -11,14 +11,13 @@ extern volatile struct sys_clock system_time;
 
 extern volatile struct software_timer tmr_arr[];
 
-typedef void (*software_timer_callback)();
-
 volatile struct software_timer *tmr_arr_ptr[ SOFTWARE_TIMER_COUNT ];
 
 volatile uint8_t software_timer_iteration = 0;
 
 volatile struct queue tmr_callback_queue = {
-	.queue_size = SOFTWARE_TIMER_COUNT,
+	.capacity = SOFTWARE_TIMER_COUNT,
+	.size = 0,
 	.head = 0,
 	.tail = 0,
 	.items = { [0 ... SOFTWARE_TIMER_COUNT - 1] = 0 }
@@ -33,21 +32,37 @@ void init_software_timers() {
 	uint8_t back = SOFTWARE_TIMER_COUNT - 1;
 	uint8_t front = 0;
 
+#if DEBUG == 1
+	println_c("Entered software timer initializer");
+#endif
 	for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 		if (tmr_arr[i].state == timer_started) {
 			tmr_arr[i].counter = tmr_arr[i].period;
 			tmr_arr_ptr[front++] = &tmr_arr[i];
+#if	DEBUG == 1
+			println_c("Timer added to next position");
+#endif
 		}
 
 		else if (tmr_arr[i].state == timer_stopped) {
 			tmr_arr_ptr[back--] = &tmr_arr[i];
+#if	DEBUG == 1
+			println_c("Timer added to last available position");
+#endif
 		}
 
 		else {
+#if	DEBUG == 1
+			println_c("Reached else... continuing");
+#endif
 			continue;
 		}
 
 	}
+
+#if	DEBUG == 1
+	println_c("Exiting software timer initializer");
+#endif
 }
 
 /*
@@ -61,6 +76,9 @@ void software_timer_start(volatile struct software_timer *tmr) {
 	uint8_t i = 0;
 	uint8_t j = 0;
 
+#if	DEBUG == 1
+	println_c("Entered software timer start");
+#endif
 	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 		if (tmr_arr_ptr[i]->state == timer_stopped) {
 			break;
@@ -76,6 +94,10 @@ void software_timer_start(volatile struct software_timer *tmr) {
 			tmr->counter = tmr->period;
 		}
 	}
+
+#if	DEBUG == 1
+	println_c("Exited software timer start");
+#endif
 }
 
 /*
@@ -91,6 +113,10 @@ void software_timer_stop(volatile struct software_timer *tmr) {
 	uint8_t j = 0;
 	uint8_t timers_remaining = 0;
 
+#if	DEBUG == 1
+	println_c("Entered software timer stop");
+#endif
+
 	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
 		if (tmr_arr_ptr[i]->id == tmr->id) {
 			break;
@@ -102,6 +128,10 @@ void software_timer_stop(volatile struct software_timer *tmr) {
 		memmove(&tmr_arr_ptr[i], &tmr_arr_ptr[i+1], timers_remaining);
 		tmr_arr_ptr[SOFTWARE_TIMER_COUNT - 1] = tmr;
 	}
+
+#if 	DEBUG == 1
+	println_c("Exited software timer stop");
+#endif
 }
 
 /* If we've reached the millisecond mark, then run through the timers. If a 
@@ -140,32 +170,23 @@ ISR(TIMER0_COMPA_vect) {
 						tmr_arr_ptr[i]->period;
 				}
 
-				if (tmr_callback_queue.capacity + 1 > 
-					tmr_callback_queue.queue_size) {
+				if (queue_is_full_from_isr(&tmr_callback_queue)) 
+				{
 
 					break;
 				}
 
-				tmr_callback_queue.items[tmr_callback_queue.tail]
-					= tmr_arr_ptr[i]->callback;
-
-				tmr_callback_queue.capacity++;
-				tmr_callback_queue.tail = 
-					++(tmr_callback_queue.tail) % 
-					tmr_callback_queue.queue_size;
+				enqueue_from_isr(&tmr_callback_queue, 
+					tmr_arr_ptr[i]->callback);
 			}
 		}
 	}
 
-	if (tmr_callback_queue.capacity != 0) {
-		tmr_callback_queue.capacity--;
 
-		if (tmr_callback_queue.items[tmr_callback_queue.head] 
-			!= NULL) {
+	callback = dequeue_from_isr(&tmr_callback_queue);
 
-			((software_timer_callback)
-			tmr_callback_queue.items[tmr_callback_queue.head++])();
-		}
+	if (callback) {
+		callback();
 	}
 }
 

@@ -26,7 +26,7 @@
  * The data structures are declared here and then defined in the data structure
  */
 // This concerns the total number of tasks
-#define	TASK_COUNT	3
+#define	TASK_COUNT	1
 // This concerns the total number of software timers
 
 // The size of a given task's stack
@@ -36,7 +36,7 @@
 #define	REQUEST_MAX	TASK_COUNT
 
 #if USE_SOFTWARE_TIMER == 1
-#define	SOFTWARE_TIMER_COUNT	1
+#define	SOFTWARE_TIMER_COUNT	2
 #endif
 
 extern struct task tasks[TASK_COUNT];

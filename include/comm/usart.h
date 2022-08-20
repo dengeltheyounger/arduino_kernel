@@ -10,6 +10,8 @@
 
 #define	STRLEN(X)		((sizeof(X)/sizeof(X[0]))-1)
 
+#define	println_c(U8_DATA)		println(U8_DATA, STRLEN(U8_DATA))
+
 /*
  * For now, we're going to keep it simple and have a simple usart transmitter 
  * that transmits at 9600 8N1. Right now, it's there to debug the kernel.

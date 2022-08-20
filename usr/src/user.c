@@ -9,13 +9,17 @@ void main_task() {
 		println("Entered main task", 
 			STRLEN("Entered main task"));
 #endif
+
+	DDRB |= (1 << 0);
+	DDRB |= (1 << 1);
+
 	while (1) {
 #if	DEBUG == 1
 		println("Entering task sleep - main task", 
 			STRLEN("Entering task sleep - main task"));
 #endif
 
-		task_sleep(0,10);
+		task_sleep(0,1000);
 
 #if 	DEBUG == 1
 		println("Exiting task sleep - main task",
@@ -24,47 +28,12 @@ void main_task() {
 #endif
 };
 
-void led_blink_1() {
-	DDRB |= (1 << 0);
-	while(1) {
-		PORTB &= ~(1 << 0);
-		task_sleep(1,500);
-		PORTB |= (1 << 0);
-		task_sleep(1,500);
-	}
-}
-
-void led_blink_2() {
-	DDRB |= (1 << 1);
-	while(1) {
-		PORTB |= (1 << 1);
-		task_sleep(2,500);
-		PORTB &= ~(1 << 1);
-		task_sleep(2,500);
-	}
-}
-		
-
 struct task tasks[TASK_COUNT] = {
 	[0] = {
 		.c = {0},
-		.next = &tasks[1],
-		.state = runnable,
-		.task_funct = main_task
-	},
-
-	[1] = {
-		.c = {0},
-		.next = &tasks[2],
-		.state = runnable,
-		.task_funct = led_blink_1
-	},
-
-	[2] = {
-		.c = {0},
 		.next = &tasks[0],
 		.state = runnable,
-		.task_funct = led_blink_2
+		.task_funct = main_task
 	}
 };
 
@@ -82,23 +51,57 @@ int request_array[REQUEST_MAX] = { [0 ... REQUEST_MAX-1] = -1};
 
 #if USE_SOFTWARE_TIMER == 1
 
-volatile struct software_timer tmr_arr[SOFTWARE_TIMER_COUNT] = {
-	/*[0] = {
-		.id = 0,
-		.period = 1000,
-		.counter = 0,
-		.state = timer_stopped,
-		.t = sw_timer_periodic,
-		.callback = DHCP_time_handler
-	},*/
+enum led_state {
+	LED_ON,
+	LED_OFF
+};
 
+uint8_t led1_state = LED_OFF;
+
+uint8_t led2_state = LED_ON;
+
+void switch_led1() {
+	if (led1_state == LED_OFF) {
+		PORTB |= (1 << 0);
+		led1_state = LED_ON;
+	}
+
+	else {
+		PORTB &= ~(1 << 0);
+		led1_state = LED_OFF;
+	}
+}
+
+void switch_led2() {
+	if (led2_state == LED_OFF) {
+		PORTB |= (1 << 1);
+		led2_state = LED_ON;
+	}
+
+	else {
+		PORTB &= ~(1 << 1);
+		led2_state = LED_OFF;
+	}
+}
+
+volatile struct software_timer tmr_arr[SOFTWARE_TIMER_COUNT] = {
+	
 	[0] = {
 		.id = 0,
-		.period = 5000,
+		.period = 500,
 		.counter = 0,
-		.state = timer_stopped,
+		.state = timer_started,
 		.t = sw_timer_periodic,
-		.callback = do_ethernet_send
+		.callback = switch_led1
+	},
+
+	[1] = {
+		.id = 1,
+		.period = 500,
+		.counter = 0,
+		.state = timer_started,
+		.t = sw_timer_periodic,
+		.callback = switch_led2
 	}
 };
 

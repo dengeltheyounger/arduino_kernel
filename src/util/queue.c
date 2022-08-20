@@ -12,19 +12,19 @@
  * 	\ret
  * 	0 for error and 1 for success.
  */
-int enqueue(struct queue *q, void *item) {
-	uint16_t tail = q->tail;
-	uint16_t queue_size = q->queue_size;
-	uint16_t capacity = q->capacity;
+int enqueue(struct queue *q, void *itm) {
+	uint8_t tail = q->tail;
+	uint8_t size = q->size;
+	uint8_t capacity = q->capacity;
 
-	if (capacity + 1 > queue_size)
+	if (capacity <= size)
 	{
 		return 0;
 	}
 
-	q->items[tail] = item;
-	q->capacity++;
-	q->tail = ++(q->tail) % queue_size;
+	q->items[tail] = itm;
+	q->size++;
+	q->tail = ++(q->tail) % capacity;
 
 	return 1;
 }
@@ -39,16 +39,24 @@ int enqueue(struct queue *q, void *item) {
  *	NULL if the queue is empty, or the item (which is a pointer).
  */
 void *dequeue(struct queue *q) {
-	uint16_t head = q->head;
-	uint16_t capacity = q->capacity;
+	uint8_t size = q->size;
 	void *ret;
 
-	if (capacity == 0) {
+	if (size == 0) {
 		return NULL;
 	}
 
-	ret = q->items[q->head++];
-	q->capacity--;
+	ret = q->items[q->head];
+	q->head = ++q->head % q->capacity;
+	q->size--;
 
 	return ret;
+}
+
+int queue_is_empty(struct queue *q) {
+	return (q->size == 0);
+}
+
+int queue_is_full(struct queue *q) {
+	return (q->capacity <= q->size);
 }
