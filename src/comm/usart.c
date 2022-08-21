@@ -27,7 +27,7 @@ void usart_transmit(uint8_t data) {
 void print(uint8_t *data, uint16_t len) {
 	uint16_t i;
 
-	hold_mutex(&usart_mutex);
+	hold_mutex_or_return(&usart_mutex);
 
 	for (i = 0; i < len; ++i) {
 		usart_transmit(data[i]);
@@ -39,7 +39,7 @@ void print(uint8_t *data, uint16_t len) {
 void println(uint8_t *data, uint16_t len) {
 	uint16_t i;
 
-	hold_mutex(&usart_mutex);
+	hold_mutex_or_return(&usart_mutex);
 
 	for (i = 0; i < len; ++i) {
 		usart_transmit(data[i]);

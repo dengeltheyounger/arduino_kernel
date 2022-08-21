@@ -66,10 +66,11 @@ void init_software_timers() {
 }
 
 /*
- * When starting a timer, figure out where the first stopped timer is at.
- * After that, continue searching for the timer to be started. Swap them
- * if the timer to be started is found in the list of stopped timers.
- * Initialize the started timer with the counter being equal to the period.
+ * Run through the list of timers until one is found that is stopped.
+ *
+ * After that, look for the timer that is to be started. If the first stopped 
+ * timer and the timer that is to be started are the same, then simply start
+ * the timer. Otherwise, do a swap. 
  */
 void software_timer_start(volatile struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
@@ -85,11 +86,13 @@ void software_timer_start(volatile struct software_timer *tmr) {
 		}
 	}
 	
-	for (j = i+1; j < SOFTWARE_TIMER_COUNT; ++j) {
+	for (j = i; j < SOFTWARE_TIMER_COUNT; ++j) {
 		if (tmr_arr_ptr[j]->id == tmr->id) {
-			tmr_tmp = tmr_arr_ptr[i];
-			tmr_arr_ptr[i] = tmr_arr_ptr[j];
-			tmr_arr_ptr[j] = tmr_tmp;
+			if (j != i) {
+				tmr_tmp = tmr_arr_ptr[i];
+				tmr_arr_ptr[i] = tmr_arr_ptr[j];
+				tmr_arr_ptr[j] = tmr_tmp;
+			}
 			tmr->state = timer_started;
 			tmr->counter = tmr->period;
 		}
