@@ -2,6 +2,7 @@
 #define	SOFTWARE_TIMER_H
 #include <stdint.h>
 #include "util/queue.h"
+#include "sys/tasks.h"
 
 #if USE_SOFTWARE_TIMER == 1
 
@@ -27,11 +28,13 @@ struct software_timer
 	void (*callback)();
 }__attribute__((packed));
 
+extern volatile struct task software_timer_task; 
+
 void init_software_timers();
 
-void software_timer_start(volatile struct software_timer *tmr);
+void software_timer_start(struct software_timer *tmr);
 
-void software_timer_stop(volatile struct software_timer *tmr);
+void software_timer_stop(struct software_timer *tmr);
 
 #endif
 

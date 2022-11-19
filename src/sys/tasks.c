@@ -1,4 +1,6 @@
 #include "sys/tasks.h"
+#include "tmr/software_timer.h"
+#include "sys/kernel.h"
 
 /*!
  *	\brief Initialize a task.
@@ -81,6 +83,14 @@ int set_task_stacks(struct task *t, size_t task_num,
 		*(uint8_t *) current->c.sp-- = 0;
 		current = current->next;
 	}
+
+#if	USE_SOFTWARE_TIMER == 1
+	software_timer_task.c.r24 = ADDR_LO((uint16_t) &software_timer_task);
+	software_timer_task.c.r25 = ADDR_HI((uint16_t) &software_timer_task);
+#endif
+
+	kernel_task.c.r24 = ADDR_LO((uint16_t) &kernel_task);
+	kernel_task.c.r25 = ADDR_HI((uint16_t) &kernel_task);
 
 	return 1;
 }

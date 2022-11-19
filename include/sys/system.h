@@ -16,6 +16,8 @@ static inline void task_yield() {
 	);
 }
 
+void kernel_task_funct();
+
 void task_sleep(uint8_t task_ndx, uint32_t time);
 
 #endif

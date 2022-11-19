@@ -110,7 +110,7 @@ void switch_led2() {
 	}
 }
 
-volatile struct software_timer tmr_arr[SOFTWARE_TIMER_COUNT] = {
+struct software_timer tmr_arr[SOFTWARE_TIMER_COUNT] = {
 	
 	[0] = {
 		.id = 0,

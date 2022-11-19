@@ -72,6 +72,8 @@ struct task {
 	void (*task_funct)(); 
 };
 
+extern struct task tasks[];
+
 void make_task(struct task *curr);
 
 /* Assign a stack for each task struct. If there are more
@@ -98,6 +100,5 @@ extern struct task *curr;
  * in curr, and then return true.
  */
 unsigned int get_next_task();
-	
 
 #endif

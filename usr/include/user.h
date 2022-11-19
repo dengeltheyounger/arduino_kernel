@@ -8,7 +8,6 @@
 #include "sys/request.h"
 #include "tmr/software_timer.h"
 #include "comm/usart.h"
-#include "net/ethernet.h"
 #include "sys/watchdog.h"
 
 // These are macros that relate to serial communicate, if desired
@@ -42,7 +41,7 @@
 extern struct task tasks[TASK_COUNT];
 
 #if	USE_SOFTWARE_TIMER == 1
-extern volatile struct software_timer tmr_arr[];
+extern struct software_timer tmr_arr[];
 #endif
 
 extern struct stack s;

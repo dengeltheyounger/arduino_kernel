@@ -3,25 +3,103 @@
 #include "user.h"
 #include "tmr/software_timer.h"
 #include "comm/usart.h"
+#include "sys/tasks.h"
 #if USE_SOFTWARE_TIMER == 1
 
-#define	SOFTWARE_TIMER_ITERATIONS	5
+#define	SOFTWARE_TIMER_STACK_SIZE	32
 
-extern volatile struct sys_clock system_time;
+void software_timer_task_funct();
 
-extern volatile struct software_timer tmr_arr[];
+extern struct software_timer tmr_arr[];
 
-volatile struct software_timer *tmr_arr_ptr[ SOFTWARE_TIMER_COUNT ];
+struct software_timer *tmr_arr_ptr[SOFTWARE_TIMER_COUNT];
 
-volatile uint8_t software_timer_iteration = 0;
-
-volatile struct queue tmr_callback_queue = {
+struct queue tmr_callback_queue = {
 	.capacity = SOFTWARE_TIMER_COUNT,
 	.size = 0,
 	.head = 0,
 	.tail = 0,
 	.items = { [0 ... SOFTWARE_TIMER_COUNT - 1] = 0 }
 };
+
+uint8_t software_timer_stack[SOFTWARE_TIMER_STACK_SIZE] = {0};
+
+volatile struct task software_timer_task = {
+	.c = {
+		.sp_start = 
+			&software_timer_stack[SOFTWARE_TIMER_STACK_SIZE - 1],
+		.sp = &software_timer_stack[0],
+		.r0 = 0,
+		.r1 = 0,
+		.r2 = 0,
+		.r3 = 0,
+		.r4 = 0,
+		.r5 = 0,
+		.r6 = 0,
+		.r7 = 0,
+		.r8 = 0,
+		.r9 = 0,
+		.r10 = 0,
+		.r11 = 0,
+		.r12 = 0,
+		.r13 = 0,
+		.r14 = 0,
+		.r15 = 0,
+		.r16 = 0,
+		.r17 = 0,
+		.r18 = 0,
+		.r19 = 0,
+		.r20 = 0,
+		.r21 = 0,
+		.r22 = 0,
+		.r23 = 0,
+		.r24 = 0,
+		.r25 = 0,
+		.r26 = 0,
+		.r27 = 0,
+		.r28 = 0,
+		.r29 = 0,
+		.r30 = 0,
+		.r31 = 0
+	},
+
+	.next = NULL,
+	.state = runnable,
+	.task_funct = software_timer_task_funct
+};
+
+/*
+ * Run through each of the timers until we either get to the end, or we get to 
+ * a timer that is stopped.
+ *
+ * Decrement the counter of timer. If the timer's counter is 0, then enqueue
+ * it. Afterwards, reset it.
+ *
+ * If we successfully dequeued a timer callback, then run it.
+ */
+void software_timer_task_funct() {
+	void (*callback)();
+
+	for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
+		if ((*tmr_arr_ptr[i]).state == timer_stopped) {
+			break;
+		}
+
+		if (((*tmr_arr_ptr[i]).counter--) == 0) {
+			enqueue(&tmr_callback_queue, 
+				(*tmr_arr_ptr[i]).callback);
+			(*tmr_arr_ptr[i]).counter = (*tmr_arr_ptr[i]).period;
+		}
+
+	}
+	
+	callback = dequeue(&tmr_callback_queue);
+	
+	while (callback != NULL) {
+		callback();
+		callback = dequeue(&tmr_callback_queue);
+	}
+}
 
 /*
  * Initialize the timers by putting the stopped timers in the back and the
@@ -72,7 +150,7 @@ void init_software_timers() {
  * timer and the timer that is to be started are the same, then simply start
  * the timer. Otherwise, do a swap. 
  */
-void software_timer_start(volatile struct software_timer *tmr) {
+void software_timer_start(struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
 	uint8_t j = 0;
@@ -110,7 +188,7 @@ void software_timer_start(volatile struct software_timer *tmr) {
  * memmove the remaining timers, and then throw the software timer being
  * stopped in the back.
  */
-void software_timer_stop(volatile struct software_timer *tmr) {
+void software_timer_stop(struct software_timer *tmr) {
 	struct software_timer *tmr_tmp = NULL;
 	uint8_t i = 0;
 	uint8_t j = 0;
@@ -135,62 +213,6 @@ void software_timer_stop(volatile struct software_timer *tmr) {
 #if 	DEBUG == 1
 	println_c("Exited software timer stop");
 #endif
-}
-
-/* If we've reached the millisecond mark, then run through the timers. If a 
- * timer is stoppped, then exit the loop, because all of the rest are stopped.
- * For each timer that is not stopped, decrement its counter. If the counter is
- * at zero, then add it to the queue of callbacks. If it is a periodic timer,
- * then reload the timer.
- *
- * Attempt to get a callback from the queue, and then run a callback. The ISR
- * can do this at most five times within a millisecond, which means that you
- * have to be careful about the time length of the callback as well as the
- * number of 1 ms software timers (and the number of timers in general).
- */
-ISR(TIMER0_COMPA_vect) {
-
-	void (*callback)();
-
-	software_timer_iteration = ++software_timer_iteration % 
-		SOFTWARE_TIMER_ITERATIONS;
-
-	if (software_timer_iteration == 0) {
-			
-		for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
-			if (tmr_arr_ptr[i]->state == timer_stopped) {
-				break;
-			}
-
-			tmr_arr_ptr[i]->counter--;
-
-			if (tmr_arr_ptr[i]->counter == 0) {
-
-				if (tmr_arr_ptr[i]->t == 
-					sw_timer_periodic) {
-
-					tmr_arr_ptr[i]->counter = 
-						tmr_arr_ptr[i]->period;
-				}
-
-				if (queue_is_full_from_isr(&tmr_callback_queue)) 
-				{
-
-					break;
-				}
-
-				enqueue_from_isr(&tmr_callback_queue, 
-					tmr_arr_ptr[i]->callback);
-			}
-		}
-	}
-
-
-	callback = dequeue_from_isr(&tmr_callback_queue);
-
-	if (callback) {
-		callback();
-	}
 }
 
 #endif

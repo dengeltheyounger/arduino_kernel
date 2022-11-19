@@ -7,6 +7,7 @@
 #include "tmr/software_timer.h"
 #include "comm/usart.h"
 #include "sys/watchdog.h"
+#include "sys/kernel.h"
 
 // This is mainly declared in case we wish to use flash
 extern uint16_t _etext;
@@ -14,21 +15,10 @@ extern struct stack s;
 extern struct task tasks[TASK_COUNT];
 
 /*
- * This is the kernel task. Right now, it doesn't do anything, but eventually,
- * it can make sure that the tasks are playing nicely with the stacks.
- */
-struct task k = {
-	.c = {0},
-	.state = complete,
-	.task_funct = NULL,
-	.next = &tasks[0]
-};
-
-/*
  * This is a pointer to the current task. Initially, it is set to the kernel
  * task (k).
  */
-struct task *curr = &k;
+volatile struct task *current_task = &kernel_task;
 
 /*!
  *	\brief Initialize the kernel and start the schedule.
@@ -53,6 +43,9 @@ int main() {
 	for (uint8_t i = 0; i < TASK_COUNT; ++i) {
 		make_task(&tasks[i]);
 	}
+
+	// The last task will have kernel as the next task
+	tasks[TASK_COUNT - 1].next = &kernel_task;
 
 	// Set stack pointers for each task
 	result = set_task_stacks(&tasks[0], TASK_COUNT, &s, s.stack_num);
