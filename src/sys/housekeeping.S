@@ -61,6 +61,7 @@ TIMER2_COMPA_vect:
 	lds	r28,mod_four_count
 	cpi	r28,3
 	// If not, increment and store
+	// Otherwise, reset
 	breq	reset_mod_four_count
 	inc	r28
 	sts	mod_four_count,r28

@@ -1,0 +1,42 @@
+#ifndef	REQUEST_H
+#define	REQUEST_H
+#include <stdint.h>
+#include <stdlib.h>
+#include "tasks.h"
+
+
+enum active_req_status {
+	inactive = 0,
+	active = 1
+};
+
+struct request_entry {
+	uint32_t value;
+};
+
+extern struct task tasks[];
+/*
+ * The request entry indicates a time that a given task is meant to wake up.
+ * Each task is given a certain index into this array.
+ */
+extern struct request_entry requests [];
+
+/*
+ * Given the amount of time it takes to shift 32-bit values, a second array of
+ * unsigned chars is used. These hold an index into the array of requests,
+ * at which point the wake up time is set.
+ */
+extern uint8_t request_array[];
+
+#include "system.h"
+
+/* Add the task to the next spot in the array */
+void add_req_entry(uint8_t task_ndx, uint32_t value);
+
+
+/* Shift struct values through the first inactive index.
+ * This way, index 0 has the values of index 1 and so on.
+ */
+void awaken_tasks();
+
+#endif

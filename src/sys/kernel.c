@@ -50,5 +50,8 @@ struct task kernel_task = {
  * Currently, the kernel task doesn't do anything.
  */
 void kernel_task_funct() {
-	task_yield();
+	// Awaken all sleeping_tasks that are due to wake up
+	awaken_tasks();
+	// Set the sleep time for when the next task wakes up
+	task_sleep(TASK_COUNT, requests[request_array[0]].value);
 }

@@ -1,5 +1,9 @@
 #include "sys/request.h"
 
+struct request_entry requests[];
+
+uint8_t request_array[];
+
 /*!
  *	\brief Add a task to the list of sleeping tasks.
  *
@@ -13,6 +17,7 @@
  */
 void add_req_entry(uint8_t task_ndx, uint32_t value) {
 	uint8_t task_tmp = 0;
+
 
 	/* Go through the array of requests and determine
 	 * where the value of one is greater than the new
@@ -58,13 +63,8 @@ void add_req_entry(uint8_t task_ndx, uint32_t value) {
  *	This function checks to first element to see if there's something to be
  *	awoken. If a task can be awoken, then any others will also be awoken.
  */
-void check_req_top() {
-	int wakers_found = 1;
-	uint8_t task_ndx = 0;
+void awaken_tasks() {
 
-	/* If nothing's in the array, then just exit */
-	if (request_array[0] == -1)
-		return;
 
 	/* Unblock all tasks need to be woken up */
 
@@ -79,11 +79,21 @@ void check_req_top() {
 		 */
 		if (system_time.time >= requests[task_ndx].value) {
 
+#if	USE_SOFTWARE_TIMER == 1
+			if (task_ndx == SOFTWARE_TIMER_NDX) {
+				software_timer_task.state = runnable;
+			}
+			else {
+				tasks[task_ndx].state = runnable;
+			}
+
+#else
 			/* Wake the task back up. Ideally, this should
 			 * be done somewhere else, but right now it's
 			 * good.
 			 */
 			tasks[task_ndx].state = runnable;
+#endif
 
 			for (uint8_t i = 0; i < REQUEST_MAX - 1; ++i) {
 				if (request_array[i] != -1)
