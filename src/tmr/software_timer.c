@@ -1,9 +1,9 @@
-#include <avr/interrupt.h>
 #include <string.h>
 #include "user.h"
 #include "tmr/software_timer.h"
 #include "comm/usart.h"
 #include "sys/tasks.h"
+#include "sys/request.h"
 #if USE_SOFTWARE_TIMER == 1
 
 #define	SOFTWARE_TIMER_STACK_SIZE	32
@@ -11,8 +11,6 @@
 void software_timer_task_funct();
 
 extern struct software_timer tmr_arr[];
-
-struct software_timer *tmr_arr_ptr[SOFTWARE_TIMER_COUNT];
 
 struct queue tmr_callback_queue = {
 	.capacity = SOFTWARE_TIMER_COUNT,
@@ -68,29 +66,49 @@ volatile struct task software_timer_task = {
 	.task_funct = software_timer_task_funct
 };
 
+uint32_t software_timer_lowest_value = 0xFFFFFFFF;
+
 /*
- * Run through each of the timers until we either get to the end, or we get to 
- * a timer that is stopped.
+ * Run through each timer. If the timer has expired, add the callback to the
+ * queue. In addition, stop the one shot timers. For the periodic timers, add
+ * the periodic value to the counter.
  *
- * Decrement the counter of timer. If the timer's counter is 0, then enqueue
- * it. Afterwards, reset it.
- *
- * If we successfully dequeued a timer callback, then run it.
+ * Also, find the new lowest value and then sleep for that amount of time.
  */
 void software_timer_task_funct() {
+
 	void (*callback)();
+	uint8_t i;
+	uint8_t software_timer_set = 0;
 
-	for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
-		if ((*tmr_arr_ptr[i]).state == timer_stopped) {
-			break;
+	software_timer_lowest_value = 0xFFFFFFFF;
+
+	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
+		if (tmr_arr[i].state == timer_stopped) {
+			continue;
 		}
 
-		if (((*tmr_arr_ptr[i]).counter--) == 0) {
-			enqueue(&tmr_callback_queue, 
-				(*tmr_arr_ptr[i]).callback);
-			(*tmr_arr_ptr[i]).counter = (*tmr_arr_ptr[i]).period;
+		if (tmr_arr[i].counter <= system_time.time) {
+			enqueue(&tmr_callback_queue, tmr_arr[i].callback);
+
+			if (tmr_arr.t == sw_timer_one_shot) {
+				software_timer.state = timer_stopped;
+			}
+
+			else {
+				software_timer.counter += software_timer.period;
+			}
 		}
 
+		/* 
+		 * This is a guard to protect against rollover.
+		 */
+		if (tmr_arr[i].counter <= software_timer_lowest_value && 
+			tmr_arr[i].counter > system_timer.time) {
+			software_timer_set = 1;
+			software_timer_lowest_value = tmr_arr[i].counter;
+		}
+		
 	}
 	
 	callback = dequeue(&tmr_callback_queue);
@@ -98,6 +116,15 @@ void software_timer_task_funct() {
 	while (callback != NULL) {
 		callback();
 		callback = dequeue(&tmr_callback_queue);
+	}
+
+	if (software_timer_set) {
+		add_request_entry(SOFTWARE_TIMER_TASK_NDX, 
+			software_timer_task.state = waiting;
+	}
+
+	else {
+		software_timer_task.state = complete;
 	}
 }
 
@@ -107,40 +134,39 @@ void software_timer_task_funct() {
  * period.
  */
 void init_software_timers() {
-	uint8_t back = SOFTWARE_TIMER_COUNT - 1;
-	uint8_t front = 0;
+	uint8_t i;
+	uint8_t software_timer_set = 0;
 
-#if DEBUG == 1
-	println_c("Entered software timer initializer");
-#endif
-	for (uint8_t i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
-		if (tmr_arr[i].state == timer_started) {
+	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
+		if (tmr_arr[i].state != timer_stopped) {
 			tmr_arr[i].counter = tmr_arr[i].period;
-			tmr_arr_ptr[front++] = &tmr_arr[i];
-#if	DEBUG == 1
-			println_c("Timer added to next position");
-#endif
-		}
 
-		else if (tmr_arr[i].state == timer_stopped) {
-			tmr_arr_ptr[back--] = &tmr_arr[i];
-#if	DEBUG == 1
-			println_c("Timer added to last available position");
-#endif
+			/*
+			 * This is a guard to protect against rollover.
+			 */
+			if (tmr_arr[i].counter <= software_timer_lowest_value &&
+				tmr_arr[i].counter >= system_time.time) {
+				software_timer_set = 1;
+				software_timer_lowest_value = 
+					tmr_arr[i].counter;
+			}
 		}
-
-		else {
-#if	DEBUG == 1
-			println_c("Reached else... continuing");
-#endif
-			continue;
-		}
-
 	}
 
-#if	DEBUG == 1
-	println_c("Exiting software timer initializer");
-#endif
+	/*
+	 * The software timer task will basically wait until the next timer is
+	 * to run, provided that there are software timers that are waiting.
+	 */
+
+	if (software_timer_set) {
+		add_request_entry(SOFTWARE_TIMER_TASK_NDX, 
+			software_timer_lowest_value);
+		software_timer_task.state = waiting;
+	}
+
+	else {
+		software_timer_task.state = complete;
+	}
 }
 
 /*
@@ -150,35 +176,26 @@ void init_software_timers() {
  * timer and the timer that is to be started are the same, then simply start
  * the timer. Otherwise, do a swap. 
  */
-void software_timer_start(struct software_timer *tmr) {
-	struct software_timer *tmr_tmp = NULL;
-	uint8_t i = 0;
-	uint8_t j = 0;
+void software_timer_start(uint8_t tmr_id) {
+	uint8_t software_timer_set = 0;
 
-#if	DEBUG == 1
-	println_c("Entered software timer start");
-#endif
-	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
-		if (tmr_arr_ptr[i]->state == timer_stopped) {
-			break;
-		}
-	}
-	
-	for (j = i; j < SOFTWARE_TIMER_COUNT; ++j) {
-		if (tmr_arr_ptr[j]->id == tmr->id) {
-			if (j != i) {
-				tmr_tmp = tmr_arr_ptr[i];
-				tmr_arr_ptr[i] = tmr_arr_ptr[j];
-				tmr_arr_ptr[j] = tmr_tmp;
-			}
-			tmr->state = timer_started;
-			tmr->counter = tmr->period;
-		}
+	tmr_arr[tmr_id].counter = tmr_arr[tmr_id].period + system_timer.time;
+
+	tmr_arr[tmr_id].state = timer_started;
+
+	if (tmr_arr[tmr_id].counter <= software_timer_lowest_value && 
+		tmr_arr[tmr_id].counter >= system_time.time) {
+		
+		software_timer_lowest_value = tmr_arr[tmr_id].counter;
+		software_timer_set = 1;
 	}
 
-#if	DEBUG == 1
-	println_c("Exited software timer start");
-#endif
+	if (software_timer_set) {
+		add_request_entry(SOFTWARE_TIMER_TASK_NDDX,
+			software_timer_lowest_value);
+
+		software_timer_task.state = waiting;
+	}
 }
 
 /*
@@ -188,31 +205,41 @@ void software_timer_start(struct software_timer *tmr) {
  * memmove the remaining timers, and then throw the software timer being
  * stopped in the back.
  */
-void software_timer_stop(struct software_timer *tmr) {
-	struct software_timer *tmr_tmp = NULL;
-	uint8_t i = 0;
-	uint8_t j = 0;
-	uint8_t timers_remaining = 0;
+void software_timer_stop(uint8_t tmr_id) {
+	uint8_t i;
+	uint8_t software_timer_set = 0;
 
-#if	DEBUG == 1
-	println_c("Entered software timer stop");
-#endif
+	software_timer_lowest_value = 0xFFFFFFFF;
 
+	tmr_arr[tmr_id].state = timer_stopped;
+
+	/*
+	 * Find the lowest timer counter value for and set the internal lowest
+	 * timer to that value, provided that there is at least one started
+	 * timer. Remove it as a sleeping task if there are none.
+	 */
 	for (i = 0; i < SOFTWARE_TIMER_COUNT; ++i) {
-		if (tmr_arr_ptr[i]->id == tmr->id) {
-			break;
+		if (tmr_arr[i].state == timer_stopped) {
+			continue;
+		}
+
+		if (tmr_arr[i].counter <= software_timer_lowest_value &&
+			tmr_arr[i].counter <= system_timer.system_time;
+			software_timer_lowest_value = tmr_arr[i].counter;
+			software_timer_set = 1;
 		}
 	}
-		
-	if (i != SOFTWARE_TIMER_COUNT) {
-		timers_remaining = SOFTWARE_TIMER_COUNT - i + 1;
-		memmove(&tmr_arr_ptr[i], &tmr_arr_ptr[i+1], timers_remaining);
-		tmr_arr_ptr[SOFTWARE_TIMER_COUNT - 1] = tmr;
+
+	if (software_timer_set) {
+		add_req_entry(SOFTWARE_TIMER_TASK_NDX, 
+			software_timer_lowest_value);
+
+		software_timer_task.state = waiting;
 	}
 
-#if 	DEBUG == 1
-	println_c("Exited software timer stop");
-#endif
+	else {
+		software_timer_task.state = complete;
+	}
 }
 
 #endif
